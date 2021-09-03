@@ -75,8 +75,8 @@
 #define RFAL_NFCF_POLL_MAXCARDS                 16U      /*!< Max number slots/cards 16                         */
 
 
-#define RFAL_NFCF_CMD_POS                        0U      /*!< Command/Responce code length                      */
-#define RFAL_NFCF_CMD_LEN                        1U      /*!< Command/Responce code length                      */
+#define RFAL_NFCF_CMD_POS                        0U      /*!< Command/Response code length                      */
+#define RFAL_NFCF_CMD_LEN                        1U      /*!< Command/Response code length                      */
 #define RFAL_NFCF_LENGTH_LEN                     1U      /*!< LEN field length                                  */
 #define RFAL_NFCF_HEADER_LEN                     (RFAL_NFCF_LENGTH_LEN + RFAL_NFCF_CMD_LEN) /*!< Header length*/
 

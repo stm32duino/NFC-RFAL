@@ -90,12 +90,12 @@ typedef uint16_t      ReturnCode; /*!< Standard Return Code type from function. 
 #define ERR_HW_OVERRUN                     ((ReturnCode)30U) /*!< lost one or more received bytes */
 #define ERR_RELEASE_REQ                    ((ReturnCode)31U) /*!< device requested release */
 #define ERR_SLEEP_REQ                      ((ReturnCode)32U) /*!< device requested sleep */
-#define ERR_WRONG_STATE                    ((ReturnCode)33U) /*!< incorrent state for requested operation */
+#define ERR_WRONG_STATE                    ((ReturnCode)33U) /*!< incorrect state for requested operation */
 #define ERR_MAX_RERUNS                     ((ReturnCode)34U) /*!< blocking procedure reached maximum runs */
 #define ERR_DISABLED                       ((ReturnCode)35U) /*!< operation aborted due to disabled configuration */
 #define ERR_HW_MISMATCH                    ((ReturnCode)36U) /*!< expected hw do not match  */
 #define ERR_LINK_LOSS                      ((ReturnCode)37U) /*!< Other device's field didn't behave as expected: turned off by Initiator in Passive mode, or AP2P did not turn on field */
-#define ERR_INVALID_HANDLE                 ((ReturnCode)38U) /*!< invalid or not initalized device handle */
+#define ERR_INVALID_HANDLE                 ((ReturnCode)38U) /*!< invalid or not initialized device handle */
 
 #define ERR_INCOMPLETE_BYTE                ((ReturnCode)40U) /*!< Incomplete byte rcvd         */
 #define ERR_INCOMPLETE_BYTE_01             ((ReturnCode)41U) /*!< Incomplete byte rcvd - 1 bit */

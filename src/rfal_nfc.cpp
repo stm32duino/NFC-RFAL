@@ -465,7 +465,7 @@ ReturnCode RfalNfcClass::rfalNfcDataExchangeStart(uint8_t *txData, uint16_t txDa
         break;
     }
 
-    /* If a transceive has succesfully started flag Data Exchange as ongoing */
+    /* If a transceive has successfully started flag Data Exchange as ongoing */
     if (err == ERR_NONE) {
       gNfcDev.dataExErr = ERR_BUSY;
       gNfcDev.state     = RFAL_NFC_STATE_DATAEXCHANGE;
@@ -558,7 +558,7 @@ ReturnCode RfalNfcClass::rfalNfcPollTechDetetection(void)
 
   err = ERR_NONE;
 
-  /* Supress warning when specific RFAL features have been disabled */
+  /* Suppress warning when specific RFAL features have been disabled */
   NO_WARNING(err);
 
 
@@ -717,7 +717,7 @@ ReturnCode RfalNfcClass::rfalNfcPollCollResolution(void)
   devCnt = 0;
   i      = 0;
 
-  /* Supress warning when specific RFAL features have been disabled */
+  /* Suppress warning when specific RFAL features have been disabled */
   NO_WARNING(err);
   NO_WARNING(devCnt);
   NO_WARNING(i);
@@ -867,7 +867,7 @@ ReturnCode RfalNfcClass::rfalNfcPollActivation(uint8_t devIt)
 
   err = ERR_NONE;
 
-  /* Supress warning when specific RFAL features have been disabled */
+  /* Suppress warning when specific RFAL features have been disabled */
   NO_WARNING(err);
 
   if (devIt > gNfcDev.devCnt) {
@@ -879,7 +879,7 @@ ReturnCode RfalNfcClass::rfalNfcPollActivation(uint8_t devIt)
     /* AP2P Activation                                                             */
     /*******************************************************************************/
     case RFAL_NFC_LISTEN_TYPE_AP2P:
-      /* Activation has already been perfomed (ATR_REQ) */
+      /* Activation has already been performed (ATR_REQ) */
 
       gNfcDev.devList[devIt].nfcid     = gNfcDev.devList[devIt].proto.nfcDep.activation.Target.ATR_RES.NFCID3;
       gNfcDev.devList[devIt].nfcidLen  = RFAL_NFCDEP_NFCID3_LEN;

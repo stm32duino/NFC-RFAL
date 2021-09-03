@@ -182,7 +182,7 @@ enum {
   RFAL_NFCDEP_Bx_64_6780    = 0x08        /*!< Peer also supports 6780              */
 };
 
-/*! Enumeration of NFC-DEP bit rate Dividor in PSL   Digital 1.0 Table 100  */
+/*! Enumeration of NFC-DEP bit rate Divisor in PSL   Digital 1.0 Table 100  */
 enum {
   RFAL_NFCDEP_Dx_01_106  = RFAL_BR_106,   /*!< Divisor D =  1 : bit rate = 106      */
   RFAL_NFCDEP_Dx_02_212  = RFAL_BR_212,   /*!< Divisor D =  2 : bit rate = 212      */

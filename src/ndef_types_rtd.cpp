@@ -397,7 +397,7 @@ ReturnCode NdefClass::ndefRtdDeviceInfo(ndefType *devInfo, const ndefDeviceInfoE
   }
 
   /* Read Type, Length and Value fields */
-  /* Not checking multiple occurences of a given field, use the last one */
+  /* Not checking multiple occurrences of a given field, use the last one */
   count = 0;
   manufacturerNameIndex = 0;
   modelNameIndex = 0;
@@ -494,7 +494,7 @@ ReturnCode NdefClass::ndefPayloadToRtdDeviceInfo(const ndefConstBuffer *bufDevIn
   }
 
   /* Read Type, Length and Value fields */
-  /* Not checking multiple occurences of a given field, use the last one */
+  /* Not checking multiple occurrences of a given field, use the last one */
   offset = 0;
   count = 0;
   manufacturerNameIndex = 0;

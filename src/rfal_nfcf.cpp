@@ -334,7 +334,7 @@ ReturnCode RfalNfcClass::rfalNfcfPollerCheck(const uint8_t *nfcid2, const rfalNf
              (checkRes[RFAL_NFCF_CHECKUPDATE_RES_ST2_POS] != RFAL_NFCF_STATUS_FLAG_SUCCESS)) {
       ret = ERR_REQUEST;
     }
-    /* CHECK succesfull, remove header */
+    /* CHECK successful, remove header */
     else {
       (*rcvdLen) -= (RFAL_NFCF_LENGTH_LEN + RFAL_NFCF_CHECKUPDATE_RES_NOB_POS);
 
@@ -366,7 +366,7 @@ ReturnCode RfalNfcClass::rfalNfcfPollerUpdate(const uint8_t *nfcid2, const rfalN
     return ERR_PARAM;
   }
 
-  /* Calculate required txBuffer lenth */
+  /* Calculate required txBuffer length */
   auxLen = (uint16_t)(RFAL_NFCF_CMD_LEN + RFAL_NFCF_NFCID2_LEN + (servBlock->numServ * sizeof(rfalNfcfServ)) +
                       (servBlock->numBlock * sizeof(rfalNfcfBlockListElem)) + (uint16_t)((uint16_t)servBlock->numBlock * RFAL_NFCF_BLOCK_LEN));
 

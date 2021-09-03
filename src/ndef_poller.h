@@ -81,7 +81,7 @@
 #define NDEF_CC_BUF_LEN             17U                                                /*!< CC buffer len. Max len = 17 in case of T4T v3                */
 #define NDEF_NFCV_SUPPORTED_CMD_LEN  4U                                                /*!< Ext sys info supported commands list len                     */
 
-#define NDEF_SHORT_VFIELD_MAX_LEN  254U                                                /*!< Max V-field length for 1-byte Lengh encoding                 */
+#define NDEF_SHORT_VFIELD_MAX_LEN  254U                                                /*!< Max V-field length for 1-byte Length encoding                 */
 #define NDEF_TERMINATOR_TLV_LEN      1U                                                /*!< Terminator TLV size                                          */
 #define NDEF_TERMINATOR_TLV_T     0xFEU                                                /*!< Terminator TLV T=FEh                                         */
 

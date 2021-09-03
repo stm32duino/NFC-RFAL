@@ -537,7 +537,7 @@ ReturnCode RfalNfcClass::rfalNfcaPollerSleep(void)
 
   /* ISO14443-3 6.4.3  HLTA - If PICC responds with any modulation during 1 ms this response shall be interpreted as not acknowledge
      Digital 2.0  6.9.2.1 & EMVCo 3.0  5.6.2.1 - consider the HLTA command always acknowledged
-     No check to be compliant with NFC and EMVCo, and to improve interoprability (Kovio RFID Tag)
+     No check to be compliant with NFC and EMVCo, and to improve interoperability (Kovio RFID Tag)
   */
 
   return ERR_NONE;

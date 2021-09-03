@@ -664,7 +664,7 @@ ReturnCode RfalNfcClass::isoDepDataExchangePCD(uint16_t *outActRxLen, bool *outI
             }
             return ERR_PROTO;
           }
-        } else { /* Unexcpected R-Block */
+        } else { /* Unexpected R-Block */
           return ERR_PROTO;
         }
       }
@@ -1041,7 +1041,7 @@ ReturnCode RfalNfcClass::rfalIsoDepPollAHandleActivation(rfalIsoDepFSxI FSDI, ui
   /***************************************************************************/
   /* Send RATS                                                               */
   do {
-    /* Digital 1.1 13.7.1.1 and ISO 14443-4 5.6.1.1 - Upon a failed RATS it may be retransmited [0,1] */
+    /* Digital 1.1 13.7.1.1 and ISO 14443-4 5.6.1.1 - Upon a failed RATS it may be retransmitted [0,1] */
     ret = rfalIsoDepRATS(FSDI, DID, &isoDepDev->activation.A.Listener.ATS, &isoDepDev->activation.A.Listener.ATSLen);
 
     /* EMVCo 2.6  9.6.1.1 & 9.6.1.2  If a timeout error is detected retransmit, on transmission error abort */

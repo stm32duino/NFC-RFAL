@@ -1127,7 +1127,7 @@ class NdefClass {
      * \brief T4T Read raw NDEF message
      *
      * This method reads a raw NDEF message from the current selected file.
-     * Prior to NDEF Read procedure, a successfull ndefT4TPollerNdefDetect()
+     * Prior to NDEF Read procedure, a successful ndefT4TPollerNdefDetect()
      * has to be performed.
      *
      * \warning Current selected file must not be changed between NDEF Detect
@@ -1154,7 +1154,7 @@ class NdefClass {
      * \brief T4T Write raw NDEF message
      *
      * This method writes a raw NDEF message in the current selected file.
-     * Prior to NDEF Write procedure, a successfull ndefT4TPollerNdefDetect()
+     * Prior to NDEF Write procedure, a successful ndefT4TPollerNdefDetect()
      * has to be performed.
      *
      * \warning Current selected file must not be changed between NDEF Detect
@@ -1290,7 +1290,7 @@ class NdefClass {
      * \brief Handle T5T NDEF context activation
      *
      * This method performs the initialisation of the NDEF context.
-     * It must be called after a successfull
+     * It must be called after a successful
      * anticollition procedure and prior to any NDEF procedures such as NDEF
      * detection procedure.
      *
@@ -1369,7 +1369,7 @@ class NdefClass {
      * \brief T5T Read raw NDEF message
      *
      * This method reads a raw NDEF message from the current selected file.
-     * Prior to NDEF Read procedure, a successfull ndefT5TPollerNdefDetect()
+     * Prior to NDEF Read procedure, a successful ndefT5TPollerNdefDetect()
      * has to be performed.
      *
      * \param[out]  buf    : buffer to place the NDEF message
@@ -1391,7 +1391,7 @@ class NdefClass {
      * \brief T5T Write raw NDEF message
      *
      * This method writes a raw NDEF message in the current selected file.
-     * Prior to NDEF Write procedure, a successfull ndefT5TPollerNdefDetect()
+     * Prior to NDEF Write procedure, a successful ndefT5TPollerNdefDetect()
      * has to be performed.
      *
      * \param[in]   buf    : raw message buffer

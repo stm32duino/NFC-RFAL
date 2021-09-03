@@ -182,7 +182,7 @@ typedef struct {
 
 /*! Discovery parameters                                                                                           */
 typedef struct {
-  rfalComplianceMode compMode;                        /*!< Compliancy mode to be used                            */
+  rfalComplianceMode compMode;                        /*!< Compliance mode to be used                            */
   uint16_t           techs2Find;                      /*!< Technologies to search for                            */
   uint16_t           totalDuration;                   /*!< Duration of a whole Poll + Listen cycle               */
   uint8_t            devLimit;                        /*!< Max number of devices                                 */
@@ -220,7 +220,7 @@ typedef struct {
   rfalNfcDevice           *activeDev;         /* Active device pointer                           */
   rfalNfcDiscoverParam    disc;               /* Discovery parameters pointer                    */
   rfalNfcDevice           devList[RFAL_NFC_MAX_DEVICES];   /*!< Location of device list          */
-  uint8_t                 devCnt;             /* Decices found counter                           */
+  uint8_t                 devCnt;             /* Devices found counter                           */
   uint32_t                discTmr;            /* Discovery Total duration timer                  */
   ReturnCode              dataExErr;          /* Last Data Exchange error                        */
   bool                    discRestart;        /* Restart discover after deactivation flag        */
@@ -350,7 +350,7 @@ class RfalNfcClass {
      *
      * It selects the device to be activated.
      * It shall be called when more than one device has been identified to
-     * indiacte which device shall be actived
+     * indicate which device shall be active
      *
      * \param[in]  devIdx       : device index to be activated
      *
@@ -555,7 +555,7 @@ class RfalNfcClass {
      *  \param[in] atsParam       : reference to ATS parameters
      *  \param[in] attribResParam : reference to ATTRIB_RES parameters
      *  \param[in] buf            : reference to buffer containing RATS or ATTRIB
-     *  \param[in] bufLen         : length in bytes of the given bufffer
+     *  \param[in] bufLen         : length in bytes of the given buffer
      *  \param[in] actParam       : reference to incoming reception information will be placed
      *
      *
@@ -788,7 +788,7 @@ class RfalNfcClass {
      *  \brief  Deselects PICC
      *
      *  This function sends a deselect command to PICC and waits for it`s
-     *  responce in a blocking way
+     *  response in a blocking way
      *
      *  \return ERR_NONE   : Deselect successfully sent and acknowledged by PICC
      *  \return ERR_TIMEOUT: No response rcvd from PICC
@@ -862,7 +862,7 @@ class RfalNfcClass {
      *****************************************************************************
      *  \brief  ISO-DEP Poller Handle S(Parameters)
      *
-     *  This checks if PICC supports S(PARAMETERS), retieves PICC's
+     *  This checks if PICC supports S(PARAMETERS), retrieves PICC's
      *  capabilities and sets the Bit Rate at the highest supported by both
      *  devices
      *
@@ -1002,7 +1002,7 @@ class RfalNfcClass {
      * This method executes anti collision loop and select the device with higher NFCID1
      *
      * When devLimit = 0 it is configured to perform collision detection only. Once a collision
-     * is detected the collision resolution is aborted immidiatly. If only one device is found
+     * is detected the collision resolution is aborted immediately. If only one device is found
      * with no collisions, it will properly resolved.
      *
      * \param[in]  devLimit    : device limit value (CON_DEVICES_LIMIT)
@@ -1045,7 +1045,7 @@ class RfalNfcClass {
      *
      *
      * When devLimit = 0 it is configured to perform collision detection only. Once a collision
-     * is detected the collision resolution is aborted immidiatly. If only one device is found
+     * is detected the collision resolution is aborted immediately. If only one device is found
      * with no collisions, it will properly resolved.
      *
      *
@@ -1439,7 +1439,7 @@ class RfalNfcClass {
      *
      * \param[in]  buf    : buffer holding Initiator's received request
      * \param[in]  bufLen : size of the msg contained on the buf in Bytes
-     * \param[out] nfcid3 : pointer to where the NFCID3 may be outputed,
+     * \param[out] nfcid3 : pointer to where the NFCID3 may be outputted,
      *                       nfcid3 has NFCF_SENSF_NFCID3_LEN as length
      *                       Pass NULL if output parameter not desired
      *
@@ -1659,8 +1659,8 @@ class RfalNfcClass {
      *****************************************************************************
      * \brief  NFC-F Poller Check/Read
      *
-     * It computes a Check / Read command accoring to T3T 1.0 and JIS X6319-4 and
-     * sends it to PICC. If sucessfully, the rxBuf will contain the the number of
+     * It computes a Check / Read command according to T3T 1.0 and JIS X6319-4 and
+     * sends it to PICC. If successfully, the rxBuf will contain the the number of
      * blocks in the first byte followed by the blocks data.
      *
      * \param[in]  nfcid2      : nfcid2 of the device
@@ -1684,7 +1684,7 @@ class RfalNfcClass {
      *****************************************************************************
      * \brief  NFC-F Poller Update/Write
      *
-     * It computes a Update / Write command accoring to T3T 1.0 and JIS X6319-4 and
+     * It computes a Update / Write command according to T3T 1.0 and JIS X6319-4 and
      * sends it to PICC.
      *
      * \param[in]  nfcid2      : nfcid2 of the device
@@ -1714,7 +1714,7 @@ class RfalNfcClass {
      *
      * \param[in]   buf : buffer holding Initiator's received command
      * \param[in]   bufLen : length of received command in bytes
-     * \param[out]  nfcid2 : pointer to where the NFCID2 may be outputed,
+     * \param[out]  nfcid2 : pointer to where the NFCID2 may be outputted,
      *                       nfcid2 has NFCF_SENSF_NFCID2_LEN as length
      *                       Pass NULL if output parameter not desired
      *

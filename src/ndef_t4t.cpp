@@ -52,14 +52,14 @@
 #define NDEF_T4T_MAPPING_VERSION_2_0  0x20U                    /*!< Mapping version 2.0                   */
 #define NDEF_T4T_MAPPING_VERSION_3_0  0x30U                    /*!< Mapping version 3.0                   */
 
-#define NDEF_T4T_MAX_RAPDU_BODY_LEN                            256U                          /*!< Maximun Response-APDU response body length (short field coding) */
-#define NDEF_T4T_MAX_RAPDU_LEN (NDEF_T4T_MAX_RAPDU_BODY_LEN + RFAL_T4T_MAX_RAPDU_SW1SW2_LEN) /*!< Maximun Response-APDU Length (short field coding)               */
+#define NDEF_T4T_MAX_RAPDU_BODY_LEN                            256U                          /*!< Maximum Response-APDU response body length (short field coding) */
+#define NDEF_T4T_MAX_RAPDU_LEN (NDEF_T4T_MAX_RAPDU_BODY_LEN + RFAL_T4T_MAX_RAPDU_SW1SW2_LEN) /*!< Maximum Response-APDU Length (short field coding)               */
 
-#define NDEF_T4T_MAX_CAPDU_BODY_LEN                            255U                          /*!< Maximun Command-APDU data length (short field coding)           */
+#define NDEF_T4T_MAX_CAPDU_BODY_LEN                            255U                          /*!< Maximum Command-APDU data length (short field coding)           */
 #define NDEF_T4T_MAX_CAPDU_LEN ( RFAL_T4T_MAX_CAPDU_PROLOGUE_LEN \
                                + RFAL_T4T_LC_LEN \
                                + NDEF_T4T_MAX_CAPDU_BODY_LEN \
-                               + RFAL_T4T_LC_LEN )                                           /*!< Maximun Command-APDU Length (short field coding)                */
+                               + RFAL_T4T_LC_LEN )                                           /*!< Maximum Command-APDU Length (short field coding)                */
 
 
 #define NDEF_T4T_FID_SIZE              2U        /*!< File Id size                                      */
@@ -86,7 +86,7 @@
 #define NDEF_T4T_NLEN_LEN              2U        /*!< NLEN LEN (mapping version v2.0): 2 bytes          */
 #define NDEF_T4T_ENLEN_LEN             4U        /*!< ENLEN LEN (mapping version v3.0): 4 bytes         */
 
-#define NDEF_T4T_MIN_NLEN              3U        /*!< Minimun non null NLEN value. TS T4T v1.0 B        */
+#define NDEF_T4T_MIN_NLEN              3U        /*!< Minimum non null NLEN value. TS T4T v1.0 B        */
 
 #define NDEF_T4T_MV2_MAX_OFSSET   0x7FFFU        /*!< ReadBinary maximum Offset (offset range 0000-7FFFh)*/
 
@@ -666,7 +666,7 @@ ReturnCode NdefClass::ndefT4TPollerWriteRawMessage(const uint8_t *buf, uint32_t 
   }
 
   /* TS T4T v1.0 7.2.3.3: check Mapping Version    */
-  /* Done automatically inside underlying fucntions */
+  /* Done automatically inside underlying functions */
 
   /* TS T4T v1.0 7.2.3.4/8 verify length of the NDEF message */
   ret = ndefT4TPollerCheckAvailableSpace(bufLen);

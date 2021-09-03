@@ -154,7 +154,7 @@ typedef struct {
 
 /*! RTD Type URI */
 typedef struct {
-  uint8_t         protocol;     /*!< Protocol Idendifier */
+  uint8_t         protocol;     /*!< Protocol Identifier */
   ndefConstBuffer bufUriString; /*!< URI string buffer   */
 } ndefTypeRtdUri;
 

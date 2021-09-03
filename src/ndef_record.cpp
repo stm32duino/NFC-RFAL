@@ -470,7 +470,7 @@ ReturnCode NdefClass::ndefRecordEncode(const ndefRecord *record, ndefBuffer *buf
     return ERR_NOMEM;
   }
 
-  /* Encode header at the begining of buffer provided */
+  /* Encode header at the beginning of buffer provided */
   bufHeader.buffer = bufRecord->buffer;
   bufHeader.length = bufRecord->length;
   err = ndefRecordEncodeHeader(record, &bufHeader);

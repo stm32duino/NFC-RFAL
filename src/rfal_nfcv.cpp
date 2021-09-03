@@ -268,7 +268,7 @@ ReturnCode RfalNfcClass::rfalNfcvPollerCollisionResolution(rfalComplianceMode co
     ST_MEMSET(nfcvDevList, 0x00, (sizeof(rfalNfcvListenDevice)*devLimit));
   }
 
-  NO_WARNING(colPending);   /* colPending is not exposed externally, in future it might become exposed/ouput parameter */
+  NO_WARNING(colPending);   /* colPending is not exposed externally, in future it might become exposed/output parameter */
 
   if (compMode == RFAL_COMPLIANCE_MODE_NFC) {
     /* Send INVENTORY_REQ with one slot   Activity 2.0  9.3.7.1  (Symbol 0)  */
@@ -739,7 +739,7 @@ ReturnCode RfalNfcClass::rfalNfcvPollerTransceiveReq(uint8_t cmd, uint8_t flags,
   req.REQ_FLAG  = (uint8_t)(flags & (~((uint32_t)RFAL_NFCV_REQ_FLAG_ADDRESS) & ~((uint32_t)RFAL_NFCV_REQ_FLAG_SELECT)));
   req.CMD       = cmd;
 
-  /* Prepend parameter on ceratin proprietary requests: IC Manuf, Parameters */
+  /* Prepend parameter on certain proprietary requests: IC Manuf, Parameters */
   if (param != RFAL_NFCV_PARAM_SKIP) {
     req.payload.data[msgIt++] = param;
   }

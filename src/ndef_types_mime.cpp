@@ -568,7 +568,7 @@ ReturnCode NdefClass::ndefVCardParseLine(const ndefConstBuffer *bufLine, ndefVCa
     return err;
   }
 
-  /* Keyword is located at the begining of the line up to the delimiter colon */
+  /* Keyword is located at the beginning of the line up to the delimiter colon */
   bufKeyword.buffer = bufLine->buffer;
   bufKeyword.length = colonOffset;
 

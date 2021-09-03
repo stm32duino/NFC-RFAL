@@ -103,7 +103,7 @@
 #define NFCIP_MIN_TXERROR_LEN           4U               /*!< Minimum frame length with error to be ignored  Digital 1.0 14.12.5.4 */
 
 #define NFCIP_REQ                       (uint8_t)0xD4U   /*!<NFCIP REQuest code                                     */
-#define NFCIP_RES                       (uint8_t)0xD5U   /*!<NFCIP RESponce code                                    */
+#define NFCIP_RES                       (uint8_t)0xD5U   /*!<NFCIP RESponse code                                    */
 
 #define NFCIP_BS_MASK                   0x0FU            /*!< Bit mask for BS value on a ATR REQ/RES                */
 #define NFCIP_BR_MASK                   NFCIP_BS_MASK    /*!< Bit mask for BR value on a ATR REQ/RES                */
@@ -137,7 +137,7 @@
  ******************************************************************************
  */
 
-#define nfcipIsTransmissionError(e)    ( ((e) == ERR_CRC) || ((e) == ERR_FRAMING) || ((e) == ERR_PAR) ) /*!< Checks if is a Trasmission error */
+#define nfcipIsTransmissionError(e)    ( ((e) == ERR_CRC) || ((e) == ERR_FRAMING) || ((e) == ERR_PAR) ) /*!< Checks if is a Transmission error */
 
 
 #define nfcipConv1FcToMs( v )          (rfalConv1fcToMs((v)) + 1U)                                     /*!< Converts value v 1fc into milliseconds (fc=13.56)     */
@@ -161,7 +161,7 @@
 
 
 #define nfcip_PFBIPDU( pni )           ( (uint8_t)( 0x00U | NFCIP_PFB_IPDU | ((pni) & NFCIP_PFB_PNI_MASK) ))/*!< Returns a PFB I-PDU with the given packet number (pni)                   */
-#define nfcip_PFBIPDU_MI( pni )        ( (uint8_t)(isoDep_PCBIBlock(pni) | NFCIP_PFB_MI_BIT))               /*!< Returns a PFB I-PDU with the given packet number (pni) indicating chaing */
+#define nfcip_PFBIPDU_MI( pni )        ( (uint8_t)(isoDep_PCBIBlock(pni) | NFCIP_PFB_MI_BIT))               /*!< Returns a PFB I-PDU with the given packet number (pni) indicating chaining */
 
 #define nfcip_PFBRPDU( pni )           ( (uint8_t)( 0x00U | NFCIP_PFB_RPDU | ((pni) & NFCIP_PFB_PNI_MASK) ))/*!< Returns a PFB R-PDU with the given packet number (pni)                   */
 #define nfcip_PFBRPDU_NACK( pni )      ( (uint8_t)(nfcip_PFBRPDU(pni) | NFCIP_PFB_NACK))                    /*!< Returns a PFB R-PDU with the given packet number (pni) indicating NACK   */
@@ -373,7 +373,7 @@ ReturnCode RfalNfcClass::nfcipInitiatorHandleDEP(ReturnCode rxRes, uint16_t rxLe
       /*******************************************************************************/
       /* Upon Timeout error, if Deactivation is pending, no more error recovery
        * will be done #54.
-       * This is used to address the issue some devices that havea big TO.
+       * This is used to address the issue some devices that have a big TO.
        * Normally LLCP layer has timeout already, and NFCIP layer is still
        * running error handling, retrying ATN/NACKs                                  */
       /*******************************************************************************/
@@ -1281,7 +1281,7 @@ ReturnCode RfalNfcClass::nfcipRun(uint16_t *outActRxLen, bool *outIsChaining)
       /* If we cannot send a RTOX raise a Timeout error so that we do not
        * hold the field On forever in AP2P                                  */
       if (nfcipIsRTOXReqDisabled(gNfcip.cfg.oper)) {
-        /* We should reEnable Rx, and measure time between our field Off to
+        /* We should re-Enable Rx, and measure time between our field Off to
          * either report link loss or recover               #287          */
         nfcipLogI(" NFCIP(T) RTOX not sent due to config, NOT reenabling Rx \r\n");
         return ERR_TIMEOUT;
@@ -1412,7 +1412,7 @@ void RfalNfcClass::rfalNfcDepInitialize(void)
  *  This must be called before  nfcipRun() in case of Target to pass
  *  rxBuffer
  *
- *  Everytime some data needs to be transmitted call this to set it and
+ *  Every time some data needs to be transmitted call this to set it and
  *  call nfcipRun() until done or error
  *
  * \param[in]  DEPParams  : the parameters to be used during Data Exchange
@@ -1459,7 +1459,7 @@ void RfalNfcClass::nfcipSetDEPParams(rfalNfcDepDEPParams *DEPParams)
     return;
   }
 
-  /* New data TxRx request clear previous error counters for consecutive TxRx without reseting communication/protocol layer*/
+  /* New data TxRx request clear previous error counters for consecutive TxRx without resetting communication/protocol layer*/
   nfcipClearCounters();
 
   gNfcip.state = NFCIP_ST_INIT_DEP_TX;
@@ -1901,7 +1901,9 @@ ReturnCode RfalNfcClass::rfalNfcDepInitiatorHandleActivation(rfalNfcDepAtrParam 
   /*******************************************************************************/
   if (nfcDepDev->info.DSI != desiredBR) {   /* if desired BR is different    */
     /* || (target->brt != RFAL_NFCDEP_Bx_NO_HIGH_BR) || (target->bst != RFAL_NFCDEP_Bx_NO_HIGH_BR)  */  /* if target supports higher BR, must send PSL? */
-    if (nfcipDxIsSupported((uint8_t)desiredBR, nfcDepDev->activation.Target.ATR_RES.BRt, nfcDepDev->activation.Target.ATR_RES.BSt))  /* if desired BR is supported     */ {     /* MISRA 13.5 */
+    if (nfcipDxIsSupported((uint8_t)desiredBR, nfcDepDev->activation.Target.ATR_RES.BRt, nfcDepDev->activation.Target.ATR_RES.BSt)) {
+      /* if desired BR is supported     */
+      /* MISRA 13.5 */
       sendPSL = true;
       PSL_BRS = rfalNfcDepDx2BRS(desiredBR);
 

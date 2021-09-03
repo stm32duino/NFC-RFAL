@@ -49,8 +49,8 @@
  ******************************************************************************
  */
 
-#define NDEF_T5T_CC_MAGIC_1_BYTE_ADDR_MODE                   0xE1U                       /*!< T5T CC Magic Number (1-byte Addres Mode)           */
-#define NDEF_T5T_CC_MAGIC_2_BYTE_ADDR_MODE                   0xE2U                       /*!< T5T CC Magic Number (2-byte Addres Mode)           */
+#define NDEF_T5T_CC_MAGIC_1_BYTE_ADDR_MODE                   0xE1U                       /*!< T5T CC Magic Number (1-byte Address Mode)           */
+#define NDEF_T5T_CC_MAGIC_2_BYTE_ADDR_MODE                   0xE2U                       /*!< T5T CC Magic Number (2-byte Address Mode)           */
 #define NDEF_T5T_CC_LEN_4_BYTES                                 4U                       /*!< T5T CC Length (4 bytes)                            */
 #define NDEF_T5T_CC_LEN_8_BYTES                                 8U                       /*!< T5T CC Length (8 bytes)                            */
 #define NDEF_T5T_FORMAT_OPTION_NFC_FORUM                        1U                       /*!< Format tag according to NFC Forum MLEN computation */
