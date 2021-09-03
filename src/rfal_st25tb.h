@@ -9,8 +9,8 @@
   *
   *        www.st.com/mix_myliberty
   *
-  * Unless required by applicable law or agreed to in writing, software 
-  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
   * AND SPECIFICALLY DISCLAIMING THE IMPLIED WARRANTIES OF MERCHANTABILITY,
   * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
@@ -23,7 +23,7 @@
  *
  *  \author SRA
  *
- *  \brief Implementation of ST25TB interface 
+ *  \brief Implementation of ST25TB interface
  *
  *
  * \addtogroup RFAL
@@ -36,7 +36,7 @@
  * \addtogroup ST25TB
  * \brief RFAL ST25TB Module
  * @{
- * 
+ *
  */
 
 
@@ -81,12 +81,11 @@ typedef uint8_t rfalSt25tbBlock[RFAL_ST25TB_BLOCK_LEN];    /*!< ST25TB Block typ
 
 
 /*! ST25TB listener device (PICC) struct  */
-typedef struct
-{
-    uint8_t           chipID;                              /*!< Device's session Chip ID */
-    rfalSt25tbUID     UID;                                 /*!< Device's UID             */
-    bool              isDeselected;                        /*!< Device deselect flag     */
-}rfalSt25tbListenDevice;
+typedef struct {
+  uint8_t           chipID;                              /*!< Device's session Chip ID */
+  rfalSt25tbUID     UID;                                 /*!< Device's UID             */
+  bool              isDeselected;                        /*!< Device deselect flag     */
+} rfalSt25tbListenDevice;
 
 
 /*

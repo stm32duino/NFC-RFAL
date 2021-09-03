@@ -9,8 +9,8 @@
   *
   *        www.st.com/mix_myliberty
   *
-  * Unless required by applicable law or agreed to in writing, software 
-  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
   * AND SPECIFICALLY DISCLAIMING THE IMPLIED WARRANTIES OF MERCHANTABILITY,
   * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
@@ -24,7 +24,7 @@
  *  \author SRA
  *
  *  \brief Implementation of ISO-DEP protocol
- *  
+ *
  *  This implementation was based on the following specs:
  *    - ISO/IEC 14443-4  2nd Edition 2008-07-15
  *    - NFC Forum Digital Protocol  1.1 2014-01-14
@@ -40,7 +40,7 @@
  * \addtogroup ISO-DEP
  * \brief RFAL ISO-DEP Module
  * @{
- * 
+ *
  */
 
 #ifndef RFAL_ISODEP_H_
@@ -143,45 +143,43 @@
 #define RFAL_ISODEP_MAX_R_RETRYS                (3U)     /*!< Number of retries for a R-Block  Digital 1.1 A8 - nRETRY ACK/NAK:  [2,5]           */
 #define RFAL_ISODEP_MAX_S_RETRYS                (3U)     /*!< Number of retries for a S-Block  Digital 1.1 A8 - nRETRY DESELECT: [0,5] WTX[2,5]  */
 #define RFAL_ISODEP_RATS_RETRIES                (1U)     /*!< RATS retries upon fail           Digital 1.1  A.6 - [0,1]                          */
- 
+
 
 #define RFAL_FEATURE_ISO_DEP_IBLOCK_MAX_LEN    256U       /*!< ISO-DEP I-Block max length. Please use values as defined by rfalIsoDepFSx */
 #define RFAL_FEATURE_ISO_DEP_APDU_MAX_LEN      1024U      /*!< ISO-DEP APDU max length. Please use multiples of I-Block max length       */
 
 /*! Frame Size for Proximity Card Integer definitions                                                               */
-typedef enum
-{
-      RFAL_ISODEP_FSXI_16   =  0,  /*!< Frame Size for Proximity Card Integer with 16 bytes                         */
-      RFAL_ISODEP_FSXI_24   =  1,  /*!< Frame Size for Proximity Card Integer with 24 bytes                         */
-      RFAL_ISODEP_FSXI_32   =  2,  /*!< Frame Size for Proximity Card Integer with 32 bytes                         */
-      RFAL_ISODEP_FSXI_40   =  3,  /*!< Frame Size for Proximity Card Integer with 40 bytes                         */
-      RFAL_ISODEP_FSXI_48   =  4,  /*!< Frame Size for Proximity Card Integer with 48 bytes                         */
-      RFAL_ISODEP_FSXI_64   =  5,  /*!< Frame Size for Proximity Card Integer with 64 bytes                         */
-      RFAL_ISODEP_FSXI_96   =  6,  /*!< Frame Size for Proximity Card Integer with 96 bytes                         */
-      RFAL_ISODEP_FSXI_128  =  7,  /*!< Frame Size for Proximity Card Integer with 128 bytes                        */
-      RFAL_ISODEP_FSXI_256  =  8,  /*!< Frame Size for Proximity Card Integer with 256 bytes                        */
-      RFAL_ISODEP_FSXI_512  =  9,  /*!< Frame Size for Proximity Card Integer with 512 bytes   ISO14443-3 Amd2 2012 */
-      RFAL_ISODEP_FSXI_1024 = 10,  /*!< Frame Size for Proximity Card Integer with 1024 bytes  ISO14443-3 Amd2 2012 */
-      RFAL_ISODEP_FSXI_2048 = 11,  /*!< Frame Size for Proximity Card Integer with 2048 bytes  ISO14443-3 Amd2 2012 */
-      RFAL_ISODEP_FSXI_4096 = 12   /*!< Frame Size for Proximity Card Integer with 4096 bytes  ISO14443-3 Amd2 2012 */
+typedef enum {
+  RFAL_ISODEP_FSXI_16   =  0,  /*!< Frame Size for Proximity Card Integer with 16 bytes                         */
+  RFAL_ISODEP_FSXI_24   =  1,  /*!< Frame Size for Proximity Card Integer with 24 bytes                         */
+  RFAL_ISODEP_FSXI_32   =  2,  /*!< Frame Size for Proximity Card Integer with 32 bytes                         */
+  RFAL_ISODEP_FSXI_40   =  3,  /*!< Frame Size for Proximity Card Integer with 40 bytes                         */
+  RFAL_ISODEP_FSXI_48   =  4,  /*!< Frame Size for Proximity Card Integer with 48 bytes                         */
+  RFAL_ISODEP_FSXI_64   =  5,  /*!< Frame Size for Proximity Card Integer with 64 bytes                         */
+  RFAL_ISODEP_FSXI_96   =  6,  /*!< Frame Size for Proximity Card Integer with 96 bytes                         */
+  RFAL_ISODEP_FSXI_128  =  7,  /*!< Frame Size for Proximity Card Integer with 128 bytes                        */
+  RFAL_ISODEP_FSXI_256  =  8,  /*!< Frame Size for Proximity Card Integer with 256 bytes                        */
+  RFAL_ISODEP_FSXI_512  =  9,  /*!< Frame Size for Proximity Card Integer with 512 bytes   ISO14443-3 Amd2 2012 */
+  RFAL_ISODEP_FSXI_1024 = 10,  /*!< Frame Size for Proximity Card Integer with 1024 bytes  ISO14443-3 Amd2 2012 */
+  RFAL_ISODEP_FSXI_2048 = 11,  /*!< Frame Size for Proximity Card Integer with 2048 bytes  ISO14443-3 Amd2 2012 */
+  RFAL_ISODEP_FSXI_4096 = 12   /*!< Frame Size for Proximity Card Integer with 4096 bytes  ISO14443-3 Amd2 2012 */
 } rfalIsoDepFSxI;
 
 /*! Frame Size for Proximity Card  definitions                                                             */
-typedef enum
-{
-    RFAL_ISODEP_FSX_16   = 16,    /*!< Frame Size for Proximity Card with 16 bytes                         */
-    RFAL_ISODEP_FSX_24   = 24,    /*!< Frame Size for Proximity Card with 24 bytes                         */
-    RFAL_ISODEP_FSX_32   = 32,    /*!< Frame Size for Proximity Card with 32 bytes                         */
-    RFAL_ISODEP_FSX_40   = 40,    /*!< Frame Size for Proximity Card with 40 bytes                         */
-    RFAL_ISODEP_FSX_48   = 48,    /*!< Frame Size for Proximity Card with 48 bytes                         */
-    RFAL_ISODEP_FSX_64   = 64,    /*!< Frame Size for Proximity Card with 64 bytes                         */
-    RFAL_ISODEP_FSX_96   = 96,    /*!< Frame Size for Proximity Card with 96 bytes                         */
-    RFAL_ISODEP_FSX_128  = 128,   /*!< Frame Size for Proximity Card with 128 bytes                        */
-    RFAL_ISODEP_FSX_256  = 256,   /*!< Frame Size for Proximity Card with 256 bytes                        */
-    RFAL_ISODEP_FSX_512  = 512,   /*!< Frame Size for Proximity Card with 512 bytes   ISO14443-3 Amd2 2012 */
-    RFAL_ISODEP_FSX_1024 = 1024,  /*!< Frame Size for Proximity Card with 1024 bytes  ISO14443-3 Amd2 2012 */
-    RFAL_ISODEP_FSX_2048 = 2048,  /*!< Frame Size for Proximity Card with 2048 bytes  ISO14443-3 Amd2 2012 */
-    RFAL_ISODEP_FSX_4096 = 4096,  /*!< Frame Size for Proximity Card with 4096 bytes  ISO14443-3 Amd2 2012 */
+typedef enum {
+  RFAL_ISODEP_FSX_16   = 16,    /*!< Frame Size for Proximity Card with 16 bytes                         */
+  RFAL_ISODEP_FSX_24   = 24,    /*!< Frame Size for Proximity Card with 24 bytes                         */
+  RFAL_ISODEP_FSX_32   = 32,    /*!< Frame Size for Proximity Card with 32 bytes                         */
+  RFAL_ISODEP_FSX_40   = 40,    /*!< Frame Size for Proximity Card with 40 bytes                         */
+  RFAL_ISODEP_FSX_48   = 48,    /*!< Frame Size for Proximity Card with 48 bytes                         */
+  RFAL_ISODEP_FSX_64   = 64,    /*!< Frame Size for Proximity Card with 64 bytes                         */
+  RFAL_ISODEP_FSX_96   = 96,    /*!< Frame Size for Proximity Card with 96 bytes                         */
+  RFAL_ISODEP_FSX_128  = 128,   /*!< Frame Size for Proximity Card with 128 bytes                        */
+  RFAL_ISODEP_FSX_256  = 256,   /*!< Frame Size for Proximity Card with 256 bytes                        */
+  RFAL_ISODEP_FSX_512  = 512,   /*!< Frame Size for Proximity Card with 512 bytes   ISO14443-3 Amd2 2012 */
+  RFAL_ISODEP_FSX_1024 = 1024,  /*!< Frame Size for Proximity Card with 1024 bytes  ISO14443-3 Amd2 2012 */
+  RFAL_ISODEP_FSX_2048 = 2048,  /*!< Frame Size for Proximity Card with 2048 bytes  ISO14443-3 Amd2 2012 */
+  RFAL_ISODEP_FSX_4096 = 4096,  /*!< Frame Size for Proximity Card with 4096 bytes  ISO14443-3 Amd2 2012 */
 } rfalIsoDepFSx;
 
 /*
@@ -197,16 +195,14 @@ typedef enum
  */
 
 /*! RATS format  Digital 1.1 13.6.1                                                               */
-typedef struct
-{
-    uint8_t      CMD;                               /*!< RATS command byte: 0xE0                  */
-    uint8_t      PARAM;                             /*!< Param indicating FSDI and DID            */
+typedef struct {
+  uint8_t      CMD;                               /*!< RATS command byte: 0xE0                  */
+  uint8_t      PARAM;                             /*!< Param indicating FSDI and DID            */
 } rfalIsoDepRats;
 
 
 /*! ATS response format  Digital 1.1 13.6.2                                                       */
-typedef struct
-{
+typedef struct {
   uint8_t        TL;                                /*!< Length Byte, including TL byte itself    */
   uint8_t        T0;                                /*!< Format Byte T0 indicating if TA, TB, TC  */
   uint8_t        TA;                                /*!< Interface Byte TA(1)                     */
@@ -217,233 +213,217 @@ typedef struct
 
 
 /*! PPS Request format (Protocol and Parameter Selection) ISO14443-4  5.3                         */
-typedef struct
-{
-    uint8_t      PPSS;                              /*!< Start Byte: [ 1101b | CID[4b] ]          */
-    uint8_t      PPS0;                              /*!< Parameter 0:[ 000b | PPS1[1n] | 0001b ]  */
-    uint8_t      PPS1;                              /*!< Parameter 1:[ 0000b | DSI[2b] | DRI[2b] ]*/    
+typedef struct {
+  uint8_t      PPSS;                              /*!< Start Byte: [ 1101b | CID[4b] ]          */
+  uint8_t      PPS0;                              /*!< Parameter 0:[ 000b | PPS1[1n] | 0001b ]  */
+  uint8_t      PPS1;                              /*!< Parameter 1:[ 0000b | DSI[2b] | DRI[2b] ]*/
 } rfalIsoDepPpsReq;
 
 
 /*! PPS Response format (Protocol and Parameter Selection) ISO14443-4  5.4                        */
-typedef struct
-{
-    uint8_t      PPSS;                              /*!< Start Byte:  [ 1101b | CID[4b] ]         */
+typedef struct {
+  uint8_t      PPSS;                              /*!< Start Byte:  [ 1101b | CID[4b] ]         */
 } rfalIsoDepPpsRes;
 
 
 /*! ATTRIB Command Format  Digital 1.1  15.6.1 */
-typedef struct
-{
-    uint8_t         cmd;                                   /*!< ATTRIB_REQ command byte           */
-    uint8_t         nfcid0[RFAL_NFCB_NFCID0_LEN];          /*!< NFCID0 of the card to be selected */
-    struct{
-            uint8_t PARAM1;                                /*!< PARAM1 of ATTRIB command          */
-            uint8_t PARAM2;                                /*!< PARAM2 of ATTRIB command          */
-            uint8_t PARAM3;                                /*!< PARAM3 of ATTRIB command          */
-            uint8_t PARAM4;                                /*!< PARAM4 of ATTRIB command          */
-    }Param;                                                /*!< Parameter of ATTRIB command       */
-    uint8_t         HLInfo[RFAL_ISODEP_ATTRIB_HLINFO_LEN]; /*!< Higher Layer Information          */
+typedef struct {
+  uint8_t         cmd;                                   /*!< ATTRIB_REQ command byte           */
+  uint8_t         nfcid0[RFAL_NFCB_NFCID0_LEN];          /*!< NFCID0 of the card to be selected */
+  struct {
+    uint8_t PARAM1;                                /*!< PARAM1 of ATTRIB command          */
+    uint8_t PARAM2;                                /*!< PARAM2 of ATTRIB command          */
+    uint8_t PARAM3;                                /*!< PARAM3 of ATTRIB command          */
+    uint8_t PARAM4;                                /*!< PARAM4 of ATTRIB command          */
+  } Param;                                               /*!< Parameter of ATTRIB command       */
+  uint8_t         HLInfo[RFAL_ISODEP_ATTRIB_HLINFO_LEN]; /*!< Higher Layer Information          */
 } rfalIsoDepAttribCmd;
 
 
 /*! ATTRIB Response Format  Digital 1.1  15.6.2 */
-typedef struct
-{
-    uint8_t         mbliDid;                               /*!< Contains MBLI and DID             */
-    uint8_t         HLInfo[RFAL_ISODEP_ATTRIB_HLINFO_LEN]; /*!< Higher Layer Information          */
+typedef struct {
+  uint8_t         mbliDid;                               /*!< Contains MBLI and DID             */
+  uint8_t         HLInfo[RFAL_ISODEP_ATTRIB_HLINFO_LEN]; /*!< Higher Layer Information          */
 } rfalIsoDepAttribRes;
 
 /*! S(Parameters) Command Format  ISO14443-4 (2016) Table 4 */
-typedef struct
-{
-    uint8_t         tag;                                      /*!< S(PARAMETERS) Tag field        */
-    uint8_t         length;                                   /*!< S(PARAMETERS) Length field     */
-    uint8_t         value[RFAL_ISODEP_SPARAM_VALUES_MAX_LEN]; /*!< S(PARAMETERS) Value field      */
+typedef struct {
+  uint8_t         tag;                                      /*!< S(PARAMETERS) Tag field        */
+  uint8_t         length;                                   /*!< S(PARAMETERS) Length field     */
+  uint8_t         value[RFAL_ISODEP_SPARAM_VALUES_MAX_LEN]; /*!< S(PARAMETERS) Value field      */
 } rfalIsoDepSParameter;
 
 
 /*! Activation info as Poller and Listener for NFC-A and NFC-B                                    */
 typedef union {/*  PRQA S 0750 # MISRA 19.2 - Both members of the union will not be used concurrently, device is only of type A or B at a time. Thus no problem can occur. */
 
-    /*! NFC-A information                                                                         */
-    union {/*  PRQA S 0750 # MISRA 19.2 - Both members of the union will not be used concurrently, device is only PCD or PICC at a time. Thus no problem can occur. */
-        struct {
-            rfalIsoDepAts        ATS;               /*!< ATS response            (Poller mode)    */
-            uint8_t              ATSLen;            /*!< ATS response length     (Poller mode)    */
-            }Listener;
-        struct {
-            rfalIsoDepRats      RATS;               /*!< RATS request          (Listener mode)    */
-        }Poller;
-    }A;
-    
-    /*! NFC-B information                                                                         */
-    union {/*  PRQA S 0750 # MISRA 19.2 - Both members of the union will not be used concurrently, device is only PCD or PICC at a time. Thus no problem can occur. */
-        struct{
-            rfalIsoDepAttribRes  ATTRIB_RES;        /*!< ATTRIB_RES              (Poller mode)    */
-            uint8_t              ATTRIB_RESLen;     /*!< ATTRIB_RES length       (Poller mode)    */
-        }Listener;
-        struct{
-            rfalIsoDepAttribCmd  ATTRIB;            /*!< ATTRIB request        (Listener mode)    */
-            uint8_t              ATTRIBLen;         /*!< ATTRIB request length (Listener mode)    */
-        }Poller;
-    }B;
-}rfalIsoDepActivation;
+  /*! NFC-A information                                                                         */
+  union {/*  PRQA S 0750 # MISRA 19.2 - Both members of the union will not be used concurrently, device is only PCD or PICC at a time. Thus no problem can occur. */
+    struct {
+      rfalIsoDepAts        ATS;               /*!< ATS response            (Poller mode)    */
+      uint8_t              ATSLen;            /*!< ATS response length     (Poller mode)    */
+    } Listener;
+    struct {
+      rfalIsoDepRats      RATS;               /*!< RATS request          (Listener mode)    */
+    } Poller;
+  } A;
+
+  /*! NFC-B information                                                                         */
+  union {/*  PRQA S 0750 # MISRA 19.2 - Both members of the union will not be used concurrently, device is only PCD or PICC at a time. Thus no problem can occur. */
+    struct {
+      rfalIsoDepAttribRes  ATTRIB_RES;        /*!< ATTRIB_RES              (Poller mode)    */
+      uint8_t              ATTRIB_RESLen;     /*!< ATTRIB_RES length       (Poller mode)    */
+    } Listener;
+    struct {
+      rfalIsoDepAttribCmd  ATTRIB;            /*!< ATTRIB request        (Listener mode)    */
+      uint8_t              ATTRIBLen;         /*!< ATTRIB request length (Listener mode)    */
+    } Poller;
+  } B;
+} rfalIsoDepActivation;
 
 
 /*! ISO-DEP device Info */
 typedef struct {
-    uint8_t            FWI;             /*!< Frame Waiting Integer                                */
-    uint32_t           FWT;             /*!< Frame Waiting Time (1/fc)                            */
-    uint32_t           dFWT;            /*!< Delta Frame Waiting Time (1/fc)                      */
-    uint32_t           SFGI;            /*!< Start-up Frame Guard time Integer                    */
-    uint32_t           SFGT;            /*!< Start-up Frame Guard Time (ms)                       */
-    uint8_t            FSxI;            /*!< Frame Size Device/Card Integer (FSDI or FSCI)        */
-    uint16_t           FSx;             /*!< Frame Size Device/Card (FSD or FSC)                  */
-    uint32_t           MBL;             /*!< Maximum Buffer Length (optional for NFC-B)           */
-    rfalBitRate        DSI;             /*!< Bit Rate coding from Listener (PICC) to Poller (PCD) */
-    rfalBitRate        DRI;             /*!< Bit Rate coding from Poller (PCD) to Listener (PICC) */
-    uint8_t            DID;             /*!< Device ID                                            */
-    uint8_t            NAD;             /*!< Node ADdress                                         */
-    bool               supDID;          /*!< DID supported flag                                   */
-    bool               supNAD;          /*!< NAD supported flag                                   */
-    bool               supAdFt;         /*!< Advanced Features supported flag                     */
+  uint8_t            FWI;             /*!< Frame Waiting Integer                                */
+  uint32_t           FWT;             /*!< Frame Waiting Time (1/fc)                            */
+  uint32_t           dFWT;            /*!< Delta Frame Waiting Time (1/fc)                      */
+  uint32_t           SFGI;            /*!< Start-up Frame Guard time Integer                    */
+  uint32_t           SFGT;            /*!< Start-up Frame Guard Time (ms)                       */
+  uint8_t            FSxI;            /*!< Frame Size Device/Card Integer (FSDI or FSCI)        */
+  uint16_t           FSx;             /*!< Frame Size Device/Card (FSD or FSC)                  */
+  uint32_t           MBL;             /*!< Maximum Buffer Length (optional for NFC-B)           */
+  rfalBitRate        DSI;             /*!< Bit Rate coding from Listener (PICC) to Poller (PCD) */
+  rfalBitRate        DRI;             /*!< Bit Rate coding from Poller (PCD) to Listener (PICC) */
+  uint8_t            DID;             /*!< Device ID                                            */
+  uint8_t            NAD;             /*!< Node ADdress                                         */
+  bool               supDID;          /*!< DID supported flag                                   */
+  bool               supNAD;          /*!< NAD supported flag                                   */
+  bool               supAdFt;         /*!< Advanced Features supported flag                     */
 } rfalIsoDepInfo;
 
 
 /*! ISO-DEP Device structure */
 typedef struct {
-    rfalIsoDepActivation    activation; /*!< Activation Info                                      */
-    rfalIsoDepInfo          info;       /*!< ISO-DEP (ISO14443-4) device Info                     */
+  rfalIsoDepActivation    activation; /*!< Activation Info                                      */
+  rfalIsoDepInfo          info;       /*!< ISO-DEP (ISO14443-4) device Info                     */
 } rfalIsoDepDevice;
 
 
 /*! ATTRIB Response parameters */
-typedef struct
-{
-    uint8_t  mbli;                                     /*!< MBLI                                     */
-    uint8_t  HLInfo[RFAL_ISODEP_ATTRIB_HLINFO_LEN];    /*!< Hi Layer Information                     */
-    uint8_t  HLInfoLen;                                /*!< Hi Layer Information Length              */
+typedef struct {
+  uint8_t  mbli;                                     /*!< MBLI                                     */
+  uint8_t  HLInfo[RFAL_ISODEP_ATTRIB_HLINFO_LEN];    /*!< Hi Layer Information                     */
+  uint8_t  HLInfoLen;                                /*!< Hi Layer Information Length              */
 } rfalIsoDepAttribResParam;
 
 
 /*! ATS Response parameter */
-typedef struct
-{
-    uint8_t     fsci;                                  /*!< Frame Size of Proximity Card Integer     */
-    uint8_t     fwi;                                   /*!< Frame Waiting Time Integer               */
-    uint8_t     sfgi;                                  /*!< Start-Up Frame Guard Time Integer        */
-    bool        didSupport;                            /*!< DID Supported                            */
-    uint8_t     ta;                                    /*!< Max supported bitrate both direction     */
-    uint8_t     *hb;                                   /*!< Historical Bytes data                    */
-    uint8_t     hbLen;                                 /*!< Historical Bytes Length                  */
+typedef struct {
+  uint8_t     fsci;                                  /*!< Frame Size of Proximity Card Integer     */
+  uint8_t     fwi;                                   /*!< Frame Waiting Time Integer               */
+  uint8_t     sfgi;                                  /*!< Start-Up Frame Guard Time Integer        */
+  bool        didSupport;                            /*!< DID Supported                            */
+  uint8_t     ta;                                    /*!< Max supported bitrate both direction     */
+  uint8_t     *hb;                                   /*!< Historical Bytes data                    */
+  uint8_t     hbLen;                                 /*!< Historical Bytes Length                  */
 } rfalIsoDepAtsParam;
 
 
 /*! Structure of I-Block Buffer format from caller */
-typedef struct
-{
-    uint8_t  prologue[RFAL_ISODEP_PROLOGUE_SIZE];      /*!< Prologue/SoD buffer                      */
-    uint8_t  inf[RFAL_FEATURE_ISO_DEP_IBLOCK_MAX_LEN]; /*!< INF/Payload buffer                       */
+typedef struct {
+  uint8_t  prologue[RFAL_ISODEP_PROLOGUE_SIZE];      /*!< Prologue/SoD buffer                      */
+  uint8_t  inf[RFAL_FEATURE_ISO_DEP_IBLOCK_MAX_LEN]; /*!< INF/Payload buffer                       */
 } rfalIsoDepBufFormat;
 
 
 /*! Structure of APDU Buffer format from caller */
-typedef struct
-{
-    uint8_t  prologue[RFAL_ISODEP_PROLOGUE_SIZE];      /*!< Prologue/SoD buffer                      */
-    uint8_t  apdu[RFAL_FEATURE_ISO_DEP_APDU_MAX_LEN];  /*!< APDU/Payload buffer                      */
+typedef struct {
+  uint8_t  prologue[RFAL_ISODEP_PROLOGUE_SIZE];      /*!< Prologue/SoD buffer                      */
+  uint8_t  apdu[RFAL_FEATURE_ISO_DEP_APDU_MAX_LEN];  /*!< APDU/Payload buffer                      */
 } rfalIsoDepApduBufFormat;
 
 
 /*! Listen Activation Parameters Structure */
-typedef struct
-{
-    rfalIsoDepBufFormat  *rxBuf;                       /*!< Receive Buffer struct reference          */
-    uint16_t             *rxLen;                       /*!< Received INF data length in Bytes        */
-    bool                 *isRxChaining;                /*!< Received data is not complete            */
-    rfalIsoDepDevice     *isoDepDev;                   /*!< ISO-DEP device info                      */
+typedef struct {
+  rfalIsoDepBufFormat  *rxBuf;                       /*!< Receive Buffer struct reference          */
+  uint16_t             *rxLen;                       /*!< Received INF data length in Bytes        */
+  bool                 *isRxChaining;                /*!< Received data is not complete            */
+  rfalIsoDepDevice     *isoDepDev;                   /*!< ISO-DEP device info                      */
 } rfalIsoDepListenActvParam;
 
 
 /*! Structure of parameters used on ISO DEP Transceive */
-typedef struct
-{
-    rfalIsoDepBufFormat  *txBuf;                       /*!< Transmit Buffer struct reference         */
-    uint16_t             txBufLen;                     /*!< Transmit Buffer INF field length in Bytes*/
-    bool                 isTxChaining;                 /*!< Transmit data is not complete            */
-    rfalIsoDepBufFormat  *rxBuf;                       /*!< Receive Buffer struct reference in Bytes */
-    uint16_t             *rxLen;                       /*!< Received INF data length in Bytes        */
-    bool                 *isRxChaining;                /*!< Received data is not complete            */
-    uint32_t             FWT;                          /*!< FWT to be used (ignored in Listen Mode)  */
-    uint32_t             dFWT;                         /*!< Delta FWT to be used                     */
-    uint16_t             ourFSx;                       /*!< Our device Frame Size (FSD or FSC)       */
-    uint16_t             FSx;                          /*!< Other device Frame Size (FSD or FSC)     */
-    uint8_t              DID;                          /*!< Device ID (RFAL_ISODEP_NO_DID if no DID) */
+typedef struct {
+  rfalIsoDepBufFormat  *txBuf;                       /*!< Transmit Buffer struct reference         */
+  uint16_t             txBufLen;                     /*!< Transmit Buffer INF field length in Bytes*/
+  bool                 isTxChaining;                 /*!< Transmit data is not complete            */
+  rfalIsoDepBufFormat  *rxBuf;                       /*!< Receive Buffer struct reference in Bytes */
+  uint16_t             *rxLen;                       /*!< Received INF data length in Bytes        */
+  bool                 *isRxChaining;                /*!< Received data is not complete            */
+  uint32_t             FWT;                          /*!< FWT to be used (ignored in Listen Mode)  */
+  uint32_t             dFWT;                         /*!< Delta FWT to be used                     */
+  uint16_t             ourFSx;                       /*!< Our device Frame Size (FSD or FSC)       */
+  uint16_t             FSx;                          /*!< Other device Frame Size (FSD or FSC)     */
+  uint8_t              DID;                          /*!< Device ID (RFAL_ISODEP_NO_DID if no DID) */
 } rfalIsoDepTxRxParam;
 
 
 /*! Structure of parameters used on ISO DEP APDU Transceive */
-typedef struct
-{
-    rfalIsoDepApduBufFormat  *txBuf;                   /*!< Transmit Buffer struct reference         */
-    uint16_t                 txBufLen;                 /*!< Transmit Buffer INF field length in Bytes*/
-    rfalIsoDepApduBufFormat  *rxBuf;                   /*!< Receive Buffer struct reference in Bytes */
-    uint16_t                 *rxLen;                   /*!< Received INF data length in Bytes        */
-    rfalIsoDepBufFormat      *tmpBuf;                  /*!< Temp buffer for Rx I-Blocks (internal)   */
-    uint32_t                 FWT;                      /*!< FWT to be used (ignored in Listen Mode)  */
-    uint32_t                 dFWT;                     /*!< Delta FWT to be used                     */
-    uint16_t                 FSx;                      /*!< Other device Frame Size (FSD or FSC)     */
-    uint16_t                 ourFSx;                   /*!< Our device Frame Size (FSD or FSC)       */
-    uint8_t                  DID;                      /*!< Device ID (RFAL_ISODEP_NO_DID if no DID) */
+typedef struct {
+  rfalIsoDepApduBufFormat  *txBuf;                   /*!< Transmit Buffer struct reference         */
+  uint16_t                 txBufLen;                 /*!< Transmit Buffer INF field length in Bytes*/
+  rfalIsoDepApduBufFormat  *rxBuf;                   /*!< Receive Buffer struct reference in Bytes */
+  uint16_t                 *rxLen;                   /*!< Received INF data length in Bytes        */
+  rfalIsoDepBufFormat      *tmpBuf;                  /*!< Temp buffer for Rx I-Blocks (internal)   */
+  uint32_t                 FWT;                      /*!< FWT to be used (ignored in Listen Mode)  */
+  uint32_t                 dFWT;                     /*!< Delta FWT to be used                     */
+  uint16_t                 FSx;                      /*!< Other device Frame Size (FSD or FSC)     */
+  uint16_t                 ourFSx;                   /*!< Our device Frame Size (FSD or FSC)       */
+  uint8_t                  DID;                      /*!< Device ID (RFAL_ISODEP_NO_DID if no DID) */
 } rfalIsoDepApduTxRxParam;
 
- /*! Internal structure to be used in handling of S(PARAMETRS) only */
-typedef struct
-{    
-    uint8_t               pcb;       /*!< PCB byte                      */
-    rfalIsoDepSParameter  sParam;    /*!< S(PARAMETERS)                 */
+/*! Internal structure to be used in handling of S(PARAMETRS) only */
+typedef struct {
+  uint8_t               pcb;       /*!< PCB byte                      */
+  rfalIsoDepSParameter  sParam;    /*!< S(PARAMETERS)                 */
 } rfalIsoDepControlMsgSParam;
 
 /*! Enumeration of the possible control message types */
-typedef enum
-{    
-    ISODEP_R_ACK,                    /*!< R-ACK  Acknowledge            */
-    ISODEP_R_NAK,                    /*!< R-NACK Negative acknowledge   */
-    ISODEP_S_WTX,                    /*!< S-WTX  Waiting Time Extension */
-    ISODEP_S_DSL                     /*!< S-DSL  Deselect               */
+typedef enum {
+  ISODEP_R_ACK,                    /*!< R-ACK  Acknowledge            */
+  ISODEP_R_NAK,                    /*!< R-NACK Negative acknowledge   */
+  ISODEP_S_WTX,                    /*!< S-WTX  Waiting Time Extension */
+  ISODEP_S_DSL                     /*!< S-DSL  Deselect               */
 } rfalIsoDepControlMsg;
 
 /*! Enumeration of the IsoDep roles */
-typedef enum
-{
-    ISODEP_ROLE_PCD,                /*!< Perform as Reader/PCD          */
-    ISODEP_ROLE_PICC                /*!< Perform as Card/PICC           */
+typedef enum {
+  ISODEP_ROLE_PCD,                /*!< Perform as Reader/PCD          */
+  ISODEP_ROLE_PICC                /*!< Perform as Card/PICC           */
 } rfalIsoDepRole;
 
 /*! ISO-DEP layer states */
-typedef enum
-{
-    ISODEP_ST_IDLE,                 /*!< Idle State                     */
-    ISODEP_ST_PCD_TX,               /*!< PCD Transmission State         */
-    ISODEP_ST_PCD_RX,               /*!< PCD Reception State            */
-    ISODEP_ST_PCD_WAIT_DSL,         /*!< PCD Wait for DSL response      */
-        
-    ISODEP_ST_PICC_ACT_ATS,         /*!< PICC has replied to RATS (ATS) */
-    ISODEP_ST_PICC_ACT_ATTRIB,      /*!< PICC has replied to ATTRIB     */
-    ISODEP_ST_PICC_RX,              /*!< PICC REception State           */
-    ISODEP_ST_PICC_SWTX,            /*!< PICC Waiting Time eXtension    */
-    ISODEP_ST_PICC_TX,              /*!< PICC Transmission State        */
+typedef enum {
+  ISODEP_ST_IDLE,                 /*!< Idle State                     */
+  ISODEP_ST_PCD_TX,               /*!< PCD Transmission State         */
+  ISODEP_ST_PCD_RX,               /*!< PCD Reception State            */
+  ISODEP_ST_PCD_WAIT_DSL,         /*!< PCD Wait for DSL response      */
+
+  ISODEP_ST_PICC_ACT_ATS,         /*!< PICC has replied to RATS (ATS) */
+  ISODEP_ST_PICC_ACT_ATTRIB,      /*!< PICC has replied to ATTRIB     */
+  ISODEP_ST_PICC_RX,              /*!< PICC REception State           */
+  ISODEP_ST_PICC_SWTX,            /*!< PICC Waiting Time eXtension    */
+  ISODEP_ST_PICC_TX,              /*!< PICC Transmission State        */
 } rfalIsoDepState;
 
 
 
 
 /*! Holds all ISO-DEP data(counters, buffers, ID, timeouts, frame size)         */
-typedef struct{
+typedef struct {
   rfalIsoDepState state;         /*!< ISO-DEP module state                      */
   rfalIsoDepRole  role;          /*!< Current ISO-DEP role                      */
-  
+
   uint8_t         blockNumber;   /*!< Current block number                      */
   uint8_t         did;           /*!< Current DID                               */
   uint8_t         nad;           /*!< Current DID                               */
@@ -455,14 +435,14 @@ typedef struct{
   uint16_t        fsx;           /*!< Current FSx FSC or FSD (max Frame size)   */
   bool            isTxChaining;  /*!< Flag for chaining on Tx                   */
   bool            isRxChaining;  /*!< Flag for chaining on Rx                   */
-  uint8_t*        txBuf;         /*!< Tx buffer pointer                         */
-  uint8_t*        rxBuf;         /*!< Rx buffer pointer                         */
+  uint8_t        *txBuf;         /*!< Tx buffer pointer                         */
+  uint8_t        *rxBuf;         /*!< Rx buffer pointer                         */
   uint16_t        txBufLen;      /*!< Tx buffer length                          */
   uint16_t        rxBufLen;      /*!< Rx buffer length                          */
   uint8_t         txBufInfPos;   /*!< Start of payload in txBuf                 */
   uint8_t         rxBufInfPos;   /*!< Start of payload in rxBuf                 */
-  
-  
+
+
   uint16_t        ourFsx;        /*!< Our current FSx FSC or FSD (Frame size)   */
   uint8_t         lastPCB;       /*!< Last PCB sent                             */
   uint8_t         lastWTXM;      /*!< Last WTXM sent                            */
@@ -471,34 +451,34 @@ typedef struct{
   rfalBitRate     txBR;          /*!< Current Tx Bit Rate                       */
   rfalBitRate     rxBR;          /*!< Current Rx Bit Rate                       */
   uint16_t        *rxLen;        /*!< Output parameter ptr to Rx length         */
-  bool            *rxChaining;   /*!< Output parameter ptr to Rx chaining flag  */  
+  bool            *rxChaining;   /*!< Output parameter ptr to Rx chaining flag  */
   uint32_t        WTXTimer;      /*!< Timer used for WTX                        */
   bool            lastDID00;     /*!< Last PCD block had DID flag (for DID = 0) */
-  
+
   bool            isTxPending;   /*!< Flag pending Block while waiting WTX Ack  */
   bool            isWait4WTX;    /*!< Flag for waiting WTX Ack                  */
-  
+
   uint32_t        SFGTTimer;     /*!< Timer used for SFGT                       */
-  
+
   uint8_t         maxRetriesI;   /*!< Number of retries for a I-Block           */
   uint8_t         maxRetriesS;   /*!< Number of retries for a S-Block           */
   uint8_t         maxRetriesR;   /*!< Number of retries for a R-Block           */
   uint8_t         maxRetriesRATS;/*!< Number of retries for RATS                */
-  
+
   rfalComplianceMode compMode;   /*!< Compliance mode                           */
-  
+
   uint8_t         ctrlRxBuf[ISODEP_CONTROLMSG_BUF_LEN];  /*!< Control msg buf   */
   uint16_t        ctrlRxLen;  /*!< Control msg rcvd len (used only for DSL)     */
-  
-  
+
+
   rfalIsoDepListenActvParam actvParam;  /*!< Listen Activation context          */
-  
+
   rfalIsoDepApduTxRxParam APDUParam;        /*!< APDU TxRx params               */
   uint16_t                APDUTxPos;        /*!< APDU Tx position               */
   uint16_t                APDURxPos;        /*!< APDU Rx position               */
   bool                    isAPDURxChaining; /*!< APDU Transceive chaining flag  */
-  
-}rfalIsoDep;
+
+} rfalIsoDep;
 
 #endif /* RFAL_ISODEP_H_ */
 

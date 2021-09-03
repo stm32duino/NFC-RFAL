@@ -9,8 +9,8 @@
   *
   *        www.st.com/mix_myliberty
   *
-  * Unless required by applicable law or agreed to in writing, software 
-  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
   * AND SPECIFICALLY DISCLAIMING THE IMPLIED WARRANTIES OF MERCHANTABILITY,
   * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
@@ -25,10 +25,10 @@
  *
  *  \brief Implementation of NFC-F Poller (FeliCa PCD) device
  *
- *  The definitions and helpers methods provided by this module are 
+ *  The definitions and helpers methods provided by this module are
  *  aligned with NFC-F (FeliCa - JIS X6319-4)
- *  
- *  
+ *
+ *
  * \addtogroup RFAL
  * @{
  *
@@ -38,8 +38,8 @@
  *
  * \addtogroup NFC-F
  * \brief RFAL NFC-F Module
- * @{  
- *  
+ * @{
+ *
  */
 
 
@@ -75,8 +75,8 @@
 #define RFAL_NFCF_POLL_MAXCARDS                 16U      /*!< Max number slots/cards 16                         */
 
 
-#define RFAL_NFCF_CMD_POS                        0U      /*!< Command/Responce code length                      */
-#define RFAL_NFCF_CMD_LEN                        1U      /*!< Command/Responce code length                      */
+#define RFAL_NFCF_CMD_POS                        0U      /*!< Command/Response code length                      */
+#define RFAL_NFCF_CMD_LEN                        1U      /*!< Command/Response code length                      */
 #define RFAL_NFCF_LENGTH_LEN                     1U      /*!< LEN field length                                  */
 #define RFAL_NFCF_HEADER_LEN                     (RFAL_NFCF_LENGTH_LEN + RFAL_NFCF_CMD_LEN) /*!< Header length*/
 
@@ -105,21 +105,20 @@
 
 
 /*! NFC-F Felica command set   JIS X6319-4  9.1 */
-enum 
-{
-    RFAL_NFCF_CMD_POLLING                      = 0x00, /*!< SENSF_REQ (Felica Poll/REQC command to identify a card )       */
-    RFAL_NFCF_CMD_POLLING_RES                  = 0x01, /*!< SENSF_RES (Felica Poll/REQC command response )                 */
-    RFAL_NFCF_CMD_REQUEST_SERVICE              = 0x02, /*!< verify the existence of Area and Service                       */
-    RFAL_NFCF_CMD_REQUEST_RESPONSE             = 0x04, /*!< verify the existence of a card                                 */
-    RFAL_NFCF_CMD_READ_WITHOUT_ENCRYPTION      = 0x06, /*!< read Block Data from a Service that requires no authentication */
-    RFAL_NFCF_CMD_READ_WITHOUT_ENCRYPTION_RES  = 0x07, /*!< read Block Data response from a Service with no authentication */
-    RFAL_NFCF_CMD_WRITE_WITHOUT_ENCRYPTION     = 0x08, /*!< write Block Data to a Service that requires no authentication  */
-    RFAL_NFCF_CMD_WRITE_WITHOUT_ENCRYPTION_RES = 0x09, /*!< write Block Data response to a Service with no authentication  */
-    RFAL_NFCF_CMD_REQUEST_SYSTEM_CODE          = 0x0c, /*!< acquire the System Code registered to a card                   */
-    RFAL_NFCF_CMD_AUTHENTICATION1              = 0x10, /*!< authenticate a card                                            */
-    RFAL_NFCF_CMD_AUTHENTICATION2              = 0x12, /*!< allow a card to authenticate a Reader/Writer                   */
-    RFAL_NFCF_CMD_READ                         = 0x14, /*!< read Block Data from a Service that requires authentication    */
-    RFAL_NFCF_CMD_WRITE                        = 0x16, /*!< write Block Data to a Service that requires authentication     */
+enum {
+  RFAL_NFCF_CMD_POLLING                      = 0x00, /*!< SENSF_REQ (Felica Poll/REQC command to identify a card )       */
+  RFAL_NFCF_CMD_POLLING_RES                  = 0x01, /*!< SENSF_RES (Felica Poll/REQC command response )                 */
+  RFAL_NFCF_CMD_REQUEST_SERVICE              = 0x02, /*!< verify the existence of Area and Service                       */
+  RFAL_NFCF_CMD_REQUEST_RESPONSE             = 0x04, /*!< verify the existence of a card                                 */
+  RFAL_NFCF_CMD_READ_WITHOUT_ENCRYPTION      = 0x06, /*!< read Block Data from a Service that requires no authentication */
+  RFAL_NFCF_CMD_READ_WITHOUT_ENCRYPTION_RES  = 0x07, /*!< read Block Data response from a Service with no authentication */
+  RFAL_NFCF_CMD_WRITE_WITHOUT_ENCRYPTION     = 0x08, /*!< write Block Data to a Service that requires no authentication  */
+  RFAL_NFCF_CMD_WRITE_WITHOUT_ENCRYPTION_RES = 0x09, /*!< write Block Data response to a Service with no authentication  */
+  RFAL_NFCF_CMD_REQUEST_SYSTEM_CODE          = 0x0c, /*!< acquire the System Code registered to a card                   */
+  RFAL_NFCF_CMD_AUTHENTICATION1              = 0x10, /*!< authenticate a card                                            */
+  RFAL_NFCF_CMD_AUTHENTICATION2              = 0x12, /*!< allow a card to authenticate a Reader/Writer                   */
+  RFAL_NFCF_CMD_READ                         = 0x14, /*!< read Block Data from a Service that requires authentication    */
+  RFAL_NFCF_CMD_WRITE                        = 0x16, /*!< write Block Data to a Service that requires authentication     */
 };
 
 /*
@@ -141,73 +140,67 @@ enum
 
 
 /*! NFC-F SENSF_RES format  Digital 1.1  8.6.2 */
-typedef struct 
-{
-    uint8_t CMD;                                /*!< Command Code: 01h  */
-    uint8_t NFCID2[RFAL_NFCF_NFCID2_LEN];       /*!< NFCID2             */
-    uint8_t PAD0[RFAL_NFCF_SENSF_RES_PAD0_LEN]; /*!< PAD0               */
-    uint8_t PAD1[RFAL_NFCF_SENSF_RES_PAD1_LEN]; /*!< PAD1               */
-    uint8_t MRTIcheck;                          /*!< MRTIcheck          */
-    uint8_t MRTIupdate;                         /*!< MRTIupdate         */
-    uint8_t PAD2;                               /*!< PAD2               */
-    uint8_t RD[RFAL_NFCF_SENSF_RES_RD_LEN];     /*!< Request Data       */
+typedef struct {
+  uint8_t CMD;                                /*!< Command Code: 01h  */
+  uint8_t NFCID2[RFAL_NFCF_NFCID2_LEN];       /*!< NFCID2             */
+  uint8_t PAD0[RFAL_NFCF_SENSF_RES_PAD0_LEN]; /*!< PAD0               */
+  uint8_t PAD1[RFAL_NFCF_SENSF_RES_PAD1_LEN]; /*!< PAD1               */
+  uint8_t MRTIcheck;                          /*!< MRTIcheck          */
+  uint8_t MRTIupdate;                         /*!< MRTIupdate         */
+  uint8_t PAD2;                               /*!< PAD2               */
+  uint8_t RD[RFAL_NFCF_SENSF_RES_RD_LEN];     /*!< Request Data       */
 } rfalNfcfSensfRes;
 
 
 /*! NFC-F poller device (PCD) struct  */
-typedef struct
-{
-    uint8_t NFCID2[RFAL_NFCF_NFCID2_LEN];       /*!< NFCID2             */
+typedef struct {
+  uint8_t NFCID2[RFAL_NFCF_NFCID2_LEN];       /*!< NFCID2             */
 } rfalNfcfPollDevice;
 
 /*! NFC-F listener device (PICC) struct  */
-typedef struct
-{
-    uint8_t           sensfResLen;              /*!< SENF_RES length    */
-    rfalNfcfSensfRes  sensfRes;                 /*!< SENF_RES           */
+typedef struct {
+  uint8_t           sensfResLen;              /*!< SENF_RES length    */
+  rfalNfcfSensfRes  sensfRes;                 /*!< SENF_RES           */
 } rfalNfcfListenDevice;
 
 typedef  uint16_t rfalNfcfServ;                 /*!< NFC-F Service Code */
 
 /*! NFC-F Block List Element (2 or 3 bytes element)       T3T 1.0 5.6.1 */
-typedef struct 
-{
+typedef struct {
   uint8_t  conf;               /*!<  Access Mode | Serv Code List Order */
-    uint16_t blockNum;         /*!<  Block Number                       */
-}rfalNfcfBlockListElem;
+  uint16_t blockNum;         /*!<  Block Number                       */
+} rfalNfcfBlockListElem;
 
 /*! Check Update Service list and Block list parameter */
-typedef struct 
-{
-    uint8_t               numServ;              /*!< Number of Services */
-    rfalNfcfServ          *servList;            /*!< Service Code List  */
-    uint8_t               numBlock;             /*!< Number of Blocks   */
-    rfalNfcfBlockListElem *blockList;           /*!< Block Number List  */
-}rfalNfcfServBlockListParam;
+typedef struct {
+  uint8_t               numServ;              /*!< Number of Services */
+  rfalNfcfServ          *servList;            /*!< Service Code List  */
+  uint8_t               numBlock;             /*!< Number of Blocks   */
+  rfalNfcfBlockListElem *blockList;           /*!< Block Number List  */
+} rfalNfcfServBlockListParam;
 
 
 /*! Structure/Buffer to hold the SENSF_RES with LEN byte prepended                                 */
-typedef struct{
-    uint8_t           LEN;                                /*!< NFC-F LEN byte                      */
-    rfalNfcfSensfRes  SENSF_RES;                          /*!< SENSF_RES                           */
+typedef struct {
+  uint8_t           LEN;                                /*!< NFC-F LEN byte                      */
+  rfalNfcfSensfRes  SENSF_RES;                          /*!< SENSF_RES                           */
 } rfalNfcfSensfResBuf;
 
 
 /*! Greedy collection for NFCF GRE_POLL_F  Activity 1.0 Table 10                                   */
-typedef struct{
-    uint8_t              pollFound;                       /*!< Number of devices found by the Poll */
-    uint8_t              pollCollision;                   /*!< Number of collisions detected       */
-    rfalFeliCaPollRes    POLL_F[RFAL_NFCF_POLL_MAXCARDS]; /*!< GRE_POLL_F   Activity 1.0 Table 10  */
+typedef struct {
+  uint8_t              pollFound;                       /*!< Number of devices found by the Poll */
+  uint8_t              pollCollision;                   /*!< Number of collisions detected       */
+  rfalFeliCaPollRes    POLL_F[RFAL_NFCF_POLL_MAXCARDS]; /*!< GRE_POLL_F   Activity 1.0 Table 10  */
 } rfalNfcfGreedyF;
 
 
 /*! NFC-F SENSF_REQ format  Digital 1.1  8.6.1                     */
-typedef struct
-{
-    uint8_t  CMD;                          /*!< Command code: 00h  */
-    uint8_t  SC[RFAL_NFCF_SENSF_SC_LEN];   /*!< System Code        */
-    uint8_t  RC;                           /*!< Request Code       */
-    uint8_t  TSN;                          /*!< Time Slot Number   */
+typedef struct {
+  uint8_t  CMD;                          /*!< Command code: 00h  */
+  uint8_t  SC[RFAL_NFCF_SENSF_SC_LEN];   /*!< System Code        */
+  uint8_t  RC;                           /*!< Request Code       */
+  uint8_t  TSN;                          /*!< Time Slot Number   */
 } rfalNfcfSensfReq;
 
 

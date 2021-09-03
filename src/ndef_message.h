@@ -9,8 +9,8 @@
   *
   *        www.st.com/mix_myliberty
   *
-  * Unless required by applicable law or agreed to in writing, software 
-  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
   * AND SPECIFICALLY DISCLAIMING THE IMPLIED WARRANTIES OF MERCHANTABILITY,
   * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
@@ -70,18 +70,16 @@
 
 
 /*! Message information */
-typedef struct
-{
-    uint32_t length;      /*!< Message length in bytes          */
-    uint32_t recordCount; /*!< Number of records in the message */
+typedef struct {
+  uint32_t length;      /*!< Message length in bytes          */
+  uint32_t recordCount; /*!< Number of records in the message */
 } ndefMessageInfo;
 
 
 /*! NDEF message */
-struct ndefMessageStruct
-{
-    ndefRecord*     record; /*!< Pointer to a record */
-    ndefMessageInfo info;   /*!< Message information, e.g. length in bytes, record count */
+struct ndefMessageStruct {
+  ndefRecord     *record; /*!< Pointer to a record */
+  ndefMessageInfo info;   /*!< Message information, e.g. length in bytes, record count */
 };
 
 

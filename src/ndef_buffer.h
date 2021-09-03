@@ -9,8 +9,8 @@
   *
   *        www.st.com/mix_myliberty
   *
-  * Unless required by applicable law or agreed to in writing, software 
-  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
   * AND SPECIFICALLY DISCLAIMING THE IMPLIED WARRANTIES OF MERCHANTABILITY,
   * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
@@ -46,34 +46,30 @@
 
 
 /*! NDEF structure to handle const buffers */
-typedef struct
-{
-    const uint8_t* buffer; /*!< Pointer to const buffer */
-    uint32_t       length; /*!< buffer length           */
+typedef struct {
+  const uint8_t *buffer; /*!< Pointer to const buffer */
+  uint32_t       length; /*!< buffer length           */
 } ndefConstBuffer;
 
 
 /*! NDEF structure to handle buffers */
-typedef struct
-{
-    uint8_t* buffer; /*!< Pointer to buffer */
-    uint32_t length; /*!< buffer length     */
+typedef struct {
+  uint8_t *buffer; /*!< Pointer to buffer */
+  uint32_t length; /*!< buffer length     */
 } ndefBuffer;
 
 
 /*! NDEF structure to handle const buffers limited to 256 bytes */
-typedef struct
-{
-    const uint8_t* buffer; /*!< Pointer to const buffer */
-    uint8_t        length; /*!< buffer length           */
+typedef struct {
+  const uint8_t *buffer; /*!< Pointer to const buffer */
+  uint8_t        length; /*!< buffer length           */
 } ndefConstBuffer8;
 
 
 /*! NDEF structure to handle buffers limited to 256 bytes */
-typedef struct
-{
-    uint8_t* buffer; /*!< Pointer to buffer */
-    uint8_t  length; /*!< buffer length     */
+typedef struct {
+  uint8_t *buffer; /*!< Pointer to buffer */
+  uint8_t  length; /*!< buffer length     */
 } ndefBuffer8;
 
 
