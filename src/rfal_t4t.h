@@ -9,8 +9,8 @@
   *
   *        www.st.com/mix_myliberty
   *
-  * Unless required by applicable law or agreed to in writing, software 
-  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
   * AND SPECIFICALLY DISCLAIMING THE IMPLIED WARRANTIES OF MERCHANTABILITY,
   * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
@@ -24,14 +24,14 @@
  *  \author SRA
  *
  *  \brief Provides convenience methods and definitions for T4T (ISO7816-4)
- *  
- *  This module provides an interface to exchange T4T APDUs according to 
+ *
+ *  This module provides an interface to exchange T4T APDUs according to
  *  NFC Forum T4T and ISO7816-4
- *  
+ *
  *  This implementation was based on the following specs:
  *    - ISO/IEC 7816-4  3rd Edition 2013-04-15
  *    - NFC Forum T4T Technical Specification 1.0 2017-08-28
- *  
+ *
  * \addtogroup RFAL
  * @{
  *
@@ -42,7 +42,7 @@
  * \addtogroup T4T
  * \brief RFAL T4T Module
  * @{
- *  
+ *
  */
 
 
@@ -92,40 +92,37 @@
 ******************************************************************************
 */
 /*! NFC-A T4T Command-APDU structure */
-typedef struct
-{
-    uint8_t                  CLA;                              /*!< Class byte                                         */
-    uint8_t                  INS;                              /*!< Instruction byte                                   */
-    uint8_t                  P1;                               /*!< Parameter byte 1                                   */
-    uint8_t                  P2;                               /*!< Parameter byte 2                                   */
-    uint8_t                  Lc;                               /*!< Data field length                                  */
-    bool                     LcFlag;                           /*!< Lc flag (append Lc when true)                      */
-    uint8_t                  Le;                               /*!< Expected Response Length                           */
-    bool                     LeFlag;                           /*!< Le flag (append Le when true)                      */
-    
-    rfalIsoDepApduBufFormat  *cApduBuf;                        /*!< Command-APDU buffer  (Tx)                          */
-    uint16_t                 *cApduLen;                        /*!< Command-APDU Length                                */
-}rfalT4tCApduParam;
+typedef struct {
+  uint8_t                  CLA;                              /*!< Class byte                                         */
+  uint8_t                  INS;                              /*!< Instruction byte                                   */
+  uint8_t                  P1;                               /*!< Parameter byte 1                                   */
+  uint8_t                  P2;                               /*!< Parameter byte 2                                   */
+  uint8_t                  Lc;                               /*!< Data field length                                  */
+  bool                     LcFlag;                           /*!< Lc flag (append Lc when true)                      */
+  uint8_t                  Le;                               /*!< Expected Response Length                           */
+  bool                     LeFlag;                           /*!< Le flag (append Le when true)                      */
+
+  rfalIsoDepApduBufFormat  *cApduBuf;                        /*!< Command-APDU buffer  (Tx)                          */
+  uint16_t                 *cApduLen;                        /*!< Command-APDU Length                                */
+} rfalT4tCApduParam;
 
 /*! NFC-A T4T Response-APDU structure */
-typedef struct
-{    
-    rfalIsoDepApduBufFormat  *rApduBuf;                        /*!< Response-APDU buffer (Rx)                          */
-    uint16_t                 rcvdLen;                          /*!< Full response length                               */
-    uint16_t                 rApduBodyLen;                     /*!< Response body length                               */
-    uint16_t                 statusWord;                       /*!< R-APDU Status Word SW1|SW2                         */
-}rfalT4tRApduParam;
+typedef struct {
+  rfalIsoDepApduBufFormat  *rApduBuf;                        /*!< Response-APDU buffer (Rx)                          */
+  uint16_t                 rcvdLen;                          /*!< Full response length                               */
+  uint16_t                 rApduBodyLen;                     /*!< Response body length                               */
+  uint16_t                 statusWord;                       /*!< R-APDU Status Word SW1|SW2                         */
+} rfalT4tRApduParam;
 
 
 
 /*! NFC-A T4T command set    T4T 1.0 & ISO7816-4 2013 Table 4 */
-typedef enum
-{
-    RFAL_T4T_INS_SELECT           = 0xA4U,                     /*!< T4T Select                                         */
-    RFAL_T4T_INS_READBINARY       = 0xB0U,                     /*!< T4T ReadBinary                                     */
-    RFAL_T4T_INS_UPDATEBINARY     = 0xD6U,                     /*!< T4T UpdateBinay                                    */
-    RFAL_T4T_INS_READBINARY_ODO   = 0xB1U,                     /*!< T4T ReadBinary using ODO                           */
-    RFAL_T4T_INS_UPDATEBINARY_ODO = 0xD7U                      /*!< T4T UpdateBinay using ODO                          */
+typedef enum {
+  RFAL_T4T_INS_SELECT           = 0xA4U,                     /*!< T4T Select                                         */
+  RFAL_T4T_INS_READBINARY       = 0xB0U,                     /*!< T4T ReadBinary                                     */
+  RFAL_T4T_INS_UPDATEBINARY     = 0xD6U,                     /*!< T4T UpdateBinay                                    */
+  RFAL_T4T_INS_READBINARY_ODO   = 0xB1U,                     /*!< T4T ReadBinary using ODO                           */
+  RFAL_T4T_INS_UPDATEBINARY_ODO = 0xD7U                      /*!< T4T UpdateBinay using ODO                          */
 } rfalT4tCmds;
 
 /*

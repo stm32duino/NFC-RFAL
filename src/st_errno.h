@@ -9,8 +9,8 @@
   *
   *        www.st.com/mix_myliberty
   *
-  * Unless required by applicable law or agreed to in writing, software 
-  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
   * AND SPECIFICALLY DISCLAIMING THE IMPLIED WARRANTIES OF MERCHANTABILITY,
   * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
@@ -78,13 +78,13 @@ typedef uint16_t      ReturnCode; /*!< Standard Return Code type from function. 
 #define ERR_IGNORE                         ((ReturnCode)18U) /*!< indicates error detected but to be ignored */
 #define ERR_SEMANTIC                       ((ReturnCode)19U) /*!< indicates error in state machine (unexpected cmd) */
 #define ERR_SYNTAX                         ((ReturnCode)20U) /*!< indicates error in state machine (unknown cmd) */
-#define ERR_CRC                            ((ReturnCode)21U) /*!< crc error */ 
-#define ERR_NOTFOUND                       ((ReturnCode)22U) /*!< transponder not found */ 
-#define ERR_NOTUNIQUE                      ((ReturnCode)23U) /*!< transponder not unique - more than one transponder in field */ 
-#define ERR_NOTSUPP                        ((ReturnCode)24U) /*!< requested operation not supported */ 
-#define ERR_WRITE                          ((ReturnCode)25U) /*!< write error */ 
-#define ERR_FIFO                           ((ReturnCode)26U) /*!< fifo over or underflow error */ 
-#define ERR_PAR                            ((ReturnCode)27U) /*!< parity error */ 
+#define ERR_CRC                            ((ReturnCode)21U) /*!< crc error */
+#define ERR_NOTFOUND                       ((ReturnCode)22U) /*!< transponder not found */
+#define ERR_NOTUNIQUE                      ((ReturnCode)23U) /*!< transponder not unique - more than one transponder in field */
+#define ERR_NOTSUPP                        ((ReturnCode)24U) /*!< requested operation not supported */
+#define ERR_WRITE                          ((ReturnCode)25U) /*!< write error */
+#define ERR_FIFO                           ((ReturnCode)26U) /*!< fifo over or underflow error */
+#define ERR_PAR                            ((ReturnCode)27U) /*!< parity error */
 #define ERR_DONE                           ((ReturnCode)28U) /*!< transfer has already finished */
 #define ERR_RF_COLLISION                   ((ReturnCode)29U) /*!< collision error (Bit Collision or during RF Collision avoidance ) */
 #define ERR_HW_OVERRUN                     ((ReturnCode)30U) /*!< lost one or more received bytes */
@@ -92,13 +92,13 @@ typedef uint16_t      ReturnCode; /*!< Standard Return Code type from function. 
 #define ERR_SLEEP_REQ                      ((ReturnCode)32U) /*!< device requested sleep */
 #define ERR_WRONG_STATE                    ((ReturnCode)33U) /*!< incorrent state for requested operation */
 #define ERR_MAX_RERUNS                     ((ReturnCode)34U) /*!< blocking procedure reached maximum runs */
-#define ERR_DISABLED                       ((ReturnCode)35U) /*!< operation aborted due to disabled configuration */ 
+#define ERR_DISABLED                       ((ReturnCode)35U) /*!< operation aborted due to disabled configuration */
 #define ERR_HW_MISMATCH                    ((ReturnCode)36U) /*!< expected hw do not match  */
 #define ERR_LINK_LOSS                      ((ReturnCode)37U) /*!< Other device's field didn't behave as expected: turned off by Initiator in Passive mode, or AP2P did not turn on field */
 #define ERR_INVALID_HANDLE                 ((ReturnCode)38U) /*!< invalid or not initalized device handle */
 
 #define ERR_INCOMPLETE_BYTE                ((ReturnCode)40U) /*!< Incomplete byte rcvd         */
-#define ERR_INCOMPLETE_BYTE_01             ((ReturnCode)41U) /*!< Incomplete byte rcvd - 1 bit */    
+#define ERR_INCOMPLETE_BYTE_01             ((ReturnCode)41U) /*!< Incomplete byte rcvd - 1 bit */
 #define ERR_INCOMPLETE_BYTE_02             ((ReturnCode)42U) /*!< Incomplete byte rcvd - 2 bit */
 #define ERR_INCOMPLETE_BYTE_03             ((ReturnCode)43U) /*!< Incomplete byte rcvd - 3 bit */
 #define ERR_INCOMPLETE_BYTE_04             ((ReturnCode)44U) /*!< Incomplete byte rcvd - 4 bit */

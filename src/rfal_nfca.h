@@ -9,8 +9,8 @@
   *
   *        www.st.com/mix_myliberty
   *
-  * Unless required by applicable law or agreed to in writing, software 
-  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
   * AND SPECIFICALLY DISCLAIMING THE IMPLIED WARRANTIES OF MERCHANTABILITY,
   * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
@@ -24,18 +24,18 @@
  *  \author SRA
  *
  *  \brief Provides several NFC-A convenience methods and definitions
- *  
- *  It provides a Poller (ISO14443A PCD) interface and as well as 
+ *
+ *  It provides a Poller (ISO14443A PCD) interface and as well as
  *  some NFC-A Listener (ISO14443A PICC) helpers.
  *
  *  The definitions and helpers methods provided by this module are only
  *  up to ISO14443-3 layer
- *  
- *  
+ *
+ *
  *  An usage example is provided here: \ref exampleRfalNfca.c
  *  \example exampleRfalNfca.c
- *  
- *  
+ *
+ *
  * \addtogroup RFAL
  * @{
  *
@@ -46,7 +46,7 @@
  * \addtogroup NFC-A
  * \brief RFAL NFC-A Module
  * @{
- * 
+ *
  */
 
 
@@ -119,65 +119,59 @@
 
 /*! NFC-A Listen device types */
 typedef enum {
-    RFAL_NFCA_T1T        = 0x01,                                  /* Device configured for T1T  Digital 1.1 Table 9                               */
-    RFAL_NFCA_T2T        = 0x00,                                  /* Device configured for T2T  Digital 1.1 Table 19                              */
-    RFAL_NFCA_T4T        = 0x20,                                  /* Device configured for T4T  Digital 1.1 Table 19                              */
-    RFAL_NFCA_NFCDEP     = 0x40,                                  /* Device configured for NFC-DEP  Digital 1.1 Table 19                          */
-    RFAL_NFCA_T4T_NFCDEP = 0x60                                   /* Device configured for NFC-DEP and T4T  Digital 1.1 Table 19                  */
+  RFAL_NFCA_T1T        = 0x01,                                  /* Device configured for T1T  Digital 1.1 Table 9                               */
+  RFAL_NFCA_T2T        = 0x00,                                  /* Device configured for T2T  Digital 1.1 Table 19                              */
+  RFAL_NFCA_T4T        = 0x20,                                  /* Device configured for T4T  Digital 1.1 Table 19                              */
+  RFAL_NFCA_NFCDEP     = 0x40,                                  /* Device configured for NFC-DEP  Digital 1.1 Table 19                          */
+  RFAL_NFCA_T4T_NFCDEP = 0x60                                   /* Device configured for NFC-DEP and T4T  Digital 1.1 Table 19                  */
 } rfalNfcaListenDeviceType;
 
 
 /*! SENS_RES (ATQA) format  Digital 1.1  6.6.3 & Table 7 */
-typedef struct
-{ 
-    uint8_t      anticollisionInfo;                               /*!< SENS_RES Anticollision Information                                         */
-    uint8_t      platformInfo;                                    /*!< SENS_RES Platform Information                                              */
+typedef struct {
+  uint8_t      anticollisionInfo;                               /*!< SENS_RES Anticollision Information                                         */
+  uint8_t      platformInfo;                                    /*!< SENS_RES Platform Information                                              */
 } rfalNfcaSensRes;
 
 
 /*! SDD_REQ (Anticollision) format   Digital 1.1  6.7.1 & Table 11 */
-typedef struct
-{
-    uint8_t      selCmd;                                          /*!< SDD_REQ SEL_CMD: cascade Level                                             */
-    uint8_t      selPar;                                          /*!< SDD_REQ SEL_PAR: Byte Count[4b] | Bit Count[4b] (NVB: Number of Valid Bits)*/
+typedef struct {
+  uint8_t      selCmd;                                          /*!< SDD_REQ SEL_CMD: cascade Level                                             */
+  uint8_t      selPar;                                          /*!< SDD_REQ SEL_PAR: Byte Count[4b] | Bit Count[4b] (NVB: Number of Valid Bits)*/
 } rfalNfcaSddReq;
 
 
 /*! SDD_RES (UID CLn) format   Digital 1.1  6.7.2 & Table 15 */
-typedef struct
-{
-    uint8_t      nfcid1[RFAL_NFCA_CASCADE_1_UID_LEN];             /*!< NFCID1 cascade level NFCID                                                 */
-    uint8_t      bcc;                                             /*!< BCC Exclusive-OR over first 4 bytes of SDD_RES                             */
+typedef struct {
+  uint8_t      nfcid1[RFAL_NFCA_CASCADE_1_UID_LEN];             /*!< NFCID1 cascade level NFCID                                                 */
+  uint8_t      bcc;                                             /*!< BCC Exclusive-OR over first 4 bytes of SDD_RES                             */
 } rfalNfcaSddRes;
 
 
 /*! SEL_REQ (Select) format   Digital 1.1  6.8.1 & Table 17 */
-typedef struct
-{
-    uint8_t      selCmd;                                          /*!< SDD_REQ SEL_CMD: cascade Level                                             */
-    uint8_t      selPar;                                          /*!< SDD_REQ SEL_PAR: Byte Count[4b] | Bit Count[4b] (NVB: Number of Valid Bits)*/
-    uint8_t      nfcid1[RFAL_NFCA_CASCADE_1_UID_LEN];             /*!< NFCID1 data                                                                */
-    uint8_t      bcc;                                             /*!< Checksum calculated as exclusive-OR over the 4 bytes of NFCID1 CLn         */
+typedef struct {
+  uint8_t      selCmd;                                          /*!< SDD_REQ SEL_CMD: cascade Level                                             */
+  uint8_t      selPar;                                          /*!< SDD_REQ SEL_PAR: Byte Count[4b] | Bit Count[4b] (NVB: Number of Valid Bits)*/
+  uint8_t      nfcid1[RFAL_NFCA_CASCADE_1_UID_LEN];             /*!< NFCID1 data                                                                */
+  uint8_t      bcc;                                             /*!< Checksum calculated as exclusive-OR over the 4 bytes of NFCID1 CLn         */
 } rfalNfcaSelReq;
 
 
 /*! SEL_RES (SAK) format   Digital 1.1  6.8.2 & Table 19 */
-typedef struct
-{
-    uint8_t      sak;                                             /*!< Select Acknowledge                                                         */
+typedef struct {
+  uint8_t      sak;                                             /*!< Select Acknowledge                                                         */
 } rfalNfcaSelRes;
 
 
 /*! NFC-A listener device (PICC) struct  */
-typedef struct
-{
-    rfalNfcaListenDeviceType type;                                /*!< NFC-A Listen device type                                                   */
-    rfalNfcaSensRes          sensRes;                             /*!< SENS_RES (ATQA)                                                            */
-    rfalNfcaSelRes           selRes;                              /*!< SEL_RES  (SAK)                                                             */
-    uint8_t                  nfcId1Len;                           /*!< NFCID1 Length                                                              */
-    uint8_t                  nfcId1[RFAL_NFCA_CASCADE_3_UID_LEN]; /*!< NFCID1   (UID)                                                             */
-    rfalT1TRidRes            ridRes;                              /*!< RID_RES                                                                    */
-    bool                     isSleep;                             /*!< Device sleeping flag                                                       */
+typedef struct {
+  rfalNfcaListenDeviceType type;                                /*!< NFC-A Listen device type                                                   */
+  rfalNfcaSensRes          sensRes;                             /*!< SENS_RES (ATQA)                                                            */
+  rfalNfcaSelRes           selRes;                              /*!< SEL_RES  (SAK)                                                             */
+  uint8_t                  nfcId1Len;                           /*!< NFCID1 Length                                                              */
+  uint8_t                  nfcId1[RFAL_NFCA_CASCADE_3_UID_LEN]; /*!< NFCID1   (UID)                                                             */
+  rfalT1TRidRes            ridRes;                              /*!< RID_RES                                                                    */
+  bool                     isSleep;                             /*!< Device sleeping flag                                                       */
 } rfalNfcaListenDevice;
 
 /*

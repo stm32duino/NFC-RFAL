@@ -9,8 +9,8 @@
   *
   *        www.st.com/mix_myliberty
   *
-  * Unless required by applicable law or agreed to in writing, software 
-  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
   * AND SPECIFICALLY DISCLAIMING THE IMPLIED WARRANTIES OF MERCHANTABILITY,
   * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
@@ -23,15 +23,15 @@
  *
  *  \author SRA
  *
- *  \brief Implementation of NFC-B (ISO14443B) helpers 
- *  
- *  It provides a NFC-B Poller (ISO14443B PCD) interface and 
+ *  \brief Implementation of NFC-B (ISO14443B) helpers
+ *
+ *  It provides a NFC-B Poller (ISO14443B PCD) interface and
  *  also provides some NFC-B Listener (ISO14443B PICC) helpers
  *
  *  The definitions and helpers methods provided by this module are only
  *  up to ISO14443-3 layer (excluding ATTRIB)
- *  
- *  
+ *
+ *
  * \addtogroup RFAL
  * @{
  *
@@ -42,7 +42,7 @@
  * \addtogroup NFC-B
  * \brief RFAL NFC-B Module
  * @{
- * 
+ *
  */
 
 
@@ -114,96 +114,85 @@
 */
 
 /*! SENSB_REQ and ALLB_REQ param   Digital 1.1 7.6.1  */
-typedef enum
-{
-     RFAL_NFCB_SENS_CMD_ALLB_REQ  = 0x08,  /*!< ALLB_REQ  (WUPB)  */
-     RFAL_NFCB_SENS_CMD_SENSB_REQ = 0x00   /*!< SENSB_REQ (REQB)  */
+typedef enum {
+  RFAL_NFCB_SENS_CMD_ALLB_REQ  = 0x08,  /*!< ALLB_REQ  (WUPB)  */
+  RFAL_NFCB_SENS_CMD_SENSB_REQ = 0x00   /*!< SENSB_REQ (REQB)  */
 } rfalNfcbSensCmd;
 
 
 /*! Number of Slots (NI) codes used for NFC-B anti collision  Digital 1.1 Table 26 */
-typedef enum
-{
-    RFAL_NFCB_SLOT_NUM_1  = 0,         /*!< N=0 :  1 slot   */
-    RFAL_NFCB_SLOT_NUM_2  = 1,         /*!< N=1 :  2 slots  */
-    RFAL_NFCB_SLOT_NUM_4  = 2,         /*!< N=2 :  4 slots  */
-    RFAL_NFCB_SLOT_NUM_8  = 3,         /*!< N=3 :  8 slots  */
-    RFAL_NFCB_SLOT_NUM_16 = 4          /*!< N=4 : 16 slots  */
-}rfalNfcbSlots;
+typedef enum {
+  RFAL_NFCB_SLOT_NUM_1  = 0,         /*!< N=0 :  1 slot   */
+  RFAL_NFCB_SLOT_NUM_2  = 1,         /*!< N=1 :  2 slots  */
+  RFAL_NFCB_SLOT_NUM_4  = 2,         /*!< N=2 :  4 slots  */
+  RFAL_NFCB_SLOT_NUM_8  = 3,         /*!< N=3 :  8 slots  */
+  RFAL_NFCB_SLOT_NUM_16 = 4          /*!< N=4 : 16 slots  */
+} rfalNfcbSlots;
 
 
 /*! SENSB_RES (ATQB) Application Data Format   Digital 1.1 Table 28 */
-typedef struct
-{
-    uint8_t  AFI;                      /*!< Application Family Identifier */
-    uint8_t  CRC_B[RFAL_NFCB_CRC_LEN]; /*!< CRC_B of AID                  */
-    uint8_t  numApps;                  /*!< Number of Applications        */
+typedef struct {
+  uint8_t  AFI;                      /*!< Application Family Identifier */
+  uint8_t  CRC_B[RFAL_NFCB_CRC_LEN]; /*!< CRC_B of AID                  */
+  uint8_t  numApps;                  /*!< Number of Applications        */
 } rfalNfcbSensbResAppData;
 
 
 /*! SENSB_RES Protocol Info format Digital 1.1 Table 29 */
-typedef struct
-{
-    uint8_t  BRC;                      /*!< Bit Rate Capability                                                            */
-    uint8_t  FsciProType;              /*!< Frame Size Card Integer [4b] | Protocol Type[4 bits]                           */
-    uint8_t  FwiAdcFo;                 /*!< Frame Waiting Integer [4b] | Application Data Coding [2b] | Frame Options [2b] */
-    uint8_t  SFGI;                     /*!< Optional: Start-Up Frame Guard Time Integer[4b] | RFU [4b]                     */
+typedef struct {
+  uint8_t  BRC;                      /*!< Bit Rate Capability                                                            */
+  uint8_t  FsciProType;              /*!< Frame Size Card Integer [4b] | Protocol Type[4 bits]                           */
+  uint8_t  FwiAdcFo;                 /*!< Frame Waiting Integer [4b] | Application Data Coding [2b] | Frame Options [2b] */
+  uint8_t  SFGI;                     /*!< Optional: Start-Up Frame Guard Time Integer[4b] | RFU [4b]                     */
 } rfalNfcbSensbResProtocolInfo;
 
 
 /*! SENSB_RES format   Digital 1.1  7.6.2 */
-typedef struct
-{
-    uint8_t                      cmd;                           /*!< SENSB_RES: 50h       */
-    uint8_t                      nfcid0[RFAL_NFCB_NFCID0_LEN];  /*!< NFC Identifier (PUPI)*/
-    rfalNfcbSensbResAppData      appData;                       /*!< Application Data     */ 
-    rfalNfcbSensbResProtocolInfo protInfo;                      /*!< Protocol Information */
+typedef struct {
+  uint8_t                      cmd;                           /*!< SENSB_RES: 50h       */
+  uint8_t                      nfcid0[RFAL_NFCB_NFCID0_LEN];  /*!< NFC Identifier (PUPI)*/
+  rfalNfcbSensbResAppData      appData;                       /*!< Application Data     */
+  rfalNfcbSensbResProtocolInfo protInfo;                      /*!< Protocol Information */
 } rfalNfcbSensbRes;
 
 
 /*! NFC-B listener device (PICC) struct  */
-typedef struct
-{
-    uint8_t           sensbResLen;                              /*!< SENSB_RES length      */   
-    rfalNfcbSensbRes  sensbRes;                                 /*!< SENSB_RES             */
-    bool              isSleep;                                  /*!< Device sleeping flag  */
-}rfalNfcbListenDevice;
+typedef struct {
+  uint8_t           sensbResLen;                              /*!< SENSB_RES length      */
+  rfalNfcbSensbRes  sensbRes;                                 /*!< SENSB_RES             */
+  bool              isSleep;                                  /*!< Device sleeping flag  */
+} rfalNfcbListenDevice;
 
 
 /*! ALLB_REQ (WUPB) and SENSB_REQ (REQB) Command Format   Digital 1.1  7.6.1 */
-typedef struct
-{
-    uint8_t  cmd;                            /*!< xxxxB_REQ: 05h       */
-    uint8_t  AFI;                            /*!< NFC Identifier       */
-    uint8_t  PARAM;                          /*!< Application Data     */
+typedef struct {
+  uint8_t  cmd;                            /*!< xxxxB_REQ: 05h       */
+  uint8_t  AFI;                            /*!< NFC Identifier       */
+  uint8_t  PARAM;                          /*!< Application Data     */
 } rfalNfcbSensbReq;
 
 /*! SLOT_MARKER Command format  Digital 1.1  7.7.1 */
-typedef struct
-{
-    uint8_t  APn;    /*!< Slot number 2..16 | 0101b */
+typedef struct {
+  uint8_t  APn;    /*!< Slot number 2..16 | 0101b */
 } rfalNfcbSlotMarker;
 
 /*! SLPB_REQ (HLTB) Command Format   Digital 1.1  7.8.1 */
-typedef struct
-{
-    uint8_t  cmd;                            /*!< SLPB_REQ: 50h        */
-    uint8_t  nfcid0[RFAL_NFCB_NFCID0_LEN];   /*!< NFC Identifier (PUPI)*/
+typedef struct {
+  uint8_t  cmd;                            /*!< SLPB_REQ: 50h        */
+  uint8_t  nfcid0[RFAL_NFCB_NFCID0_LEN];   /*!< NFC Identifier (PUPI)*/
 } rfalNfcbSlpbReq;
 
 
 /*! SLPB_RES (HLTB) Response Format   Digital 1.1  7.8.2 */
-typedef struct
-{
-    uint8_t  cmd;                            /*!< SLPB_RES: 00h        */
+typedef struct {
+  uint8_t  cmd;                            /*!< SLPB_RES: 00h        */
 } rfalNfcbSlpbRes;
 
 
 /*! RFAL NFC-B instance */
-typedef struct
-{
-    uint8_t  AFI;                            /*!< AFI to be used       */
-    uint8_t  PARAM;                          /*!< PARAM to be used     */
+typedef struct {
+  uint8_t  AFI;                            /*!< AFI to be used       */
+  uint8_t  PARAM;                          /*!< PARAM to be used     */
 } rfalNfcb;
 
 /*

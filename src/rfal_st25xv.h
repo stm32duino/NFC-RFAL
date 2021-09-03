@@ -9,8 +9,8 @@
   *
   *        www.st.com/mix_myliberty
   *
-  * Unless required by applicable law or agreed to in writing, software 
-  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
   * AND SPECIFICALLY DISCLAIMING THE IMPLIED WARRANTIES OF MERCHANTABILITY,
   * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
@@ -39,7 +39,7 @@
  * \addtogroup ST25xV
  * \brief RFAL ST25xV Module
  * @{
- * 
+ *
  */
 
 #ifndef RFAL_ST25xV_H
@@ -60,7 +60,7 @@
  ******************************************************************************
  */
 
- 
+
 #define RFAL_NFCV_BLOCKNUM_M24LR_LEN                     2U      /*!< Block Number length of MR24LR tags: 16 bits                */
 #define RFAL_NFCV_ST_IC_MFG_CODE                         0x02    /*!< ST IC Mfg code (used for custom commands)                  */
 

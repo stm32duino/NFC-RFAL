@@ -9,8 +9,8 @@
   *
   *        www.st.com/mix_myliberty
   *
-  * Unless required by applicable law or agreed to in writing, software 
-  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
   * AND SPECIFICALLY DISCLAIMING THE IMPLIED WARRANTIES OF MERCHANTABILITY,
   * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
@@ -75,12 +75,11 @@
 
 
 /*! Structure to store Network SSID, Authentication Type, Encryption Type and Network Key */
-typedef struct
-{
-    ndefConstBuffer bufNetworkSSID;   /*!< Network SSID        */
-    ndefConstBuffer bufNetworkKey;    /*!< Network Key         */
-    uint8_t         authentication;   /*!< Authentication type */
-    uint8_t         encryption;       /*!< Encryption          */
+typedef struct {
+  ndefConstBuffer bufNetworkSSID;   /*!< Network SSID        */
+  ndefConstBuffer bufNetworkKey;    /*!< Network Key         */
+  uint8_t         authentication;   /*!< Authentication type */
+  uint8_t         encryption;       /*!< Encryption          */
 } ndefTypeWifi;
 
 

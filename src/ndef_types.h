@@ -9,8 +9,8 @@
   *
   *        www.st.com/mix_myliberty
   *
-  * Unless required by applicable law or agreed to in writing, software 
-  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
   * AND SPECIFICALLY DISCLAIMING THE IMPLIED WARRANTIES OF MERCHANTABILITY,
   * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
@@ -131,116 +131,104 @@
 
 
 /*! RTD Device Information Entry */
-typedef struct
-{
-    uint8_t        type;      /*!< Device Information Type              */
-    uint8_t        length;    /*!< Device Information length            */
-    const uint8_t* buffer;    /*!< Device Information pointer to buffer */
+typedef struct {
+  uint8_t        type;      /*!< Device Information Type              */
+  uint8_t        length;    /*!< Device Information length            */
+  const uint8_t *buffer;    /*!< Device Information pointer to buffer */
 } ndefDeviceInfoEntry;
 
 
 /*! RTD Type Device Information */
-typedef struct
-{
-    ndefDeviceInfoEntry devInfo[NDEF_DEVICE_INFO_TYPE_COUNT]; /*!< Device Information entries */
+typedef struct {
+  ndefDeviceInfoEntry devInfo[NDEF_DEVICE_INFO_TYPE_COUNT]; /*!< Device Information entries */
 } ndefTypeRtdDeviceInfo;
 
 
 /*! RTD Type Text */
-typedef struct
-{
-    uint8_t          status;          /*!< Status byte                   */
-    ndefConstBuffer8 bufLanguageCode; /*!< ISO/IANA language code buffer */
-    ndefConstBuffer  bufSentence;     /*!< Sentence buffer               */
+typedef struct {
+  uint8_t          status;          /*!< Status byte                   */
+  ndefConstBuffer8 bufLanguageCode; /*!< ISO/IANA language code buffer */
+  ndefConstBuffer  bufSentence;     /*!< Sentence buffer               */
 } ndefTypeRtdText;
 
 
 /*! RTD Type URI */
-typedef struct
-{
-    uint8_t         protocol;     /*!< Protocol Idendifier */
-    ndefConstBuffer bufUriString; /*!< URI string buffer   */
+typedef struct {
+  uint8_t         protocol;     /*!< Protocol Idendifier */
+  ndefConstBuffer bufUriString; /*!< URI string buffer   */
 } ndefTypeRtdUri;
 
 
 /*! RTD Android Application Record External Type */
-typedef struct
-{
-    ndefConstBuffer8 bufType;    /*!< AAR type    */
-    ndefConstBuffer  bufPayload; /*!< AAR payload */
+typedef struct {
+  ndefConstBuffer8 bufType;    /*!< AAR type    */
+  ndefConstBuffer  bufPayload; /*!< AAR payload */
 } ndefTypeRtdAar;
 
 
 /*! Media Type */
-typedef struct
-{
-    ndefConstBuffer8 bufType;    /*!< Media type    */
-    ndefConstBuffer  bufPayload; /*!< Media payload */
+typedef struct {
+  ndefConstBuffer8 bufType;    /*!< Media type    */
+  ndefConstBuffer  bufPayload; /*!< Media payload */
 } ndefTypeMedia;
 
 
 /*! vCard input */
-typedef struct
-{
-    ndefConstBuffer* bufType;    /*!< Type buffer    */
-    ndefConstBuffer* bufSubType; /*!< SubType buffer */
-    ndefConstBuffer* bufValue;   /*!< Value buffer   */
+typedef struct {
+  ndefConstBuffer *bufType;    /*!< Type buffer    */
+  ndefConstBuffer *bufSubType; /*!< SubType buffer */
+  ndefConstBuffer *bufValue;   /*!< Value buffer   */
 } ndefVCardInput;
 
 
 /*! vCard Entry */
-typedef struct
-{
-    const uint8_t* bufTypeBuffer;    /*!< Type buffer           */
-    const uint8_t* bufSubTypeBuffer; /*!< Subtype buffer        */
-    const uint8_t* bufValueBuffer;   /*!< Value buffer          */
-    /* All lengths below fit in a word */
-    uint8_t  bufTypeLength;          /*!< Type buffer length    */
-    uint8_t  bufSubTypeLength;       /*!< Subtype buffer length */
-    uint16_t bufValueLength;         /*!< Value buffer length   */
+typedef struct {
+  const uint8_t *bufTypeBuffer;    /*!< Type buffer           */
+  const uint8_t *bufSubTypeBuffer; /*!< Subtype buffer        */
+  const uint8_t *bufValueBuffer;   /*!< Value buffer          */
+  /* All lengths below fit in a word */
+  uint8_t  bufTypeLength;          /*!< Type buffer length    */
+  uint8_t  bufSubTypeLength;       /*!< Subtype buffer length */
+  uint16_t bufValueLength;         /*!< Value buffer length   */
 } ndefVCardEntry;
 
 
 /*! NDEF Type vCard */
-typedef struct
-{
-    ndefVCardEntry entry[NDEF_VCARD_ENTRY_MAX]; /*!< vCard entries */
+typedef struct {
+  ndefVCardEntry entry[NDEF_VCARD_ENTRY_MAX]; /*!< vCard entries */
 } ndefTypeVCard;
 
 
 /*****************************************************************************/
 
 /*! NDEF Type Id enum */
-typedef enum
-{
-    NDEF_TYPE_EMPTY = 0,
-    NDEF_TYPE_RTD_DEVICE_INFO,
-    NDEF_TYPE_RTD_TEXT,
-    NDEF_TYPE_RTD_URI,
-    NDEF_TYPE_RTD_AAR,
-    NDEF_TYPE_MEDIA,
-    NDEF_TYPE_MEDIA_VCARD,
-    NDEF_TYPE_MEDIA_WIFI,
-    NDEF_TYPE_ID_COUNT /* Keep this one last */
+typedef enum {
+  NDEF_TYPE_EMPTY = 0,
+  NDEF_TYPE_RTD_DEVICE_INFO,
+  NDEF_TYPE_RTD_TEXT,
+  NDEF_TYPE_RTD_URI,
+  NDEF_TYPE_RTD_AAR,
+  NDEF_TYPE_MEDIA,
+  NDEF_TYPE_MEDIA_VCARD,
+  NDEF_TYPE_MEDIA_WIFI,
+  NDEF_TYPE_ID_COUNT /* Keep this one last */
 } ndefTypeId;
 
 
 /*! NDEF abstraction Struct */
-struct ndefTypeStruct
-{
-    ndefTypeId      id;                                       /*!< Type Id           */
-    uint32_t       (*getPayloadLength)(const ndefType* type); /*!< Return payload length, specific to each type */
-    const uint8_t* (*getPayloadItem)(const ndefType* type, ndefConstBuffer* item, bool begin); /*!< Payload Encoder, specific to each type */
-    union
-    {
-        ndefTypeRtdDeviceInfo  deviceInfo;    /*!< Device Information */
-        ndefTypeRtdText        text;          /*!< Text               */
-        ndefTypeRtdUri         uri;           /*!< URI                */
-        ndefTypeRtdAar         aar;           /*!< AAR                */
-        ndefTypeMedia          media;         /*!< Media              */
-        ndefTypeVCard          vCard;         /*!< vCard              */
-        ndefTypeWifi           wifi;          /*!< Wifi               */
-    } data;                               /*!< Type data union        */
+struct ndefTypeStruct {
+  ndefTypeId      id;                                       /*!< Type Id           */
+  uint32_t (*getPayloadLength)(const ndefType *type);       /*!< Return payload length, specific to each type */
+  const uint8_t *(*getPayloadItem)(const ndefType *type, ndefConstBuffer *item, bool begin); /*!< Payload Encoder, specific to each type */
+  union {
+    ndefTypeRtdDeviceInfo  deviceInfo;    /*!< Device Information */
+    ndefTypeRtdText        text;          /*!< Text               */
+    ndefTypeRtdUri         uri;           /*!< URI                */
+    ndefTypeRtdAar         aar;           /*!< AAR                */
+    ndefTypeMedia          media;         /*!< Media              */
+    ndefTypeVCard          vCard;         /*!< vCard              */
+    ndefTypeWifi           wifi;          /*!< Wifi               */
+  } data;                               /*!< Type data union        */
 };
 
 

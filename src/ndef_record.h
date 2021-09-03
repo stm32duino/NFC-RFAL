@@ -9,8 +9,8 @@
   *
   *        www.st.com/mix_myliberty
   *
-  * Unless required by applicable law or agreed to in writing, software 
-  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
   * AND SPECIFICALLY DISCLAIMING THE IMPLIED WARRANTIES OF MERCHANTABILITY,
   * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
@@ -119,18 +119,17 @@ typedef struct ndefTypeStruct ndefType;       /*!< Forward declaration */
 typedef struct ndefMessageStruct ndefMessage; /*!< Forward declaration */
 
 /*! Record type */
-typedef struct ndefRecordStruct
-{
-    uint8_t  header;               /*!< Header byte made of MB:1 ME:1 CF:1 SR:1 IL:1 TNF:3 => 8 bits */
-    uint8_t  typeLength;           /*!< Type length in bytes */
-    uint8_t  idLength;             /*!< Id Length, presence depends on the IL bit */
-    const uint8_t* type;           /*!< Type follows the structure implied by the value of the TNF field */
-    const uint8_t* id;             /*!< Id (middle and terminating record chunks MUST NOT have an ID field) */
-    ndefConstBuffer bufPayload;    /*!< Payload buffer. Payload length depends on the SR bit (either coded on 1 or 4 bytes) */
+typedef struct ndefRecordStruct {
+  uint8_t  header;               /*!< Header byte made of MB:1 ME:1 CF:1 SR:1 IL:1 TNF:3 => 8 bits */
+  uint8_t  typeLength;           /*!< Type length in bytes */
+  uint8_t  idLength;             /*!< Id Length, presence depends on the IL bit */
+  const uint8_t *type;           /*!< Type follows the structure implied by the value of the TNF field */
+  const uint8_t *id;             /*!< Id (middle and terminating record chunks MUST NOT have an ID field) */
+  ndefConstBuffer bufPayload;    /*!< Payload buffer. Payload length depends on the SR bit (either coded on 1 or 4 bytes) */
 
-    const ndefType* ndeftype;      /*!< Well-known type data */
+  const ndefType *ndeftype;      /*!< Well-known type data */
 
-    struct ndefRecordStruct* next; /*!< Pointer to the next record, if any */
+  struct ndefRecordStruct *next; /*!< Pointer to the next record, if any */
 } ndefRecord;
 
 

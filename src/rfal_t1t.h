@@ -9,8 +9,8 @@
   *
   *        www.st.com/mix_myliberty
   *
-  * Unless required by applicable law or agreed to in writing, software 
-  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
   * AND SPECIFICALLY DISCLAIMING THE IMPLIED WARRANTIES OF MERCHANTABILITY,
   * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
@@ -24,11 +24,11 @@
  *  \author SRA
  *
  *  \brief Provides NFC-A T1T convenience methods and definitions
- *  
+ *
  *  This module provides an interface to perform as a NFC-A Reader/Writer
  *  to handle a Type 1 Tag T1T (Topaz)
- *  
- *  
+ *
+ *
  * \addtogroup RFAL
  * @{
  *
@@ -39,7 +39,7 @@
  * \addtogroup T1T
  * \brief RFAL T1T Module
  * @{
- *  
+ *
  */
 
 
@@ -67,13 +67,12 @@
 
 
 /*! NFC-A T1T (Topaz) command set */
-typedef enum
-{
-    RFAL_T1T_CMD_RID      = 0x78,          /*!< T1T Read UID                                */
-    RFAL_T1T_CMD_RALL     = 0x00,          /*!< T1T Read All                                */
-    RFAL_T1T_CMD_READ     = 0x01,          /*!< T1T Read                                    */
-    RFAL_T1T_CMD_WRITE_E  = 0x53,          /*!< T1T Write with erase (single byte)          */
-    RFAL_T1T_CMD_WRITE_NE = 0x1A           /*!< T1T Write with no erase (single byte)       */
+typedef enum {
+  RFAL_T1T_CMD_RID      = 0x78,          /*!< T1T Read UID                                */
+  RFAL_T1T_CMD_RALL     = 0x00,          /*!< T1T Read All                                */
+  RFAL_T1T_CMD_READ     = 0x01,          /*!< T1T Read                                    */
+  RFAL_T1T_CMD_WRITE_E  = 0x53,          /*!< T1T Write with erase (single byte)          */
+  RFAL_T1T_CMD_WRITE_NE = 0x1A           /*!< T1T Write with no erase (single byte)       */
 } rfalT1Tcmds;
 
 
@@ -85,11 +84,10 @@ typedef enum
 
 
 /*! NFC-A T1T (Topaz) RID_RES  Digital 1.1  10.6.2 & Table 50 */
-typedef struct
-{
-    uint8_t hr0;                           /*!< T1T Header ROM: HR0                         */
-    uint8_t hr1;                           /*!< T1T Header ROM: HR1                         */
-    uint8_t uid[RFAL_T1T_UID_LEN];         /*!< T1T UID                                     */
+typedef struct {
+  uint8_t hr0;                           /*!< T1T Header ROM: HR0                         */
+  uint8_t hr1;                           /*!< T1T Header ROM: HR1                         */
+  uint8_t uid[RFAL_T1T_UID_LEN];         /*!< T1T UID                                     */
 } rfalT1TRidRes;
 
 /*
