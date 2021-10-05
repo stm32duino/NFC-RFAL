@@ -21,11 +21,11 @@ jobs:
     steps:
     # First of all, clone the repo using the checkout action.
     - name: Checkout
-      uses: actions/checkout@master
+      uses: actions/checkout@main
 
     - name: Astyle check
       id: Astyle
-      uses: stm32duino/actions/astyle-check@master
+      uses: stm32duino/actions/astyle-check@main
 
     # Use the output from the `Astyle` step
     - name: Astyle Errors
@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Spell check
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@main
     - uses: arduino/actions/libraries/spell-check@master
       with:
         ignore-words-list: "./extras/codespell-ignore-words-list.txt"
@@ -47,11 +47,11 @@ jobs:
     steps:
     # First of all, clone the repo using the checkout action.
     - name: Checkout
-      uses: actions/checkout@master
+      uses: actions/checkout@main
 
     - name: Compilation
       id: Compile
-      uses: stm32duino/actions/compile-examples@master
+      uses: stm32duino/actions/compile-examples@main
       with:
         board-pattern: "NUCLEO_L476RG"
         libraries: "STM32duino ST25R3911B, STM32duino X-NUCLEO-NFC05A1"
