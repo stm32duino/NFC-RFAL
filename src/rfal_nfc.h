@@ -48,6 +48,16 @@
  *
  */
 
+/*
+******************************************************************************
+* Some MCU have a DSI peripheral and define 'DSI' in CMSIS device header
+* so undefine DSI definition as it is a structure name member of nfc rfal
+******************************************************************************
+*/
+#ifdef DSI
+  #undef DSI
+#endif
+
 #ifndef RFAL_NFC_H
 #define RFAL_NFC_H
 
