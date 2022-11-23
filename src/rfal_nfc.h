@@ -3336,7 +3336,7 @@ class RfalNfcClass {
      * \brief  T4T Parse R-APDU
      *
      * This method parses a R-APDU according to NFC Forum T4T and ISO7816-4.
-     * It will extract the data length and check if the Satus word is expected.
+     * It will extract the data length and check if the Status word is expected.
      *
      * \param[in,out] apduParam : APDU parameters
      *                            apduParam.rApduBodyLen will contain the data length
