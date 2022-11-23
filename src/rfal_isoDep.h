@@ -382,7 +382,7 @@ typedef struct {
   uint8_t                  DID;                      /*!< Device ID (RFAL_ISODEP_NO_DID if no DID) */
 } rfalIsoDepApduTxRxParam;
 
-/*! Internal structure to be used in handling of S(PARAMETRS) only */
+/*! Internal structure to be used in handling of S(PARAMETERS) only */
 typedef struct {
   uint8_t               pcb;       /*!< PCB byte                      */
   rfalIsoDepSParameter  sParam;    /*!< S(PARAMETERS)                 */
