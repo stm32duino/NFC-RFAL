@@ -67,7 +67,7 @@
 /*! Length NFCIP DEP REQ or RES header (incl LEN)                                                                           */
 #define RFAL_NFCDEP_DEP_HEADER          ( RFAL_NFCDEP_LEN_LEN + RFAL_NFCDEP_CMDTYPE_LEN + RFAL_NFCDEP_CMD_LEN + RFAL_NFCDEP_DEP_PFB_LEN )
 #define RFAL_NFCDEP_HEADER              ( RFAL_NFCDEP_CMDTYPE_LEN + RFAL_NFCDEP_CMD_LEN ) /*!< NFCIP header length           */
-#define RFAL_NFCDEP_SB_LEN              1U               /*!< SB length on NFCIP fram for NFC-A                              */
+#define RFAL_NFCDEP_SB_LEN              1U               /*!< SB length on NFCIP frame for NFC-A                              */
 #define RFAL_NFCDEP_LEN_LEN             1U               /*!< LEN length on NFCIP frame                                      */
 #define RFAL_NFCDEP_CMDTYPE_LEN         1U               /*!< Length of the cmd type (REQ | RES) on NFCIP frame              */
 #define RFAL_NFCDEP_CMD_LEN             1U               /*!< Length of the cmd on NFCIP frame                               */
