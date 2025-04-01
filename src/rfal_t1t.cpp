@@ -45,6 +45,14 @@
  ******************************************************************************
  */
 
+/* Feature switch may be enabled or disabled by user at rfal_platform.h
+ * Default configuration (ST25R dependant) also provided at rfal_default_config.h
+ *
+ *    RFAL_FEATURE_T1T
+ */
+
+#if RFAL_FEATURE_T1T
+
 /*
  ******************************************************************************
  * GLOBAL DEFINES
@@ -99,12 +107,6 @@ typedef struct {
 
 /*
 ******************************************************************************
-* LOCAL FUNCTION PROTOTYPES
-******************************************************************************
-*/
-
-/*
-******************************************************************************
 * GLOBAL FUNCTIONS
 ******************************************************************************
 */
@@ -114,7 +116,7 @@ ReturnCode RfalNfcClass::rfalT1TPollerInitialize(void)
   ReturnCode ret;
 
   EXIT_ON_ERR(ret, rfalRfDev->rfalSetMode(RFAL_MODE_POLL_NFCA_T1T, RFAL_BR_106, RFAL_BR_106));
-  rfalRfDev->rfalSetErrorHandling(RFAL_ERRORHANDLING_NFC);
+  rfalRfDev->rfalSetErrorHandling(ERRORHANDLING_NONE);
 
   rfalRfDev->rfalSetGT(RFAL_GT_NONE);                            /* T1T should only be initialized after NFC-A mode, therefore the GT has been fulfilled */
   rfalRfDev->rfalSetFDTListen(RFAL_FDT_LISTEN_NFCA_POLLER);      /* T1T uses NFC-A FDT Listen with n=9   Digital 1.1  10.7.2                             */
@@ -194,3 +196,6 @@ ReturnCode RfalNfcClass::rfalT1TPollerWrite(const uint8_t *uid, uint8_t address,
   }
   return err;
 }
+
+
+#endif /* RFAL_FEATURE_T1T */

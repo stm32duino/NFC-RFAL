@@ -1,41 +1,24 @@
-/******************************************************************************
-  * \attention
-  *
-  * <h2><center>&copy; COPYRIGHT 2021 STMicroelectronics</center></h2>
-  *
-  * Licensed under ST MIX MYLIBERTY SOFTWARE LICENSE AGREEMENT (the "License");
-  * You may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at:
-  *
-  *        www.st.com/mix_myliberty
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
-  * AND SPECIFICALLY DISCLAIMING THE IMPLIED WARRANTIES OF MERCHANTABILITY,
-  * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  *
-******************************************************************************/
 
-/*! \file
- *
- *  \author SRA
- *
- *  \brief Common NDEF RTD (well-known and external) and Media types header file
- *
- * NDEF types provides an abstraction layer gathering both the RTD and MIME types
- * in a single generic ndefType interface.
- * See ndefTypeStruct and ndefType
- *
- * \addtogroup NDEF
- * @{
- *
- */
+/**
+  ******************************************************************************
+  * @file           : ndef_types.h
+  * @brief          : Common NDEF RTD (well-known and external) and Media types header file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2021 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
 
 #ifndef NDEF_TYPES_H
 #define NDEF_TYPES_H
+
 
 
 /*
@@ -44,9 +27,52 @@
  ******************************************************************************
  */
 
+#include "ndef_config.h"
 #include "ndef_record.h"
 #include "ndef_buffer.h"
-#include "ndef_type_wifi.h"
+
+/* RTD types */
+#if NDEF_TYPE_EMPTY_SUPPORT
+  #include "ndef_type_empty.h"
+#endif
+#if NDEF_TYPE_FLAT_SUPPORT
+  #include "ndef_type_flat.h"
+#endif
+#if NDEF_TYPE_RTD_DEVICE_INFO_SUPPORT
+  #include "ndef_type_deviceinfo.h"
+#endif
+#if NDEF_TYPE_RTD_TEXT_SUPPORT
+  #include "ndef_type_text.h"
+#endif
+#if NDEF_TYPE_RTD_URI_SUPPORT
+  #include "ndef_type_uri.h"
+#endif
+#if NDEF_TYPE_RTD_AAR_SUPPORT
+  #include "ndef_type_aar.h"
+#endif
+#if NDEF_TYPE_RTD_WLC_SUPPORT
+  #include "ndef_type_wlc.h"
+#endif
+#if NDEF_TYPE_RTD_WPCWLC_SUPPORT
+  #include "ndef_type_wpcwlc.h"
+#endif
+#if NDEF_TYPE_RTD_TNEP_SUPPORT
+  #include "ndef_type_tnep.h"
+#endif
+
+/* MIME types */
+#if NDEF_TYPE_MEDIA_SUPPORT
+  #include "ndef_type_media.h"
+#endif
+#if NDEF_TYPE_BLUETOOTH_SUPPORT
+  #include "ndef_type_bluetooth.h"
+#endif
+#if NDEF_TYPE_VCARD_SUPPORT
+  #include "ndef_type_vcard.h"
+#endif
+#if NDEF_TYPE_WIFI_SUPPORT
+  #include "ndef_type_wifi.h"
+#endif
 
 
 /*
@@ -56,64 +82,6 @@
  */
 
 
-/*! Device Information defines */
-#define NDEF_UUID_LENGTH                        16U    /*!< Device Information UUID length */
-
-
-/*! Text defines */
-/*! RTD Type Text Encoding */
-#define TEXT_ENCODING_UTF8                       0U    /*!< UTF8  text encoding  */
-#define TEXT_ENCODING_UTF16                      1U    /*!< UTF16 text encoding  */
-
-#define NDEF_RTD_TEXT_ENCODING_MASK           0x80U    /*!< Text encoding mask             */
-#define NDEF_RTD_TEXT_ENCODING_SHIFT             7U    /*!< Text encoding bit shift        */
-
-
-/*! RTD Type URI Protocols */
-#define NDEF_URI_PREFIX_NONE          0x00U    /*!< No URI Protocol               */
-#define NDEF_URI_PREFIX_HTTP_WWW      0x01U    /*!< URI Protocol http://www.      */
-#define NDEF_URI_PREFIX_HTTPS_WWW     0x02U    /*!< URI Protocol https://www.     */
-#define NDEF_URI_PREFIX_HTTP          0x03U    /*!< URI Protocol http://          */
-#define NDEF_URI_PREFIX_HTTPS         0x04U    /*!< URI Protocol https://         */
-#define NDEF_URI_PREFIX_TEL           0x05U    /*!< URI Protocol tel:             */
-#define NDEF_URI_PREFIX_MAILTO        0x06U    /*!< URI Protocol mailto:          */
-#define NDEF_URI_PREFIX_FTP_ANONYMOUS 0x07U    /*!< URI Protocol ftp://anonymous@ */
-#define NDEF_URI_PREFIX_FTP_FTP       0x08U    /*!< URI Protocol ftp://ftp.       */
-#define NDEF_URI_PREFIX_FTPS          0x09U    /*!< URI Protocol ftps://          */
-#define NDEF_URI_PREFIX_SFTP          0x0AU    /*!< URI Protocol sftp://          */
-#define NDEF_URI_PREFIX_SMB           0x0BU    /*!< URI Protocol smb://           */
-#define NDEF_URI_PREFIX_NFS           0x0CU    /*!< URI Protocol nfs://           */
-#define NDEF_URI_PREFIX_FTP           0x0DU    /*!< URI Protocol ftp://           */
-#define NDEF_URI_PREFIX_DAV           0x0EU    /*!< URI Protocol dav://           */
-#define NDEF_URI_PREFIX_NEWS          0x0FU    /*!< URI Protocol news:            */
-#define NDEF_URI_PREFIX_TELNET        0x10U    /*!< URI Protocol telnet://        */
-#define NDEF_URI_PREFIX_IMAP          0x11U    /*!< URI Protocol imap:            */
-#define NDEF_URI_PREFIX_RTSP          0x12U    /*!< URI Protocol rtsp://          */
-#define NDEF_URI_PREFIX_URN           0x13U    /*!< URI Protocol urn:             */
-#define NDEF_URI_PREFIX_POP           0x14U    /*!< URI Protocol pop:             */
-#define NDEF_URI_PREFIX_SIP           0x15U    /*!< URI Protocol sip:             */
-#define NDEF_URI_PREFIX_SIPS          0x16U    /*!< URI Protocol sips:            */
-#define NDEF_URI_PREFIX_TFTP          0x17U    /*!< URI Protocol tftp:            */
-#define NDEF_URI_PREFIX_BTSPP         0x18U    /*!< URI Protocol btspp://         */
-#define NDEF_URI_PREFIX_BTL2CAP       0x19U    /*!< URI Protocol btl2cap://       */
-#define NDEF_URI_PREFIX_BTGOEP        0x1AU    /*!< URI Protocol btgoep://        */
-#define NDEF_URI_PREFIX_TCPOBEX       0x1BU    /*!< URI Protocol tcpobex://       */
-#define NDEF_URI_PREFIX_IRDAOBEX      0x1CU    /*!< URI Protocol irdaobex://      */
-#define NDEF_URI_PREFIX_FILE          0x1DU    /*!< URI Protocol file://          */
-#define NDEF_URI_PREFIX_URN_EPC_ID    0x1EU    /*!< URI Protocol urn:epc:id:      */
-#define NDEF_URI_PREFIX_URN_EPC_TAG   0x1FU    /*!< URI Protocol urn:epc:tag      */
-#define NDEF_URI_PREFIX_URN_EPC_PAT   0x20U    /*!< URI Protocol urn:epc:pat:     */
-#define NDEF_URI_PREFIX_URN_EPC_RAW   0x21U    /*!< URI Protocol urn:epc:raw:     */
-#define NDEF_URI_PREFIX_URN_EPC       0x22U    /*!< URI Protocol urn:epc:         */
-#define NDEF_URI_PREFIX_URN_NFC       0x23U    /*!< URI Protocol urn:nfc:         */
-#define NDEF_URI_PREFIX_AUTODETECT    0x24U    /*!< ST Protocol Autodetect        */
-#define NDEF_URI_PREFIX_COUNT         0x25U    /*!< Number of URI protocols       */
-
-
-/*! vCard defines */
-#define NDEF_VCARD_ENTRY_MAX                    16U    /*!< vCard maximum entries */
-
-
 /*
  ******************************************************************************
  * GLOBAL TYPES
@@ -121,97 +89,33 @@
  */
 
 
-/*! RTD Device Information types */
-#define NDEF_DEVICE_INFO_MANUFACTURER_NAME     0U /*!< Manufacturer name                      */
-#define NDEF_DEVICE_INFO_MODEL_NAME            1U /*!< Model name                             */
-#define NDEF_DEVICE_INFO_DEVICE_UNIQUE_NAME    2U /*!< Device Unique Name aka "Friendly Name" */
-#define NDEF_DEVICE_INFO_UUID                  3U /*!< UUID                                   */
-#define NDEF_DEVICE_INFO_FIRMWARE_VERSION      4U /*!< Firmware Version                       */
-#define NDEF_DEVICE_INFO_TYPE_COUNT    5U /*!< Maximum Device Information types */
-
-
-/*! RTD Device Information Entry */
-typedef struct {
-  uint8_t        type;      /*!< Device Information Type              */
-  uint8_t        length;    /*!< Device Information length            */
-  const uint8_t *buffer;    /*!< Device Information pointer to buffer */
-} ndefDeviceInfoEntry;
-
-
-/*! RTD Type Device Information */
-typedef struct {
-  ndefDeviceInfoEntry devInfo[NDEF_DEVICE_INFO_TYPE_COUNT]; /*!< Device Information entries */
-} ndefTypeRtdDeviceInfo;
-
-
-/*! RTD Type Text */
-typedef struct {
-  uint8_t          status;          /*!< Status byte                   */
-  ndefConstBuffer8 bufLanguageCode; /*!< ISO/IANA language code buffer */
-  ndefConstBuffer  bufSentence;     /*!< Sentence buffer               */
-} ndefTypeRtdText;
-
-
-/*! RTD Type URI */
-typedef struct {
-  uint8_t         protocol;     /*!< Protocol Identifier */
-  ndefConstBuffer bufUriString; /*!< URI string buffer   */
-} ndefTypeRtdUri;
-
-
-/*! RTD Android Application Record External Type */
-typedef struct {
-  ndefConstBuffer8 bufType;    /*!< AAR type    */
-  ndefConstBuffer  bufPayload; /*!< AAR payload */
-} ndefTypeRtdAar;
-
-
-/*! Media Type */
-typedef struct {
-  ndefConstBuffer8 bufType;    /*!< Media type    */
-  ndefConstBuffer  bufPayload; /*!< Media payload */
-} ndefTypeMedia;
-
-
-/*! vCard input */
-typedef struct {
-  ndefConstBuffer *bufType;    /*!< Type buffer    */
-  ndefConstBuffer *bufSubType; /*!< SubType buffer */
-  ndefConstBuffer *bufValue;   /*!< Value buffer   */
-} ndefVCardInput;
-
-
-/*! vCard Entry */
-typedef struct {
-  const uint8_t *bufTypeBuffer;    /*!< Type buffer           */
-  const uint8_t *bufSubTypeBuffer; /*!< Subtype buffer        */
-  const uint8_t *bufValueBuffer;   /*!< Value buffer          */
-  /* All lengths below fit in a word */
-  uint8_t  bufTypeLength;          /*!< Type buffer length    */
-  uint8_t  bufSubTypeLength;       /*!< Subtype buffer length */
-  uint16_t bufValueLength;         /*!< Value buffer length   */
-} ndefVCardEntry;
-
-
-/*! NDEF Type vCard */
-typedef struct {
-  ndefVCardEntry entry[NDEF_VCARD_ENTRY_MAX]; /*!< vCard entries */
-} ndefTypeVCard;
-
-
 /*****************************************************************************/
 
 /*! NDEF Type Id enum */
 typedef enum {
-  NDEF_TYPE_EMPTY = 0,
-  NDEF_TYPE_RTD_DEVICE_INFO,
-  NDEF_TYPE_RTD_TEXT,
-  NDEF_TYPE_RTD_URI,
-  NDEF_TYPE_RTD_AAR,
-  NDEF_TYPE_MEDIA,
-  NDEF_TYPE_MEDIA_VCARD,
-  NDEF_TYPE_MEDIA_WIFI,
-  NDEF_TYPE_ID_COUNT /* Keep this one last */
+  NDEF_TYPE_ID_NONE = 0,
+  NDEF_TYPE_ID_FLAT,
+  NDEF_TYPE_ID_EMPTY,
+  NDEF_TYPE_ID_RTD_DEVICE_INFO,
+  NDEF_TYPE_ID_RTD_TEXT,
+  NDEF_TYPE_ID_RTD_URI,
+  NDEF_TYPE_ID_RTD_AAR,
+  NDEF_TYPE_ID_RTD_WLCCAP,
+  NDEF_TYPE_ID_RTD_WLCSTAI,
+  NDEF_TYPE_ID_RTD_WLCINFO,
+  NDEF_TYPE_ID_RTD_WLCCTL,
+  NDEF_TYPE_ID_RTD_WPCWLC,
+  NDEF_TYPE_ID_RTD_TNEP_SERVICE_PARAMETER,
+  NDEF_TYPE_ID_RTD_TNEP_SERVICE_SELECT,
+  NDEF_TYPE_ID_RTD_TNEP_STATUS,
+  NDEF_TYPE_ID_MEDIA,
+  NDEF_TYPE_ID_BLUETOOTH_BREDR,
+  NDEF_TYPE_ID_BLUETOOTH_LE,
+  NDEF_TYPE_ID_BLUETOOTH_SECURE_BREDR,
+  NDEF_TYPE_ID_BLUETOOTH_SECURE_LE,
+  NDEF_TYPE_ID_MEDIA_VCARD,
+  NDEF_TYPE_ID_MEDIA_WIFI,
+  NDEF_TYPE_ID_COUNT        /* Keep this one last */
 } ndefTypeId;
 
 
@@ -220,15 +124,51 @@ struct ndefTypeStruct {
   ndefTypeId      id;                                       /*!< Type Id           */
   uint32_t (*getPayloadLength)(const ndefType *type);       /*!< Return payload length, specific to each type */
   const uint8_t *(*getPayloadItem)(const ndefType *type, ndefConstBuffer *item, bool begin); /*!< Payload Encoder, specific to each type */
+  ReturnCode(*typeToRecord)(const ndefType *type, ndefRecord *record);      /*!< Type to Record convert function */
   union {
-    ndefTypeRtdDeviceInfo  deviceInfo;    /*!< Device Information */
-    ndefTypeRtdText        text;          /*!< Text               */
-    ndefTypeRtdUri         uri;           /*!< URI                */
-    ndefTypeRtdAar         aar;           /*!< AAR                */
-    ndefTypeMedia          media;         /*!< Media              */
-    ndefTypeVCard          vCard;         /*!< vCard              */
-    ndefTypeWifi           wifi;          /*!< Wifi               */
-  } data;                               /*!< Type data union        */
+#if NDEF_TYPE_FLAT_SUPPORT
+    ndefConstBuffer           bufPayload;       /*!< Flat/unknown type    */
+#endif
+#if NDEF_TYPE_RTD_DEVICE_INFO_SUPPORT
+    ndefTypeRtdDeviceInfo     deviceInfo;       /*!< Device Information   */
+#endif
+#if NDEF_TYPE_RTD_TEXT_SUPPORT
+    ndefTypeRtdText           text;             /*!< Text                 */
+#endif
+#if NDEF_TYPE_RTD_URI_SUPPORT
+    ndefTypeRtdUri            uri;              /*!< URI                  */
+#endif
+#if NDEF_TYPE_RTD_AAR_SUPPORT
+    ndefTypeRtdAar            aar;              /*!< AAR                  */
+#endif
+#if NDEF_TYPE_RTD_WLC_SUPPORT
+    ndefTypeRtdWlcCapability  wlcCapability; /*!< WLC Capability          */
+    ndefTypeRtdWlcStatusInfo  wlcStatusInfo; /*!< WLC Status and Info     */
+    ndefTypeRtdWlcPollInfo    wlcPollInfo;   /*!< WLC Poll Information    */
+    ndefTypeRtdWlcListenCtl   wlcListenCtl;  /*!< WLC Listen Control      */
+#endif
+#if NDEF_TYPE_RTD_WPCWLC_SUPPORT
+    ndefTypeRtdWpcWlc         wpcWlc;           /*!< WPC WLC              */
+#endif
+#if NDEF_TYPE_RTD_TNEP_SUPPORT
+    ndefTypeRtdTnepServiceParameter tnepServiceParameter; /*!< TNEP Service Parameter */
+    ndefTypeRtdTnepServiceSelect    tnepServiceSelect;    /*!< TNEP Service Select    */
+    ndefTypeRtdTnepStatus           tnepStatus;           /*!< TNEP Status            */
+#endif
+#if NDEF_TYPE_MEDIA_SUPPORT
+    ndefTypeMedia             media;            /*!< Media                */
+#endif
+#if NDEF_TYPE_BLUETOOTH_SUPPORT
+    ndefTypeBluetooth         bluetooth;        /*!< Bluetooth            */
+#endif
+#if NDEF_TYPE_VCARD_SUPPORT
+    ndefTypeVCard             vCard;            /*!< vCard                */
+#endif
+#if NDEF_TYPE_WIFI_SUPPORT
+    ndefTypeWifi              wifi;             /*!< Wifi                 */
+#endif
+    uint8_t                   reserved;         /*!< Non-conditional field to avoid empty union when all types are disabled */
+  } data;                      /*!< Type data union                         */
 };
 
 
@@ -237,6 +177,59 @@ struct ndefTypeStruct {
  * GLOBAL FUNCTION PROTOTYPES
  ******************************************************************************
  */
+
+
+
+/*!
+ *****************************************************************************
+ * Convert a record to a supported type
+ *
+ * \param[in]  record: Record to read
+ * \param[out] type:   Type to store the converted record
+ *
+ * \return ERR_NONE if successful or a standard error code
+ *****************************************************************************
+ */
+ReturnCode ndefRecordToType(const ndefRecord *record, ndefType *type);
+
+
+/*!
+ *****************************************************************************
+ * Convert a supported type to a record
+ *
+ * \param[in]  type:    Pointer to the type to read data from
+ * \param[out] record:  Record to fill
+ *
+ * \return ERR_NONE if successful or a standard error code
+ *****************************************************************************
+ */
+ReturnCode ndefTypeToRecord(const ndefType *type, ndefRecord *record);
+
+
+/*!
+ *****************************************************************************
+ * Set the NDEF specific structure to process NDEF types
+ *
+ * \param[in]  record: Record
+ * \param[out] type:   NDEF type structure
+ *
+ * \return ERR_NONE if successful or a standard error code
+ *****************************************************************************
+ */
+ReturnCode ndefRecordSetNdefType(ndefRecord *record, const ndefType *type);
+
+
+/*!
+ *****************************************************************************
+ * Get the NDEF type structure of this record
+ *
+ * \param[in] record: Record
+ *
+ * \return ERR_NONE if successful or a standard error code
+ *****************************************************************************
+ */
+const ndefType *ndefRecordGetNdefType(const ndefRecord *record);
+
 
 
 #endif /* NDEF_TYPES_H */

@@ -49,11 +49,19 @@
 ******************************************************************************
 */
 
+/* Feature switch may be enabled or disabled by user at rfal_platform.h
+ * Default configuration (ST25R dependant) also provided at rfal_default_config.h
+ *
+ *    RFAL_FEATURE_T4T
+ */
+
+#if RFAL_FEATURE_T4T
+
 /*
-******************************************************************************
-* GLOBAL DEFINES
-******************************************************************************
-*/
+ ******************************************************************************
+ * GLOBAL DEFINES
+ ******************************************************************************
+ */
 #define RFAL_T4T_OFFSET_DO          0x54U        /*!< Tag value for offset BER-TLV data object          */
 #define RFAL_T4T_LENGTH_DO          0x03U        /*!< Len value for offset BER-TLV data object          */
 #define RFAL_T4T_DATA_DO            0x53U        /*!< Tag value for data BER-TLV data object            */
@@ -87,7 +95,7 @@
  */
 
 /*******************************************************************************/
-ReturnCode RfalNfcClass::rfalT4TPollerComposeCAPDU(rfalT4tCApduParam *apduParam)
+ReturnCode RfalNfcClass::rfalT4TPollerComposeCAPDU(const rfalT4tCApduParam *apduParam)
 {
   uint8_t                  hdrLen;
   uint16_t                 msgIt;
@@ -176,6 +184,9 @@ ReturnCode RfalNfcClass::rfalT4TPollerComposeSelectAppl(rfalIsoDepApduBufFormat 
 {
   rfalT4tCApduParam cAPDU;
 
+  if (cApduBuf == NULL) {
+    return ERR_PARAM;
+  }
   /* CLA INS P1  P2   Lc  Data   Le  */
   /* 00h A4h 00h 00h  07h AID    00h */
   cAPDU.CLA      = RFAL_T4T_CLA;
@@ -189,7 +200,7 @@ ReturnCode RfalNfcClass::rfalT4TPollerComposeSelectAppl(rfalIsoDepApduBufFormat 
   cAPDU.cApduBuf = cApduBuf;
   cAPDU.cApduLen = cApduLen;
 
-  if (aidLen > 0U) {
+  if ((aid != NULL) && (aidLen > 0U)) {
     ST_MEMCPY(cAPDU.cApduBuf->apdu, aid, aidLen);
   }
 
@@ -201,6 +212,10 @@ ReturnCode RfalNfcClass::rfalT4TPollerComposeSelectAppl(rfalIsoDepApduBufFormat 
 ReturnCode RfalNfcClass::rfalT4TPollerComposeSelectFile(rfalIsoDepApduBufFormat *cApduBuf, const uint8_t *fid, uint8_t fidLen, uint16_t *cApduLen)
 {
   rfalT4tCApduParam cAPDU;
+
+  if (cApduBuf == NULL) {
+    return ERR_PARAM;
+  }
 
   /* CLA INS P1  P2   Lc  Data   Le  */
   /* 00h A4h 00h 0Ch  02h FID    -   */
@@ -215,7 +230,7 @@ ReturnCode RfalNfcClass::rfalT4TPollerComposeSelectFile(rfalIsoDepApduBufFormat 
   cAPDU.cApduBuf = cApduBuf;
   cAPDU.cApduLen = cApduLen;
 
-  if (fidLen > 0U) {
+  if ((fid != NULL) && (fidLen > 0U)) {
     ST_MEMCPY(cAPDU.cApduBuf->apdu, fid, fidLen);
   }
 
@@ -227,6 +242,10 @@ ReturnCode RfalNfcClass::rfalT4TPollerComposeSelectFile(rfalIsoDepApduBufFormat 
 ReturnCode RfalNfcClass::rfalT4TPollerComposeSelectFileV1Mapping(rfalIsoDepApduBufFormat *cApduBuf, const uint8_t *fid, uint8_t fidLen, uint16_t *cApduLen)
 {
   rfalT4tCApduParam cAPDU;
+
+  if (cApduBuf == NULL) {
+    return ERR_PARAM;
+  }
 
   /* CLA INS P1  P2   Lc  Data   Le  */
   /* 00h A4h 00h 00h  02h FID    -   */
@@ -241,7 +260,7 @@ ReturnCode RfalNfcClass::rfalT4TPollerComposeSelectFileV1Mapping(rfalIsoDepApduB
   cAPDU.cApduBuf = cApduBuf;
   cAPDU.cApduLen = cApduLen;
 
-  if (fidLen > 0U) {
+  if ((fid != NULL) && (fidLen > 0U)) {
     ST_MEMCPY(cAPDU.cApduBuf->apdu, fid, fidLen);
   }
 
@@ -253,6 +272,8 @@ ReturnCode RfalNfcClass::rfalT4TPollerComposeSelectFileV1Mapping(rfalIsoDepApduB
 ReturnCode RfalNfcClass::rfalT4TPollerComposeReadData(rfalIsoDepApduBufFormat *cApduBuf, uint16_t offset, uint8_t expLen, uint16_t *cApduLen)
 {
   rfalT4tCApduParam cAPDU;
+
+  ST_MEMSET(&cAPDU, 0x00, sizeof(rfalT4tCApduParam));
 
   /* CLA INS P1  P2   Lc  Data   Le  */
   /* 00h B0h [Offset] -   -      len */
@@ -306,6 +327,11 @@ ReturnCode RfalNfcClass::rfalT4TPollerComposeWriteData(rfalIsoDepApduBufFormat *
 {
   rfalT4tCApduParam cAPDU;
 
+  if (cApduBuf == NULL) {
+    return ERR_PARAM;
+  }
+
+  ST_MEMSET(&cAPDU, 0x00, sizeof(rfalT4tCApduParam));
 
   /* CLA INS P1  P2   Lc  Data   Le  */
   /* 00h D6h [Offset] len Data   -   */
@@ -319,7 +345,7 @@ ReturnCode RfalNfcClass::rfalT4TPollerComposeWriteData(rfalIsoDepApduBufFormat *
   cAPDU.cApduBuf = cApduBuf;
   cAPDU.cApduLen = cApduLen;
 
-  if (dataLen > 0U) {
+  if ((data != NULL) && (dataLen > 0U)) {
     ST_MEMCPY(cAPDU.cApduBuf->apdu, data, dataLen);
   }
 
@@ -331,6 +357,12 @@ ReturnCode RfalNfcClass::rfalT4TPollerComposeWriteDataODO(rfalIsoDepApduBufForma
 {
   rfalT4tCApduParam cAPDU;
   uint8_t           dataIt;
+
+  if (cApduBuf == NULL) {
+    return ERR_PARAM;
+  }
+
+  ST_MEMSET(&cAPDU, 0x00, sizeof(rfalT4tCApduParam));
 
   /* CLA INS P1  P2   Lc  Data                     Le  */
   /* 00h D7h 00h 00h  len 54 03 xxyyzz 53 Ld data  -   */
@@ -357,7 +389,7 @@ ReturnCode RfalNfcClass::rfalT4TPollerComposeWriteDataODO(rfalIsoDepApduBufForma
     return (ERR_NOMEM);
   }
 
-  if (dataLen > 0U) {
+  if ((data != NULL) && (dataLen > 0U)) {
     ST_MEMCPY(&cAPDU.cApduBuf->apdu[dataIt], data, dataLen);
   }
   dataIt += dataLen;
@@ -365,3 +397,5 @@ ReturnCode RfalNfcClass::rfalT4TPollerComposeWriteDataODO(rfalIsoDepApduBufForma
 
   return rfalT4TPollerComposeCAPDU(&cAPDU);
 }
+
+#endif /* RFAL_FEATURE_T4T */

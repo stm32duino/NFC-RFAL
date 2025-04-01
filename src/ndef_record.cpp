@@ -1,31 +1,20 @@
-/******************************************************************************
-  * \attention
-  *
-  * <h2><center>&copy; COPYRIGHT 2021 STMicroelectronics</center></h2>
-  *
-  * Licensed under ST MIX MYLIBERTY SOFTWARE LICENSE AGREEMENT (the "License");
-  * You may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at:
-  *
-  *        www.st.com/mix_myliberty
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
-  * AND SPECIFICALLY DISCLAIMING THE IMPLIED WARRANTIES OF MERCHANTABILITY,
-  * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  *
-******************************************************************************/
 
-/*! \file
- *
- *  \author SRA
- *
- *  \brief NDEF record
- *
- */
+/**
+  ******************************************************************************
+  * @file           : ndef_record.cpp
+  * @brief          : NDEF record
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2021 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
 
 /*
  ******************************************************************************
@@ -33,7 +22,10 @@
  ******************************************************************************
  */
 
-#include "ndef_class.h"
+#include "ndef_record.h"
+#include "ndef_message.h"
+#include "ndef_types.h"
+#include "nfc_utils.h"
 
 
 /*
@@ -43,11 +35,15 @@
  */
 
 
+#define ndefBufferIsInvalid(buf)     (((buf)->buffer == NULL) && ((buf)->length != 0U))
+
+
 /*
  ******************************************************************************
  * GLOBAL TYPES
  ******************************************************************************
  */
+
 
 /*
  ******************************************************************************
@@ -64,23 +60,24 @@
 
 
 /*****************************************************************************/
-ReturnCode NdefClass::ndefRecordReset(ndefRecord *record)
+ReturnCode ndefRecordReset(ndefRecord *record)
 {
-  ndefConstBuffer8 bufEmpty        = { NULL, 0 };
-  ndefConstBuffer  bufEmptyPayload = { NULL, 0 };
+  ndefConstBuffer8 bufEmpty8 = { NULL, 0 };
+  ndefConstBuffer  bufEmpty  = { NULL, 0 };
 
   if (record == NULL) {
     return ERR_PARAM;
   }
 
-  record->header = ndefHeader(0U, 0U, 0U, 0U, 0U, NDEF_TNF_EMPTY);
+  /* Set the MB and ME bits */
+  record->header = ndefHeader(1U, 1U, 0U, 0U, 0U, NDEF_TNF_EMPTY);
 
-  (void)ndefRecordSetType(record, NDEF_TNF_EMPTY, &bufEmpty);
+  (void)ndefRecordSetType(record, NDEF_TNF_EMPTY, &bufEmpty8);
 
-  (void)ndefRecordSetId(record, &bufEmpty);
+  (void)ndefRecordSetId(record, &bufEmpty8);
 
   /* Set the SR bit */
-  (void)ndefRecordSetPayload(record, &bufEmptyPayload);
+  (void)ndefRecordSetPayload(record, &bufEmpty);
 
   record->ndeftype = NULL;
 
@@ -91,9 +88,9 @@ ReturnCode NdefClass::ndefRecordReset(ndefRecord *record)
 
 
 /*****************************************************************************/
-ReturnCode NdefClass::ndefRecordInit(ndefRecord *record, uint8_t tnf, const ndefConstBuffer8 *bufType, const ndefConstBuffer8 *bufId, const ndefConstBuffer *bufPayload)
+ReturnCode ndefRecordInit(ndefRecord *record, uint8_t tnf, const ndefConstBuffer8 *bufType, const ndefConstBuffer8 *bufId, const ndefConstBuffer *bufPayload)
 {
-  if ((record == NULL) || (bufType == NULL) || (bufPayload == NULL)) {
+  if (record == NULL) {
     return ERR_PARAM;
   }
 
@@ -110,7 +107,7 @@ ReturnCode NdefClass::ndefRecordInit(ndefRecord *record, uint8_t tnf, const ndef
 
 
 /*****************************************************************************/
-uint32_t NdefClass::ndefRecordGetHeaderLength(const ndefRecord *record)
+uint32_t ndefRecordGetHeaderLength(const ndefRecord *record)
 {
   uint32_t length;
 
@@ -136,13 +133,9 @@ uint32_t NdefClass::ndefRecordGetHeaderLength(const ndefRecord *record)
 
 
 /*****************************************************************************/
-uint32_t NdefClass::ndefRecordGetLength(const ndefRecord *record)
+uint32_t ndefRecordGetLength(const ndefRecord *record)
 {
   uint32_t length;
-
-  if (record == NULL) {
-    return 0;
-  }
 
   length  = ndefRecordGetHeaderLength(record);  /* Header */
   length += ndefRecordGetPayloadLength(record); /* Payload */
@@ -152,11 +145,10 @@ uint32_t NdefClass::ndefRecordGetLength(const ndefRecord *record)
 
 
 /*****************************************************************************/
-ReturnCode NdefClass::ndefRecordSetType(ndefRecord *record, uint8_t tnf, const ndefConstBuffer8 *bufType)
+ReturnCode ndefRecordSetType(ndefRecord *record, uint8_t tnf, const ndefConstBuffer8 *bufType)
 {
   if ((record  == NULL) ||
-      (bufType == NULL) ||
-      ((bufType->buffer == NULL) && (bufType->length != 0U))) {
+      (bufType == NULL) || ndefBufferIsInvalid(bufType)) {
     return ERR_PARAM;
   }
 
@@ -170,22 +162,28 @@ ReturnCode NdefClass::ndefRecordSetType(ndefRecord *record, uint8_t tnf, const n
 
 
 /*****************************************************************************/
-ReturnCode NdefClass::ndefRecordGetType(const ndefRecord *record, uint8_t *tnf, ndefConstBuffer8 *bufType)
+ReturnCode ndefRecordGetType(const ndefRecord *record, uint8_t *tnf, ndefConstBuffer8 *bufType)
 {
-  if ((record == NULL) || (tnf == NULL) || (bufType == NULL)) {
+  /* Allow to get either tnf or bufType */
+  if ((record == NULL) || ((tnf == NULL) && (bufType == NULL))) {
     return ERR_PARAM;
   }
 
-  *tnf            = ndefHeaderTNF(record);
-  bufType->buffer = record->type;
-  bufType->length = record->typeLength;
+  if (tnf != NULL) {
+    *tnf            = ndefHeaderTNF(record);
+  }
+
+  if (bufType != NULL) {
+    bufType->buffer = record->type;
+    bufType->length = record->typeLength;
+  }
 
   return ERR_NONE;
 }
 
 
 /*****************************************************************************/
-bool NdefClass::ndefRecordTypeMatch(const ndefRecord *record, uint8_t tnf, const ndefConstBuffer8 *bufType)
+bool ndefRecordTypeMatch(const ndefRecord *record, uint8_t tnf, const ndefConstBuffer8 *bufType)
 {
   if ((record == NULL) || (bufType == NULL)) {
     return false;
@@ -202,11 +200,10 @@ bool NdefClass::ndefRecordTypeMatch(const ndefRecord *record, uint8_t tnf, const
 
 
 /*****************************************************************************/
-ReturnCode NdefClass::ndefRecordSetId(ndefRecord *record, const ndefConstBuffer8 *bufId)
+ReturnCode ndefRecordSetId(ndefRecord *record, const ndefConstBuffer8 *bufId)
 {
   if ((record == NULL) ||
-      (bufId  == NULL) ||
-      ((bufId->buffer == NULL) && (bufId->length != 0U))) {
+      (bufId  == NULL) || ndefBufferIsInvalid(bufId)) {
     return ERR_PARAM;
   }
 
@@ -224,7 +221,7 @@ ReturnCode NdefClass::ndefRecordSetId(ndefRecord *record, const ndefConstBuffer8
 
 
 /*****************************************************************************/
-ReturnCode NdefClass::ndefRecordGetId(const ndefRecord *record, ndefConstBuffer8 *bufId)
+ReturnCode ndefRecordGetId(const ndefRecord *record, ndefConstBuffer8 *bufId)
 {
   if ((record == NULL) || (bufId == NULL)) {
     return ERR_PARAM;
@@ -238,11 +235,10 @@ ReturnCode NdefClass::ndefRecordGetId(const ndefRecord *record, ndefConstBuffer8
 
 
 /*****************************************************************************/
-ReturnCode NdefClass::ndefRecordSetPayload(ndefRecord *record, const ndefConstBuffer *bufPayload)
+ReturnCode ndefRecordSetPayload(ndefRecord *record, const ndefConstBuffer *bufPayload)
 {
   if ((record     == NULL) ||
-      (bufPayload == NULL) ||
-      ((bufPayload->buffer == NULL) && (bufPayload->length != 0U))) {
+      (bufPayload == NULL) || ndefBufferIsInvalid(bufPayload)) {
     return ERR_PARAM;
   }
 
@@ -256,21 +252,21 @@ ReturnCode NdefClass::ndefRecordSetPayload(ndefRecord *record, const ndefConstBu
 
 
 /*****************************************************************************/
-ReturnCode NdefClass::ndefRecordGetPayload(const ndefRecord *record, ndefConstBuffer *bufPayload)
+ReturnCode ndefRecordGetPayload(const ndefRecord *record, ndefConstBuffer *bufPayload)
 {
   if ((record == NULL) || (bufPayload == NULL)) {
     return ERR_PARAM;
   }
 
   bufPayload->buffer = record->bufPayload.buffer;
-  bufPayload->length = ndefRecordGetPayloadLength(record);
+  bufPayload->length = record->bufPayload.length;
 
   return ERR_NONE;
 }
 
 
 /*****************************************************************************/
-ReturnCode NdefClass::ndefRecordDecode(const ndefConstBuffer *bufPayload, ndefRecord *record)
+ReturnCode ndefRecordDecode(const ndefConstBuffer *bufPayload, ndefRecord *record)
 {
   uint32_t offset;
 
@@ -357,16 +353,15 @@ ReturnCode NdefClass::ndefRecordDecode(const ndefConstBuffer *bufPayload, ndefRe
     record->bufPayload.buffer = NULL;
   }
 
-  // Doesn't recognize WKT ...
-
   record->next = NULL;
 
   return ERR_NONE;
 }
 
 
+#if NDEF_FEATURE_FULL_API
 /*****************************************************************************/
-ReturnCode NdefClass::ndefRecordEncodeHeader(const ndefRecord *record, ndefBuffer *bufHeader)
+ReturnCode ndefRecordEncodeHeader(const ndefRecord *record, ndefBuffer *bufHeader)
 {
   uint32_t offset;
   uint32_t payloadLength;
@@ -421,15 +416,15 @@ ReturnCode NdefClass::ndefRecordEncodeHeader(const ndefRecord *record, ndefBuffe
 
 
 /*****************************************************************************/
-ReturnCode NdefClass::ndefRecordPayloadEncode(const ndefRecord *record, ndefBuffer *bufPayload)
+static ReturnCode ndefRecordEncodePayload(const ndefRecord *record, ndefBuffer *bufPayload)
 {
   uint32_t payloadLength;
   uint32_t offset;
   bool     begin;
   ndefConstBuffer bufPayloadItem;
 
-  if ((record == NULL) || (bufPayload == NULL)) {
-    return ERR_PROTO;
+  if (bufPayload == NULL) {
+    return ERR_PARAM;
   }
 
   payloadLength = ndefRecordGetPayloadLength(record);
@@ -454,7 +449,7 @@ ReturnCode NdefClass::ndefRecordPayloadEncode(const ndefRecord *record, ndefBuff
 
 
 /*****************************************************************************/
-ReturnCode NdefClass::ndefRecordEncode(const ndefRecord *record, ndefBuffer *bufRecord)
+ReturnCode ndefRecordEncode(const ndefRecord *record, ndefBuffer *bufRecord)
 {
   ReturnCode err;
   ndefBuffer bufHeader;
@@ -471,8 +466,7 @@ ReturnCode NdefClass::ndefRecordEncode(const ndefRecord *record, ndefBuffer *buf
   }
 
   /* Encode header at the beginning of buffer provided */
-  bufHeader.buffer = bufRecord->buffer;
-  bufHeader.length = bufRecord->length;
+  bufHeader = *bufRecord; /* Copy ndefBuffer fields */
   err = ndefRecordEncodeHeader(record, &bufHeader);
   if (err != ERR_NONE) {
     return err;
@@ -495,7 +489,7 @@ ReturnCode NdefClass::ndefRecordEncode(const ndefRecord *record, ndefBuffer *buf
   /* Set Payload */
   bufPayload.buffer = &bufRecord->buffer[offset];
   bufPayload.length =  bufRecord->length - offset;
-  err = ndefRecordPayloadEncode(record, &bufPayload);
+  err = ndefRecordEncodePayload(record, &bufPayload);
   if (err != ERR_NONE) {
     return err;
   }
@@ -504,10 +498,11 @@ ReturnCode NdefClass::ndefRecordEncode(const ndefRecord *record, ndefBuffer *buf
 
   return ERR_NONE;
 }
+#endif
 
 
 /*****************************************************************************/
-uint32_t NdefClass::ndefRecordGetPayloadLength(const ndefRecord *record)
+uint32_t ndefRecordGetPayloadLength(const ndefRecord *record)
 {
   uint32_t payloadLength;
 
@@ -526,7 +521,7 @@ uint32_t NdefClass::ndefRecordGetPayloadLength(const ndefRecord *record)
 
 
 /*****************************************************************************/
-const uint8_t *NdefClass::ndefRecordGetPayloadItem(const ndefRecord *record, ndefConstBuffer *bufPayloadItem, bool begin)
+const uint8_t *ndefRecordGetPayloadItem(const ndefRecord *record, ndefConstBuffer *bufPayloadItem, bool begin)
 {
   if ((record == NULL) || (bufPayloadItem == NULL)) {
     return NULL;

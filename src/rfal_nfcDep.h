@@ -58,10 +58,24 @@
 
 /*
  ******************************************************************************
+ * ENABLE SWITCH
+ ******************************************************************************
+ */
+/* If module is disabled remove the need for the user to set lengths */
+#if !RFAL_FEATURE_NFC_DEP
+  #undef RFAL_FEATURE_NFC_DEP_BLOCK_MAX_LEN
+  #undef RFAL_FEATURE_NFC_DEP_PDU_MAX_LEN
+
+  #define RFAL_FEATURE_NFC_DEP_BLOCK_MAX_LEN   1U      /*!< NFC-DEP Block/Payload length, set to "none" */
+  #define RFAL_FEATURE_NFC_DEP_PDU_MAX_LEN     1U      /*!< NFC-DEP PDU length, set to "none"           */
+#endif /* !RFAL_FEATURE_NFC_DEP  */
+
+/*
+ ******************************************************************************
  * DEFINES
  ******************************************************************************
  */
-#define RFAL_NFCDEP_FRAME_SIZE_MAX_LEN  254U             /*!< NFCIP Maximum Frame Size   Digital 1.0 Table 91                */
+#define RFAL_NFCDEP_FRAME_SIZE_MAX_LEN  254U             /*!< Maximum Frame Size   Digital 2.0 Table 90                      */
 #define RFAL_NFCDEP_DEPREQ_HEADER_LEN   5U               /*!< DEP_REQ header length: CMD_TYPE + CMD_CMD + PBF + DID + NAD    */
 
 /*! Length NFCIP DEP REQ or RES header (incl LEN)                                                                           */
@@ -129,7 +143,8 @@
 
 #define RFAL_NFCDEP_WT_TRG_MAX_D10       8U                                     /*!< WT target max Digital 1.0 14.6.3.8 A.10 */
 #define RFAL_NFCDEP_WT_TRG_MAX_D11       14U                                    /*!< WT target max Digital 1.1 16.6.3.9 A.9  */
-#define RFAL_NFCDEP_WT_TRG_MAX           RFAL_NFCDEP_WT_TRG_MAX_D11             /*!< WT target max Digital x.x               */
+#define RFAL_NFCDEP_WT_TRG_MAX_L13       10U                                    /*!< WT target max [LLCP] 1.3 6.2.1          */
+#define RFAL_NFCDEP_WT_TRG_MAX           RFAL_NFCDEP_WT_TRG_MAX_D11             /*!< WT target max Digital x.x | LLCP x.x    */
 #define RFAL_NFCDEP_RWT_TRG_MAX          rfalNfcDepWT2RWT( RFAL_NFCDEP_WT_TRG_MAX ) /*!< RWT Initiator maximum value         */
 
 /*! Maximum Frame Waiting Time = ((256 * 16/fc)*2^FWImax) = ((256*16/fc)*2^14) = (1048576 / 64)/fc = (100000h*64)/fc         */
@@ -277,8 +292,15 @@ typedef struct {
 /*! Structure of transmit I-PDU Buffer format from caller                                    */
 typedef struct {
   uint8_t  prologue[RFAL_NFCDEP_DEPREQ_HEADER_LEN];  /*!< Prologue space for NFC-DEP header*/
-  uint8_t  inf[RFAL_NFCDEP_FRAME_SIZE_MAX_LEN];      /*!< INF | Data area of the buffer    */
+  uint8_t  inf[RFAL_FEATURE_NFC_DEP_BLOCK_MAX_LEN];  /*!< INF | Data area of the buffer    */
 } rfalNfcDepBufFormat;
+
+
+/*! Structure of APDU Buffer format from caller */
+typedef struct {
+  uint8_t  prologue[RFAL_NFCDEP_DEPREQ_HEADER_LEN];  /*!< Prologue/SoD buffer                     */
+  uint8_t  pdu[RFAL_FEATURE_NFC_DEP_PDU_MAX_LEN];    /*!< Complete PDU/Payload buffer             */
+} rfalNfcDepPduBufFormat;
 
 
 /*! Activation info as Initiator and Target                                       */
@@ -451,6 +473,19 @@ typedef enum {
 } rfalNfcDepState;
 
 
+/*! Structure of parameters used on NFC DEP PDU Transceive */
+typedef struct {
+  rfalNfcDepPduBufFormat   *txBuf;    /*!< Transmit Buffer struct reference         */
+  uint16_t                 txBufLen;  /*!< Transmit Buffer INF field length in Bytes*/
+  rfalNfcDepPduBufFormat   *rxBuf;    /*!< Receive Buffer struct reference in Bytes */
+  uint16_t                 *rxLen;    /*!< Received INF data length in Bytes        */
+  rfalNfcDepBufFormat      *tmpBuf;   /*!< Temp buffer for single PDUs (internal)   */
+  uint32_t                 FWT;       /*!< FWT to be used (ignored in Listen Mode)  */
+  uint32_t                 dFWT;      /*!< Delta FWT to be used                     */
+  uint16_t                 FSx;       /*!< Other device Frame Size (FSD or FSC)     */
+  uint8_t                  DID;       /*!< Device ID (RFAL_ISODEP_NO_DID if no DID) */
+} rfalNfcDepPduTxRxParam;
+
 /*! Struct that holds all NFCIP data */
 typedef struct {
   rfalNfcDepConfigs       cfg;               /*!< Holds the current configuration to be used    */
@@ -489,7 +524,13 @@ typedef struct {
   bool                    isReqPending;      /*!< Flag pending REQ from Target activation       */
   bool                    isTxPending;       /*!< Flag pending DEP Block while waiting RTOX Ack */
   bool                    isWait4RTOX;       /*!< Flag for waiting RTOX Ack                     */
+
+  rfalNfcDepPduTxRxParam  PDUParam;          /*!< PDU TxRx params                               */
+  uint16_t                PDUTxPos;          /*!< PDU Tx position                               */
+  uint16_t                PDURxPos;          /*!< PDU Rx position                               */
+  bool                    isPDURxChaining;   /*!< PDU Transceive chaining flag                  */
 } rfalNfcDep;
+
 
 
 /*

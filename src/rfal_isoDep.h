@@ -54,6 +54,21 @@
 #include "rfal_nfcb.h"
 /*
  ******************************************************************************
+ * ENABLE SWITCH
+ ******************************************************************************
+ */
+
+/* If module is disabled remove the need for the user to set lengths */
+#if !RFAL_FEATURE_ISO_DEP
+  #undef RFAL_FEATURE_ISO_DEP_IBLOCK_MAX_LEN
+  #undef RFAL_FEATURE_ISO_DEP_APDU_MAX_LEN
+
+  #define RFAL_FEATURE_ISO_DEP_IBLOCK_MAX_LEN  (1U)    /*!< ISO-DEP I-Block max length, set to "none" */
+  #define RFAL_FEATURE_ISO_DEP_APDU_MAX_LEN    (1U)    /*!< ISO-DEP APDU max length, set to "none"    */
+#endif /* !RFAL_FEATURE_ISO_DEP */
+
+/*
+ ******************************************************************************
  * DEFINES
  ******************************************************************************
  */
@@ -63,10 +78,7 @@
 #define RFAL_ISODEP_PCB_LEN                     (1U)     /*!< PCB length                                                        */
 #define RFAL_ISODEP_DID_LEN                     (1U)     /*!< DID length                                                        */
 #define RFAL_ISODEP_NAD_LEN                     (1U)     /*!< NAD length                                                        */
-#define ISODEP_SWTX_PARAM_LEN                   (1U)     /*!< SWTX parameter length         */
-/*! Maximum length of control message (no INF) */
-#define ISODEP_CONTROLMSG_BUF_LEN               (RFAL_ISODEP_PCB_LEN + RFAL_ISODEP_DID_LEN + RFAL_ISODEP_NAD_LEN + ISODEP_SWTX_PARAM_LEN)
-#define RFAL_ISODEP_NO_DID                      (0x00U)  /*!< DID value indicating the ISO-DEP layer not to use DID             */
+#define RFAL_ISODEP_NO_DID                      (0x10U)  /*!< DID value indicating the ISO-DEP layer not to use DID             */
 #define RFAL_ISODEP_NO_NAD                      (0xFFU)  /*!< NAD value indicating the ISO-DEP layer not to use NAD             */
 
 #define RFAL_ISODEP_FWI_MASK                    (0xF0U)  /*!< Mask bits of FWI                                                  */
@@ -83,8 +95,9 @@
 
 /*! Maximum Frame Waiting Time = ((256 * 16/fc) * 2^FWImax) = ((256*16/fc)*2^14) = (67108864)/fc = 2^26 (1/fc)                  */
 #define RFAL_ISODEP_MAX_FWT                     ((uint32_t)1U<<26)
-
-
+#define ISODEP_SWTX_PARAM_LEN (1U) /*!< SWTX parameter length         */
+/*! Maximum length of control message (no INF) */
+#define ISODEP_CONTROLMSG_BUF_LEN (RFAL_ISODEP_PCB_LEN + RFAL_ISODEP_DID_LEN + RFAL_ISODEP_NAD_LEN + ISODEP_SWTX_PARAM_LEN)
 
 #define RFAL_ISODEP_FSDI_DEFAULT                RFAL_ISODEP_FSXI_256  /*!< Default Frame Size Integer in Poll mode              */
 #define RFAL_ISODEP_FSX_KEEP                    (0xFFU)               /*!< Flag to keep FSX from activation                     */
@@ -139,14 +152,16 @@
 #define RFAL_ISODEP_ATS_T0_OFFSET               (0x01U)  /*!< Offset of T0 in ATS Response                                      */
 
 
-#define RFAL_ISODEP_MAX_I_RETRYS                (2U)     /*!< Number of retries for a I-Block  Digital 1.1   15.2.5.4                            */
-#define RFAL_ISODEP_MAX_R_RETRYS                (3U)     /*!< Number of retries for a R-Block  Digital 1.1 A8 - nRETRY ACK/NAK:  [2,5]           */
-#define RFAL_ISODEP_MAX_S_RETRYS                (3U)     /*!< Number of retries for a S-Block  Digital 1.1 A8 - nRETRY DESELECT: [0,5] WTX[2,5]  */
-#define RFAL_ISODEP_RATS_RETRIES                (1U)     /*!< RATS retries upon fail           Digital 1.1  A.6 - [0,1]                          */
+#define RFAL_ISODEP_MAX_I_RETRYS                (2U)     /*!< Number of retries for a I-Block     Digital 2.0   16.2.5.4                  */
+#define RFAL_ISODEP_MAX_R_RETRYS                (3U)     /*!< Number of retries for a R-Block     Digital 2.0 B9 - nRETRY ACK/NAK: [2,5]  */
+#define RFAL_ISODEP_MAX_WTX_NACK_RETRYS         (3U)     /*!< Number of S(WTX) replied with NACK  Digital 2.0 B9 - nRETRY WTX[2,5]        */
+#define RFAL_ISODEP_MAX_WTX_RETRYS              (20U)    /*!< Number of overall S(WTX) retries    Digital 2.0  16.2.5.2                   */
+#define RFAL_ISODEP_MAX_WTX_RETRYS_ULTD         (255U)   /*!< Use unlimited number of overall S(WTX)                                      */
+#define RFAL_ISODEP_MAX_DSL_RETRYS              (0U)     /*!< Number of retries for a S(DESELECT) Digital 2.0 B9 - nRETRY DESELECT: [0,5] */
+#define RFAL_ISODEP_RATS_RETRIES                (1U)     /*!< RATS retries upon fail              Digital 2.0 B7 - nRETRY RATS [0,1]      */
 
 
-#define RFAL_FEATURE_ISO_DEP_IBLOCK_MAX_LEN    256U       /*!< ISO-DEP I-Block max length. Please use values as defined by rfalIsoDepFSx */
-#define RFAL_FEATURE_ISO_DEP_APDU_MAX_LEN      1024U      /*!< ISO-DEP APDU max length. Please use multiples of I-Block max length       */
+
 
 /*! Frame Size for Proximity Card Integer definitions                                                               */
 typedef enum {
@@ -258,7 +273,7 @@ typedef struct {
 typedef union {/*  PRQA S 0750 # MISRA 19.2 - Both members of the union will not be used concurrently, device is only of type A or B at a time. Thus no problem can occur. */
 
   /*! NFC-A information                                                                         */
-  union {/*  PRQA S 0750 # MISRA 19.2 - Both members of the union will not be used concurrently, device is only PCD or PICC at a time. Thus no problem can occur. */
+  union {
     struct {
       rfalIsoDepAts        ATS;               /*!< ATS response            (Poller mode)    */
       uint8_t              ATSLen;            /*!< ATS response length     (Poller mode)    */
@@ -269,7 +284,7 @@ typedef union {/*  PRQA S 0750 # MISRA 19.2 - Both members of the union will not
   } A;
 
   /*! NFC-B information                                                                         */
-  union {/*  PRQA S 0750 # MISRA 19.2 - Both members of the union will not be used concurrently, device is only PCD or PICC at a time. Thus no problem can occur. */
+  union {
     struct {
       rfalIsoDepAttribRes  ATTRIB_RES;        /*!< ATTRIB_RES              (Poller mode)    */
       uint8_t              ATTRIB_RESLen;     /*!< ATTRIB_RES length       (Poller mode)    */
@@ -362,8 +377,8 @@ typedef struct {
   bool                 *isRxChaining;                /*!< Received data is not complete            */
   uint32_t             FWT;                          /*!< FWT to be used (ignored in Listen Mode)  */
   uint32_t             dFWT;                         /*!< Delta FWT to be used                     */
-  uint16_t             ourFSx;                       /*!< Our device Frame Size (FSD or FSC)       */
   uint16_t             FSx;                          /*!< Other device Frame Size (FSD or FSC)     */
+  uint16_t             ourFSx;                       /*!< Our device Frame Size (FSD or FSC)       */
   uint8_t              DID;                          /*!< Device ID (RFAL_ISODEP_NO_DID if no DID) */
 } rfalIsoDepTxRxParam;
 
@@ -382,12 +397,6 @@ typedef struct {
   uint8_t                  DID;                      /*!< Device ID (RFAL_ISODEP_NO_DID if no DID) */
 } rfalIsoDepApduTxRxParam;
 
-/*! Internal structure to be used in handling of S(PARAMETERS) only */
-typedef struct {
-  uint8_t               pcb;       /*!< PCB byte                      */
-  rfalIsoDepSParameter  sParam;    /*!< S(PARAMETERS)                 */
-} rfalIsoDepControlMsgSParam;
-
 /*! Enumeration of the possible control message types */
 typedef enum {
   ISODEP_R_ACK,                    /*!< R-ACK  Acknowledge            */
@@ -395,6 +404,13 @@ typedef enum {
   ISODEP_S_WTX,                    /*!< S-WTX  Waiting Time Extension */
   ISODEP_S_DSL                     /*!< S-DSL  Deselect               */
 } rfalIsoDepControlMsg;
+
+/*! Internal structure to be used in handling of S(PARAMETERS) only */
+typedef struct {
+  uint8_t               pcb;       /*!< PCB byte                      */
+  rfalIsoDepSParameter  sParam;    /*!< S(PARAMETERS)                 */
+} rfalIsoDepControlMsgSParam;
+
 
 /*! Enumeration of the IsoDep roles */
 typedef enum {
@@ -413,11 +429,12 @@ typedef enum {
   ISODEP_ST_PICC_ACT_ATTRIB,      /*!< PICC has replied to ATTRIB     */
   ISODEP_ST_PICC_RX,              /*!< PICC REception State           */
   ISODEP_ST_PICC_SWTX,            /*!< PICC Waiting Time eXtension    */
+  ISODEP_ST_PICC_SDSL,            /*!< PICC S(DSL) response ongoing   */
   ISODEP_ST_PICC_TX,              /*!< PICC Transmission State        */
+
+  ISODEP_ST_PCD_ACT_RATS,         /*!< PCD activation (RATS)          */
+  ISODEP_ST_PCD_ACT_PPS,          /*!< PCD activation (PPS)           */
 } rfalIsoDepState;
-
-
-
 
 /*! Holds all ISO-DEP data(counters, buffers, ID, timeouts, frame size)         */
 typedef struct {
@@ -429,7 +446,9 @@ typedef struct {
   uint8_t         nad;           /*!< Current DID                               */
   uint8_t         cntIRetrys;    /*!< I-Block retry counter                     */
   uint8_t         cntRRetrys;    /*!< R-Block retry counter                     */
-  uint8_t         cntSRetrys;    /*!< S-Block retry counter                     */
+  uint8_t         cntSDslRetrys; /*!< S(DESELECT) retry counter                 */
+  uint8_t         cntSWtxRetrys; /*!< Overall S(WTX) retry counter              */
+  uint8_t         cntSWtxNack;   /*!< R(NACK) answered with S(WTX) counter      */
   uint32_t        fwt;           /*!< Current FWT (Frame Waiting Time)          */
   uint32_t        dFwt;          /*!< Current delta FWT                         */
   uint16_t        fsx;           /*!< Current FSx FSC or FSD (max Frame size)   */
@@ -458,20 +477,33 @@ typedef struct {
   bool            isTxPending;   /*!< Flag pending Block while waiting WTX Ack  */
   bool            isWait4WTX;    /*!< Flag for waiting WTX Ack                  */
 
-  uint32_t        SFGTTimer;     /*!< Timer used for SFGT                       */
-
   uint8_t         maxRetriesI;   /*!< Number of retries for a I-Block           */
-  uint8_t         maxRetriesS;   /*!< Number of retries for a S-Block           */
   uint8_t         maxRetriesR;   /*!< Number of retries for a R-Block           */
+  uint8_t         maxRetriesSDSL;/*!< Number of retries for S(DESELECT) errors  */
+  uint8_t         maxRetriesSWTX;/*!< Number of retries for S(WTX) errors       */
+  uint8_t         maxRetriesSnWTX;/*!< Number of retries S(WTX) replied w NACK  */
   uint8_t         maxRetriesRATS;/*!< Number of retries for RATS                */
 
   rfalComplianceMode compMode;   /*!< Compliance mode                           */
 
-  uint8_t         ctrlRxBuf[ISODEP_CONTROLMSG_BUF_LEN];  /*!< Control msg buf   */
-  uint16_t        ctrlRxLen;  /*!< Control msg rcvd len (used only for DSL)     */
+  uint8_t         ctrlBuf[ISODEP_CONTROLMSG_BUF_LEN];    /*!< Control msg buf   */
+  uint16_t        ctrlRxLen;  /*!< Control msg rcvd len                         */
 
+  union {  /*  PRQA S 0750 # MISRA 19.2 - Members of the union will not be used concurrently, only one frame at a time */
+#if RFAL_FEATURE_NFCA
+    rfalIsoDepRats       ratsReq;
+    rfalIsoDepPpsReq     ppsReq;
+#endif /* RFAL_FEATURE_NFCA */
 
-  rfalIsoDepListenActvParam actvParam;  /*!< Listen Activation context          */
+#if RFAL_FEATURE_NFCB
+    rfalIsoDepAttribCmd  attribReq;
+#endif /* RFAL_FEATURE_NFCB */
+  } actv;                                   /*!< Activation buffer              */
+
+  uint8_t                  *rxLen8;         /*!< Receive length (8-bit)         */
+  rfalIsoDepDevice         *actvDev;        /*!< Activation Device Info         */
+  rfalIsoDepListenActvParam actvParam;      /*!< Listen Activation context      */
+
 
   rfalIsoDepApduTxRxParam APDUParam;        /*!< APDU TxRx params               */
   uint16_t                APDUTxPos;        /*!< APDU Tx position               */

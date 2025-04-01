@@ -1,31 +1,20 @@
-/******************************************************************************
-  * \attention
-  *
-  * <h2><center>&copy; COPYRIGHT 2021 STMicroelectronics</center></h2>
-  *
-  * Licensed under ST MIX MYLIBERTY SOFTWARE LICENSE AGREEMENT (the "License");
-  * You may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at:
-  *
-  *        www.st.com/mix_myliberty
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
-  * AND SPECIFICALLY DISCLAIMING THE IMPLIED WARRANTIES OF MERCHANTABILITY,
-  * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  *
-******************************************************************************/
 
-/*! \file
- *
- *  \author SRA
- *
- *  \brief NDEF message
- *
- */
+/**
+  ******************************************************************************
+  * @file           : ndef_message.cpp
+  * @brief          : NDEF message
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2021 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
 
 /*
  ******************************************************************************
@@ -33,7 +22,9 @@
  ******************************************************************************
  */
 
-#include "ndef_class.h"
+#include "ndef_record.h"
+#include "ndef_message.h"
+#include "nfc_utils.h"
 
 
 /*
@@ -42,6 +33,7 @@
  ******************************************************************************
  */
 
+#define NDEF_MAX_RECORD          10U    /*!< Maximum number of records */
 
 /*
  ******************************************************************************
@@ -55,6 +47,7 @@
  * LOCAL VARIABLES
  ******************************************************************************
  */
+static uint8_t ndefRecordPoolIndex = 0;
 
 
 /*
@@ -65,8 +58,10 @@
 
 
 /*****************************************************************************/
-ndefRecord *NdefClass::ndefAllocRecord(void)
+static ndefRecord *ndefAllocRecord(void)
 {
+  static ndefRecord ndefRecordPool[NDEF_MAX_RECORD];
+
   if (ndefRecordPoolIndex >= NDEF_MAX_RECORD) {
     return NULL;
   }
@@ -83,7 +78,7 @@ ndefRecord *NdefClass::ndefAllocRecord(void)
 /*****************************************************************************/
 
 
-ReturnCode NdefClass::ndefMessageInit(ndefMessage *message)
+ReturnCode ndefMessageInit(ndefMessage *message)
 {
   if (message == NULL) {
     return ERR_PARAM;
@@ -100,7 +95,7 @@ ReturnCode NdefClass::ndefMessageInit(ndefMessage *message)
 
 
 /*****************************************************************************/
-ReturnCode NdefClass::ndefMessageGetInfo(const ndefMessage *message, ndefMessageInfo *info)
+ReturnCode ndefMessageGetInfo(const ndefMessage *message, ndefMessageInfo *info)
 {
   ndefRecord *record;
   uint32_t    length      = 0;
@@ -127,7 +122,7 @@ ReturnCode NdefClass::ndefMessageGetInfo(const ndefMessage *message, ndefMessage
 
 
 /*****************************************************************************/
-uint32_t NdefClass::ndefMessageGetRecordCount(const ndefMessage *message)
+uint32_t ndefMessageGetRecordCount(const ndefMessage *message)
 {
   ndefMessageInfo info;
 
@@ -140,7 +135,7 @@ uint32_t NdefClass::ndefMessageGetRecordCount(const ndefMessage *message)
 
 
 /*****************************************************************************/
-ReturnCode NdefClass::ndefMessageAppend(ndefMessage *message, ndefRecord *record)
+ReturnCode ndefMessageAppend(ndefMessage *message, ndefRecord *record)
 {
   if ((message == NULL) || (record == NULL)) {
     return ERR_PARAM;
@@ -182,12 +177,12 @@ ReturnCode NdefClass::ndefMessageAppend(ndefMessage *message, ndefRecord *record
 
 
 /*****************************************************************************/
-ReturnCode NdefClass::ndefMessageDecode(const ndefConstBuffer *bufPayload, ndefMessage *message)
+ReturnCode ndefMessageDecode(const ndefConstBuffer *bufPayload, ndefMessage *message)
 {
   ReturnCode err;
   uint32_t offset;
 
-  if ((bufPayload == NULL) || (bufPayload->buffer == NULL) || (message == NULL)) {
+  if ((bufPayload == NULL) || (bufPayload->buffer == NULL)) {
     return ERR_PARAM;
   }
 
@@ -221,8 +216,9 @@ ReturnCode NdefClass::ndefMessageDecode(const ndefConstBuffer *bufPayload, ndefM
 }
 
 
+#if NDEF_FEATURE_FULL_API
 /*****************************************************************************/
-ReturnCode NdefClass::ndefMessageEncode(const ndefMessage *message, ndefBuffer *bufPayload)
+ReturnCode ndefMessageEncode(const ndefMessage *message, ndefBuffer *bufPayload)
 {
   ReturnCode      err;
   ndefMessageInfo info;
@@ -230,7 +226,7 @@ ReturnCode NdefClass::ndefMessageEncode(const ndefMessage *message, ndefBuffer *
   uint32_t        offset;
   uint32_t        remainingLength;
 
-  if ((message == NULL) || (bufPayload == NULL) || (bufPayload->buffer == NULL)) {
+  if ((bufPayload == NULL) || (bufPayload->buffer == NULL)) {
     return ERR_PARAM;
   }
 
@@ -263,3 +259,25 @@ ReturnCode NdefClass::ndefMessageEncode(const ndefMessage *message, ndefBuffer *
   bufPayload->length = offset;
   return ERR_NONE;
 }
+#endif
+
+
+#if NDEF_FEATURE_FULL_API
+/*****************************************************************************/
+ndefRecord *ndefMessageFindRecordType(ndefMessage *message, uint8_t tnf, const ndefConstBuffer8 *bufType)
+{
+  ndefRecord *record;
+
+  record = ndefMessageGetFirstRecord(message);
+
+  while (record != NULL) {
+    if (ndefRecordTypeMatch(record, tnf, bufType) == true) {
+      return record;
+    }
+
+    record = ndefMessageGetNextRecord(record);
+  }
+
+  return record;
+}
+#endif

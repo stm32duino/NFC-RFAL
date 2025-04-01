@@ -55,14 +55,24 @@
 #include "rfal_rf.h"
 
 /*
+******************************************************************************
+* ENABLE SWITCH
+******************************************************************************
+*/
+
+#ifndef RFAL_FEATURE_ST25xV
+  #define RFAL_FEATURE_ST25xV   false    /* ST25xV module configuration missing. Disabled by default */
+#endif
+
+/*
  ******************************************************************************
  * GLOBAL DEFINES
  ******************************************************************************
  */
 
 
-#define RFAL_NFCV_BLOCKNUM_M24LR_LEN                     2U      /*!< Block Number length of MR24LR tags: 16 bits                */
-#define RFAL_NFCV_ST_IC_MFG_CODE                         0x02    /*!< ST IC Mfg code (used for custom commands)                  */
+#define RFAL_NFCV_BLOCKNUM_M24LR_LEN       2U      /*!< Block Number length of MR24LR tags: 16 bits                */
+
 
 
 #endif /* RFAL_ST25xV_H */

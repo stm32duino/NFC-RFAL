@@ -42,6 +42,14 @@
  ******************************************************************************
  */
 
+/* Feature switch may be enabled or disabled by user at rfal_platform.h
+ * Default configuration (ST25R dependant) also provided at rfal_default_config.h
+ *
+ *    RFAL_FEATURE_ST25TB
+ */
+
+#if RFAL_FEATURE_ST25TB
+
 /*
  ******************************************************************************
  * GLOBAL DEFINES
@@ -117,19 +125,6 @@ typedef struct {
 } rfalSt25tbWriteBlockReq;
 
 
-/*
-******************************************************************************
-* LOCAL FUNCTION PROTOTYPES
-******************************************************************************
-*/
-
-
-/*
-******************************************************************************
-* LOCAL FUNCTION PROTOTYPES
-******************************************************************************
-*/
-
 /*!
  *****************************************************************************
  * \brief  ST25TB Poller Do Collision Resolution
@@ -177,7 +172,7 @@ bool RfalNfcClass::rfalSt25tbPollerDoCollisionResolution(uint8_t devLimit, rfalS
       }
 
       if (ERR_NONE == ret) {
-        rfalSt25tbPollerGetUID(&st25tbDevList[*devCnt].UID);
+        ret = rfalSt25tbPollerGetUID(&st25tbDevList[*devCnt].UID);
       }
 
       if (ERR_NONE == ret) {
@@ -452,13 +447,22 @@ ReturnCode RfalNfcClass::rfalSt25tbPollerWriteBlock(uint8_t blockAddress, const 
   /* Send Write Block Request */
   ret = rfalRfDev->rfalTransceiveBlockingTxRx((uint8_t *)&writeBlockReq, sizeof(rfalSt25tbWriteBlockReq), tmpBlockData, RFAL_ST25TB_BLOCK_LEN, &rxLen, RFAL_TXRX_FLAGS_DEFAULT, (RFAL_ST25TB_FWT + RFAL_ST25TB_TW));
 
-  /* Check if an unexpected answer was received */
-  if (ret == ERR_NONE) {
-    return ERR_PROTO;
-  }
-  /* Check there was any error besides Timeout*/
+  /* Check if there was any error besides timeout */
   if (ret != ERR_TIMEOUT) {
-    return ret;
+    /* Check if an unexpected answer was received */
+    if (ret == ERR_NONE) {
+      return ERR_PROTO;
+    }
+
+    /* Check whether a transmission error occurred */
+    if ((ret != ERR_CRC) && (ret != ERR_FRAMING) && (ret != ERR_NOMEM) && (ret != ERR_RF_COLLISION)) {
+      return ret;
+    }
+
+    /* If a transmission error occurred (maybe noise while commiting data) wait maximum programming time and verify data afterwards */
+    rfalRfDev->rfalSetGT((RFAL_ST25TB_FWT + RFAL_ST25TB_TW));
+    rfalRfDev->rfalFieldOnAndStartGT();
+
   }
 
   ret = rfalSt25tbPollerReadBlock(blockAddress, &tmpBlockData);
@@ -496,3 +500,5 @@ ReturnCode RfalNfcClass::rfalSt25tbPollerResetToInventory(void)
   /* Send Completion Request, no response is expected */
   return rfalRfDev->rfalTransceiveBlockingTxRx((uint8_t *)&resetInvReq, RFAL_ST25TB_CMD_LEN, NULL, 0, NULL, RFAL_TXRX_FLAGS_DEFAULT, RFAL_ST25TB_FWT);
 }
+
+#endif /* RFAL_FEATURE_ST25TB */

@@ -55,6 +55,16 @@
 #include "rfal_rf.h"
 
 /*
+******************************************************************************
+* ENABLE SWITCH
+******************************************************************************
+*/
+
+#ifndef RFAL_FEATURE_NFCF
+  #define RFAL_FEATURE_NFCF   false    /* NFC-F module configuration missing. Disabled by default */
+#endif
+
+/*
  ******************************************************************************
  * GLOBAL DEFINES
  ******************************************************************************
@@ -64,7 +74,7 @@
 #define RFAL_NFCF_SENSF_RES_LEN_MIN             16U      /*!< SENSF_RES minimum length                          */
 #define RFAL_NFCF_SENSF_RES_LEN_MAX             18U      /*!< SENSF_RES maximum length                          */
 #define RFAL_NFCF_SENSF_RES_PAD0_LEN            2U       /*!< SENSF_RES PAD0 length                             */
-#define RFAL_NFCF_SENSF_RES_PAD1_LEN            2U       /*!< SENSF_RES PAD1 length                             */
+#define RFAL_NFCF_SENSF_RES_PAD1_LEN            3U       /*!< SENSF_RES PAD1 length                             */
 #define RFAL_NFCF_SENSF_RES_RD_LEN              2U       /*!< SENSF_RES Request Data length                     */
 #define RFAL_NFCF_SENSF_RES_BYTE1               1U       /*!< SENSF_RES first byte value                        */
 #define RFAL_NFCF_SENSF_SC_LEN                  2U       /*!< Felica SENSF_REQ System Code length               */
@@ -74,12 +84,13 @@
 #define RFAL_NFCF_SENSF_PARAMS_TSN_POS          3U       /*!< Time Slot Number position in the SENSF_REQ        */
 #define RFAL_NFCF_POLL_MAXCARDS                 16U      /*!< Max number slots/cards 16                         */
 
-
 #define RFAL_NFCF_CMD_POS                        0U      /*!< Command/Response code length                      */
 #define RFAL_NFCF_CMD_LEN                        1U      /*!< Command/Response code length                      */
 #define RFAL_NFCF_LENGTH_LEN                     1U      /*!< LEN field length                                  */
-#define RFAL_NFCF_HEADER_LEN                     (RFAL_NFCF_LENGTH_LEN + RFAL_NFCF_CMD_LEN) /*!< Header length*/
+#define RFAL_NFCF_HEADER_LEN                     (RFAL_NFCF_LENGTH_LEN + RFAL_NFCF_CMD_LEN) /*!< Header length  */
 
+#define RFAL_NFCF_NOS_LEN                        1U      /*!< Number of Services length                         */
+#define RFAL_NFCF_NOB_LEN                        1U      /*!< Number of Blocks length                           */
 
 #define RFAL_NFCF_SENSF_NFCID2_BYTE1_POS         0U      /*!< NFCID2 byte1 position                             */
 #define RFAL_NFCF_SENSF_NFCID2_BYTE2_POS         1U      /*!< NFCID2 byte2 position                             */
@@ -88,7 +99,8 @@
 #define RFAL_NFCF_SENSF_NFCID2_BYTE1_NFCDEP      0x01U   /*!< NFCID2 byte1 NFC-DEP support            Digital 1.0 Table 44 */
 #define RFAL_NFCF_SENSF_NFCID2_BYTE2_NFCDEP      0xFEU   /*!< NFCID2 byte2 NFC-DEP support            Digital 1.0 Table 44 */
 
-#define RFAL_NFCF_SYSTEMCODE                     0xFFFFU /*!< SENSF_RES Default System Code            Digital 1.0 6.6.1.1 */
+#define RFAL_NFCF_SYSTEMCODE                     0xFFFFU /*!< SENSF_RES Default System Code            Digital 2.3 8.6.1.5 */
+#define RFAL_NFCF_SYSTEMCODE_LEN                 2U      /*!< SENSF_RES System Code length             Digital 2.3 8.6.1   */
 
 #define RFAL_NFCF_BLOCK_LEN                      16U     /*!< NFCF T3T Block size                        T3T 1.0  4.1      */
 #define RFAL_NFCF_CHECKUPDATE_RES_ST1_POS        9U      /*!< Check|Update Res Status Flag 1 position    T3T 1.0  Table 8  */
@@ -98,11 +110,14 @@
 #define RFAL_NFCF_STATUS_FLAG_SUCCESS            0x00U   /*!< Check response Number of Blocks position   T3T 1.0  Table 11 */
 #define RFAL_NFCF_STATUS_FLAG_ERROR              0xFFU   /*!< Check response Number of Blocks position   T3T 1.0  Table 11 */
 
-#define RFAL_NFCF_BLOCKLISTELEM_LEN              0x80U   /*!< Block List Element Length bit (2|3 bytes)      T3T 1.0 5.6.1 */
+#define RFAL_NFCF_BLOCKLISTELEM_MAX_LEN          3U      /*!< Block List Element max Length (3 bytes)        T3T 1.0 5.6.1 */
+#define RFAL_NFCF_BLOCKLISTELEM_LEN_BIT          0x80U   /*!< Block List Element Length bit (2|3 bytes)      T3T 1.0 5.6.1 */
 
 #define RFAL_NFCF_SERVICECODE_RDONLY           0x000BU   /*!< NDEF Service Code as Read-Only                 T3T 1.0 7.2.1 */
 #define RFAL_NFCF_SERVICECODE_RDWR             0x0009U   /*!< NDEF Service Code as Read and Write            T3T 1.0 7.2.1 */
 
+#define RFAL_NFCF_TEST_LB_CMD0                   0xD8U /*!< T3T loopback CMD0                 ETSI TS 102 695-1  5.6.4.4.2 */
+#define RFAL_NFCF_TEST_LB_CMD1                   0x00U /*!< T3T loopback CMD1                 ETSI TS 102 695-1  5.6.4.4.2 */
 
 /*! NFC-F Felica command set   JIS X6319-4  9.1 */
 enum {
@@ -185,16 +200,12 @@ typedef struct {
   uint8_t           LEN;                                /*!< NFC-F LEN byte                      */
   rfalNfcfSensfRes  SENSF_RES;                          /*!< SENSF_RES                           */
 } rfalNfcfSensfResBuf;
-
-
 /*! Greedy collection for NFCF GRE_POLL_F  Activity 1.0 Table 10                                   */
 typedef struct {
   uint8_t              pollFound;                       /*!< Number of devices found by the Poll */
   uint8_t              pollCollision;                   /*!< Number of collisions detected       */
   rfalFeliCaPollRes    POLL_F[RFAL_NFCF_POLL_MAXCARDS]; /*!< GRE_POLL_F   Activity 1.0 Table 10  */
 } rfalNfcfGreedyF;
-
-
 /*! NFC-F SENSF_REQ format  Digital 1.1  8.6.1                     */
 typedef struct {
   uint8_t  CMD;                          /*!< Command code: 00h  */
@@ -202,7 +213,6 @@ typedef struct {
   uint8_t  RC;                           /*!< Request Code       */
   uint8_t  TSN;                          /*!< Time Slot Number   */
 } rfalNfcfSensfReq;
-
 
 /*
 ******************************************************************************

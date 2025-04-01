@@ -58,6 +58,16 @@
 #include "rfal_rf.h"
 
 /*
+******************************************************************************
+* ENABLE SWITCH
+******************************************************************************
+*/
+
+#ifndef RFAL_FEATURE_NFCB
+  #define RFAL_FEATURE_NFCB   false    /* NFC-B module configuration missing. Disabled by default */
+#endif
+
+/*
  ******************************************************************************
  * GLOBAL DEFINES
  ******************************************************************************
@@ -163,6 +173,38 @@ typedef struct {
   bool              isSleep;                                  /*!< Device sleeping flag  */
 } rfalNfcbListenDevice;
 
+/*! NFC-B Technology Detection context                                                              */
+typedef struct {
+  rfalNfcbSensbRes *sensbRes;            /*!< Location of SENSB_RES                               */
+  uint8_t          *sensbResLen;         /*!< Location of SENSB_RES length                        */
+  uint16_t          rxLen;               /*!< Reception length (16bits)                           */
+} rfalNfcbTechDetParams;
+
+/*! NFC-B Collision Resolution states                                                               */
+typedef enum {
+  RFAL_NFCB_CR_SLOTS_TX,                 /*!< State where slots are open and slot markers issued  */
+  RFAL_NFCB_CR_SLOTS,                    /*!< State where slots are open and slot markers issued  */
+  RFAL_NFCB_CR_SLEEP,                    /*!< State between slotted loop                          */
+  RFAL_NFCB_CR_END                       /*!< State for terminating the collision resolution      */
+} rfalNfcbColResState;
+
+
+/*! NFC-B Collision Resolution context                                                              */
+typedef struct {
+  rfalComplianceMode    compMode;        /*!< Compliancy mode to be used                          */
+  uint8_t               devLimit;        /*!< Device limit to be used                             */
+  rfalNfcbListenDevice *nfcbDevList;     /*!< Location of the device list                         */
+  uint8_t               *devCnt;         /*!< Location of the device counter                      */
+  bool                  *colPending;     /*!< Location of the Collision pending flag              */
+
+  uint8_t               curSlots;        /*!< Current number of slots                             */
+  uint8_t               curSlotNum;      /*!< Current Slot number (whithin slotted loop)          */
+  uint8_t               endSlots;        /*!< Maximum number of slots allowed                     */
+  uint8_t               curDevCnt;       /*!< Current device counter (per slotted loop)           */
+  bool                  colPend;         /*!< Internal Collision pending flag                     */
+  uint32_t              tmr;             /*!< Collision Resolution timer                          */
+  rfalNfcbColResState   state;           /*!< Collision Resolution state                          */
+} rfalNfcbColResParams;
 
 /*! ALLB_REQ (WUPB) and SENSB_REQ (REQB) Command Format   Digital 1.1  7.6.1 */
 typedef struct {
@@ -191,8 +233,10 @@ typedef struct {
 
 /*! RFAL NFC-B instance */
 typedef struct {
-  uint8_t  AFI;                            /*!< AFI to be used       */
-  uint8_t  PARAM;                          /*!< PARAM to be used     */
+  uint8_t               AFI;               /*!< AFI to be used       */
+  uint8_t               PARAM;             /*!< PARAM to be used     */
+  rfalNfcbColResParams  CR;                /*!< Collision Resolution */
+  rfalNfcbTechDetParams DT;
 } rfalNfcb;
 
 /*

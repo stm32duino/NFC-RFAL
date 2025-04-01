@@ -40,11 +40,27 @@
 #include "rfal_nfcv.h"
 #include "nfc_utils.h"
 
+
 /*
  ******************************************************************************
  * ENABLE SWITCH
  ******************************************************************************
  */
+
+/* Feature switch may be enabled or disabled by user at rfal_platform.h
+ * Default configuration (ST25R dependant) also provided at rfal_default_config.h
+ *
+ *    RFAL_FEATURE_ST25xV
+ */
+
+
+#if RFAL_FEATURE_ST25xV
+
+#if !RFAL_FEATURE_NFCV
+  #error " RFAL: Invalid Configuration. Please Enable RFAL support for NFC-V."
+#endif
+
+
 
 /*
  ******************************************************************************
@@ -64,17 +80,9 @@
 #define RFAL_ST25TV02K_TBOOT_RF          1U     /*!< RF Boot time (Minimum time from carrier generation to first data) */
 #define RFAL_ST25TV02K_TRF_OFF           2U     /*!< RF OFF time                                                       */
 
-#define RFAL_FDT_POLL_MAX                 rfalConvMsTo1fc(20) /*!< Maximum Wait time FDTV,EOF 20 ms    Digital 2.0  B.5 */
+#define RFAL_ST25xV_FDT_POLL_MAX                 rfalConvMsTo1fc(20) /*!< Maximum Wait time FDTV,EOF 20 ms    Digital 2.1  B.5 */
 #define RFAL_NFCV_FLAG_POS                0U     /*!< Flag byte position                                                */
 #define RFAL_NFCV_FLAG_LEN                1U     /*!< Flag byte length                                                  */
-
-
-/*
-******************************************************************************
-* LOCAL FUNCTION PROTOTYPES
-******************************************************************************
-*/
-
 
 /*
 ******************************************************************************
@@ -174,9 +182,10 @@ ReturnCode RfalNfcClass::rfalST25xVPollerGenericWriteMessage(uint8_t cmd, uint8_
 
   /* Calculate required Tx buf length:                    Mfg Code               UID                      MSGLen  MSGLen+1 */
   msgIt = (uint16_t)(msgLen + sizeof(flags) + sizeof(cmd) + 1U  + ((uid != NULL) ? RFAL_NFCV_UID_LEN : 0U) + 1U + 1U);
+  /* Note:  MSGlength parameter of the command is the number of Data bytes minus - 1 (00 for 1 byte of data, FFh for 256 bytes of data) */
 
   /* Check for valid parameters */
-  if ((txBuf == NULL) || (msgData == NULL) || (msgLen == 0U) || (msgLen == 0xFFU) || (txBufLen < msgIt)) {
+  if ((txBuf == NULL) || (msgData == NULL) || (txBufLen < msgIt)) {
     return ERR_PARAM;
   }
 
@@ -205,11 +214,11 @@ ReturnCode RfalNfcClass::rfalST25xVPollerGenericWriteMessage(uint8_t cmd, uint8_
     msgIt += RFAL_NFCV_UID_LEN;
   }
   txBuf[msgIt++] = msgLen;
-  ST_MEMCPY(&txBuf[msgIt], msgData, (uint8_t)(msgLen + 1U));   /* Message Data contains (MSGLength + 1) bytes */
-  msgIt += (uint8_t)(msgLen + 1U);
+  ST_MEMCPY(&txBuf[msgIt], msgData, (uint16_t)(msgLen + (uint16_t)1U));   /* Message Data contains (MSGLength + 1) bytes */
+  msgIt += (uint16_t)(msgLen + (uint16_t)1U);
 
   /* Transceive Command */
-  ret = rfalRfDev->rfalTransceiveBlockingTxRx(txBuf, msgIt, (uint8_t *)&res, sizeof(rfalNfcvGenericRes), &rcvLen, RFAL_TXRX_FLAGS_DEFAULT, RFAL_FDT_POLL_MAX);
+  ret = rfalRfDev->rfalTransceiveBlockingTxRx(txBuf, msgIt, (uint8_t *)&res, sizeof(rfalNfcvGenericRes), &rcvLen, RFAL_TXRX_FLAGS_DEFAULT, RFAL_ST25xV_FDT_POLL_MAX);
 
 
   /* Restore Rx BitRate */
@@ -443,6 +452,29 @@ ReturnCode RfalNfcClass::rfalST25xVPollerPresentPassword(uint8_t flags, const ui
 }
 
 /*******************************************************************************/
+ReturnCode RfalNfcClass::rfalST25xVPollerWritePassword(uint8_t flags, const uint8_t *uid, uint8_t pwdNum, const uint8_t *pwd,  uint8_t pwdLen)
+{
+  uint8_t            data[RFAL_ST25xV_PWDNUM_LEN + RFAL_ST25xV_PWD_LEN];
+  uint8_t            dataLen;
+  uint16_t           rcvLen;
+  rfalNfcvGenericRes res;
+
+  if ((pwdLen > RFAL_ST25xV_PWD_LEN) || (pwd == NULL)) {
+    return ERR_PARAM;
+  }
+
+  dataLen = 0U;
+  data[dataLen++] = pwdNum;
+  if (pwdLen > 0U) {
+    ST_MEMCPY(&data[dataLen], pwd, pwdLen);
+  }
+  dataLen += pwdLen;
+
+  return rfalNfcvPollerTransceiveReq(RFAL_NFCV_CMD_WRITE_PASSWORD, flags, RFAL_NFCV_ST_IC_MFG_CODE, uid, data, dataLen, (uint8_t *)&res, sizeof(rfalNfcvGenericRes), &rcvLen);
+
+}
+
+/*******************************************************************************/
 ReturnCode RfalNfcClass::rfalST25xVPollerGetRandomNumber(uint8_t flags, const uint8_t *uid, uint8_t *rxBuf, uint16_t rxBufLen, uint16_t *rcvLen)
 {
   rfalRfDev->rfalFieldOff();
@@ -488,3 +520,6 @@ ReturnCode RfalNfcClass::rfalST25xVPollerFastReadMessage(uint8_t flags, const ui
 {
   return rfalST25xVPollerGenericReadMessage(RFAL_NFCV_CMD_FAST_READ_MESSAGE, flags, uid, mbPointer, numBytes, rxBuf, rxBufLen, rcvLen);
 }
+
+
+#endif /* RFAL_FEATURE_ST25xV */

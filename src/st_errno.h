@@ -106,9 +106,6 @@ typedef uint16_t      ReturnCode; /*!< Standard Return Code type from function. 
 #define ERR_INCOMPLETE_BYTE_06             ((ReturnCode)46U) /*!< Incomplete byte rcvd - 6 bit */
 #define ERR_INCOMPLETE_BYTE_07             ((ReturnCode)47U) /*!< Incomplete byte rcvd - 7 bit */
 
-
-
-
 /* General Sub-category number */
 #define ERR_GENERIC_GRP                     (0x0000)  /*!< Reserved value for generic error no */
 #define ERR_WARN_GRP                        (0x0100)  /*!< Errors which are not expected in normal operation */
@@ -144,8 +141,6 @@ typedef uint16_t      ReturnCode; /*!< Standard Return Code type from function. 
 
 #define ERR_NO_MASK(x)                      ((uint16_t)(x) & 0x00FFU)    /*!< Mask the error number */
 
-
-
 /*! Common code to exit a function with the error if function f return error */
 #define EXIT_ON_ERR(r, f) \
     (r) = (f);            \
@@ -153,6 +148,16 @@ typedef uint16_t      ReturnCode; /*!< Standard Return Code type from function. 
     {                     \
         return (r);       \
     }
+
+/*! Common code to exit a function if process/function f has not concluded */
+#define EXIT_ON_BUSY(r, f) \
+    (r) = (f);             \
+    if (ERR_BUSY == (r))   \
+    {                      \
+        return (r);        \
+    }
+
+
 
 #endif /* ST_ERRNO_H */
 
