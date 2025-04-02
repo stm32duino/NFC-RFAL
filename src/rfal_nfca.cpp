@@ -132,7 +132,7 @@ typedef struct {
 } rfalNfcaTechDetParams;
 
 
-/*! Colission Resolution states */
+/*! Collision Resolution states */
 typedef enum {
   RFAL_NFCA_CR_IDLE,                      /*!< IDLE state                      */
   RFAL_NFCA_CR_CL,                        /*!< New Cascading Level state       */
@@ -144,7 +144,7 @@ typedef enum {
 } rfalNfcaColResState;
 
 
-/*! Full Colission Resolution states */
+/*! Full Collision Resolution states */
 typedef enum {
   RFAL_NFCA_CR_FULL_START,                /*!< Start Full Collision Resolution state                   */
   RFAL_NFCA_CR_FULL_SLPCHECK,             /*!< Sleep and Check for restart state                       */
@@ -152,10 +152,10 @@ typedef enum {
 } rfalNfcaFColResState;
 
 
-/*! Colission Resolution context */
+/*! Collision Resolution context */
 typedef struct {
   uint8_t               devLimit;         /*!< Device limit to be used                                 */
-  rfalComplianceMode    compMode;         /*!< Compliancy mode to be used                              */
+  rfalComplianceMode    compMode;         /*!< Compliance mode to be used                              */
   rfalNfcaListenDevice *nfcaDevList;      /*!< Location of the device list                             */
   uint8_t              *devCnt;           /*!< Location of the device counter                          */
   bool                  collPending;      /*!< Collision pending flag                                  */
