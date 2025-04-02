@@ -61,7 +61,7 @@ jobs:
       uses: stm32duino/actions/compile-examples@main
       with:
         board-pattern: "NUCLEO_L476RG"
-        libraries: "STM32duino ST25R3911B, STM32duino X-NUCLEO-NFC05A1"
+        libraries: "STM32duino ST25R3916, STM32duino X-NUCLEO-NFC08A1"
 
     # Use the output from the `Compile` step
     - name: Compilation Errors

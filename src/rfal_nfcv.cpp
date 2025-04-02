@@ -48,6 +48,14 @@
  ******************************************************************************
  */
 
+/* Feature switch may be enabled or disabled by user at rfal_platform.h
+ * Default configuration (ST25R dependant) also provided at rfal_default_config.h
+ *
+ *    RFAL_FEATURE_NFCV
+ */
+
+#if RFAL_FEATURE_NFCV
+
 /*
  ******************************************************************************
  * GLOBAL DEFINES
@@ -64,24 +72,29 @@
 #define RFAL_NFCV_WR_MUL_REQ_HEADER_LEN   4U     /*!< Write Multiple header length (INV_FLAG, CMD, [UID], BNo, Bno)     */
 
 
-#define RFAL_CMD_LEN                      1U     /*!< Commandbyte length                                                */
+#define RFAL_NFCV_CMD_LEN                 1U     /*!< Commandbyte length                                                */
 #define RFAL_NFCV_FLAG_POS                0U     /*!< Flag byte position                                                */
 #define RFAL_NFCV_FLAG_LEN                1U     /*!< Flag byte length                                                  */
+#define RFAL_NFCV_PARAM_LEN               1U     /*!< CMD specific parameter length  (e.g. Extended Get System Info)    */
 #define RFAL_NFCV_DATASTART_POS           1U     /*!< Position of start of data                                         */
 #define RFAL_NFCV_DSFI_LEN                1U     /*!< DSFID length                                                      */
 #define RFAL_NFCV_SLPREQ_REQ_FLAG         0x22U  /*!< SLPV_REQ request flags Digital 2.0 (Candidate) 9.7.1.1            */
+#define RFAL_NFCV_RES_FLAG_NOERROR        0x00U  /*!< RES_FLAG indicating no error (checked during activation)          */
 
 #define RFAL_NFCV_MAX_COLL_SUPPORTED      16U    /*!< Maximum number of collisions supported by the Anticollision loop  */
 
-#define RFAL_FDT_POLL_MAX                 rfalConvMsTo1fc(20) /*!< Maximum Wait time FDTV,EOF 20 ms    Digital 2.0  B.5 */
+#define RFAL_NFCV_FDT_MAX1                4394U  /*!< Read alike command FWT FDTV,LISTEN,MAX1  Digital 2.0 B.5          */
+
+/*! Maximum Wait time FDTV,EOF and MAX2   FDTV,LISTEN,MAX2 + Tolerance = 270644 + 512 = 271156 (~20ms)  Digital 2.3 B.5*/
+#define RFAL_NFCV_FDT_MAX                 271156U
 
 
 
 /*! Time from special frame to EOF
- *                    ISO15693 2009 10.4.2                 : 20ms
- *                    NFC Forum defines Digital 2.0  9.7.4 : FDTV,EOF = [10 ; 20]ms
+ *                    ISO15693 2009 10.4.2                 : <20ms
+ *                    NFC Forum defines Digital 2.3  9.7.4 : FDTV,EOF = [10 ; 20]ms
  */
-#define RFAL_NFCV_FDT_EOF                 20U
+#define RFAL_NFCV_FDT_EOF               rfalConvMsTo1fc(16)
 
 
 
@@ -98,6 +111,8 @@
  * GLOBAL MACROS
  ******************************************************************************
  */
+/*! Checks if a valid INVENTORY_RES is valid    Digital 2.2  9.6.2.1 & 9.6.2.3  */
+#define rfalNfcvCheckInvRes( f, l )     (((l)==rfalConvBytesToBits(RFAL_NFCV_INV_RES_LEN + RFAL_NFCV_CRC_LEN)) && ((f)==RFAL_NFCV_RES_FLAG_NOERROR))
 
 
 /*
@@ -128,14 +143,6 @@ typedef struct {
   uint8_t  maskLen;
   uint8_t  maskVal[RFAL_NFCV_MASKVAL_MAX_LEN];
 } rfalNfcvCollision;
-
-
-/*
-******************************************************************************
-* LOCAL FUNCTION PROTOTYPES
-******************************************************************************
-*/
-
 
 /*
 ******************************************************************************
@@ -180,7 +187,7 @@ ReturnCode RfalNfcClass::rfalNfcvPollerInitialize(void)
   ReturnCode ret;
 
   EXIT_ON_ERR(ret, rfalRfDev->rfalSetMode(RFAL_MODE_POLL_NFCV, RFAL_BR_26p48, RFAL_BR_26p48));
-  rfalRfDev->rfalSetErrorHandling(RFAL_ERRORHANDLING_NFC);
+  rfalRfDev->rfalSetErrorHandling(ERRORHANDLING_NONE);
 
   rfalRfDev->rfalSetGT(RFAL_GT_NFCV);
   rfalRfDev->rfalSetFDTListen(RFAL_FDT_LISTEN_NFCV_POLLER);
@@ -220,7 +227,7 @@ ReturnCode RfalNfcClass::rfalNfcvPollerInventory(rfalNfcvNumSlots nSlots, uint8_
   invReq.CMD      = RFAL_NFCV_CMD_INVENTORY;
   invReq.MASK_LEN = (uint8_t)MIN(maskLen, ((nSlots == RFAL_NFCV_NUM_SLOTS_1) ? RFAL_NFCV_MASKVAL_MAX_1SLOT_LEN : RFAL_NFCV_MASKVAL_MAX_16SLOT_LEN));     /* Digital 2.0  9.6.1.6 */
 
-  if (rfalConvBitsToBytes(invReq.MASK_LEN) > 0U) { /* MISRA 21.18 */
+  if ((rfalConvBitsToBytes(invReq.MASK_LEN) > 0U) && (maskVal != NULL)) {   /* MISRA 21.18 & 1.3 */
     ST_MEMCPY(invReq.MASK_VALUE, maskVal, rfalConvBitsToBytes(invReq.MASK_LEN));
   }
 
@@ -232,7 +239,8 @@ ReturnCode RfalNfcClass::rfalNfcvPollerInventory(rfalNfcvNumSlots nSlots, uint8_
   }
 
   if (ret == ERR_NONE) {
-    if (rxLen != rfalConvBytesToBits(RFAL_NFCV_INV_RES_LEN + RFAL_NFCV_CRC_LEN)) {
+    /* Check for valid INVENTORY_RES   Digital 2.2  9.6.2.1 & 9.6.2.3 */
+    if (!rfalNfcvCheckInvRes(invRes->RES_FLAG, rxLen)) {
       return ERR_PROTO;
     }
   }
@@ -274,19 +282,22 @@ ReturnCode RfalNfcClass::rfalNfcvPollerCollisionResolution(rfalComplianceMode co
     /* Send INVENTORY_REQ with one slot   Activity 2.0  9.3.7.1  (Symbol 0)  */
     ret = rfalNfcvPollerInventory(RFAL_NFCV_NUM_SLOTS_1, 0, NULL, &nfcvDevList->InvRes, NULL);
 
-    if (ret == ERR_TIMEOUT) { /* Exit if no device found     Activity 2.0  9.3.7.2 (Symbol 1)  */
+    /* Exit if no device found                              Activity 2.1  9.3.7.2 (Symbol 1)  */
+    /* Exit if no correct frame (no Transmission Error)     Activity 2.1  9.3.7.3 (Symbol 2)  */
+    if ((ret == ERR_TIMEOUT) || ((ret == ERR_PROTO))) {
       return ERR_NONE;
     }
-    if (ret == ERR_NONE) {    /* Device found without transmission error/collision    Activity 2.0  9.3.7.3 (Symbol 2)  */
+    /* Valid Response found without transmission error/collision    Activity 2.1  9.3.7.6 (Symbol 5)  */
+    if (ret == ERR_NONE) {
       (*devCnt)++;
       return ERR_NONE;
     }
 
-    /* A Collision has been identified  Activity 2.0  9.3.7.2  (Symbol 3) */
+    /* A Collision has been identified  Activity 2.1  9.3.7.4  (Symbol 3) */
     colPending = true;
     colCnt        = 1;
 
-    /* Check if the Collision Resolution is set to perform only Collision detection   Activity 2.0  9.3.7.5 (Symbol 4)*/
+    /* Check if the Collision Resolution is set to perform only Collision detection   Activity 2.1  9.3.7.5 (Symbol 4)*/
     if (devLimit == 0U) {
       return ERR_RF_COLLISION;
     }
@@ -303,15 +314,15 @@ ReturnCode RfalNfcClass::rfalNfcvPollerCollisionResolution(rfalComplianceMode co
   }
 
 
-  /* Execute until all collisions are resolved Activity 2.0  9.3.7.16  (Symbol 17) */
+  /* Execute until all collisions are resolved Activity 2.1 9.3.7.18  (Symbol 17) */
   do {
-    /* Activity 2.0  9.3.7.5  (Symbol 6) */
+    /* Activity 2.1  9.3.7.7  (Symbol 6 / 7) */
     colPending = false;
     slotNum    = 0;
 
     do {
       if (slotNum == 0U) {
-        /* Send INVENTORY_REQ with 16 slots   Activity 2.0  9.3.7.7  (Symbol 8) */
+        /* Send INVENTORY_REQ with 16 slots   Activity 2.1  9.3.7.9  (Symbol 8) */
         ret = rfalNfcvPollerInventory(RFAL_NFCV_NUM_SLOTS_16, colFound[colIt].maskLen, colFound[colIt].maskVal, &nfcvDevList[(*devCnt)].InvRes, &rcvdLen);
       } else {
         ret = rfalRfDev->rfalISO15693TransceiveEOFAnticollision((uint8_t *)&nfcvDevList[(*devCnt)].InvRes, sizeof(rfalNfcvInventoryRes), &rcvdLen);
@@ -325,14 +336,15 @@ ReturnCode RfalNfcClass::rfalNfcvPollerCollisionResolution(rfalComplianceMode co
           delay(RFAL_NFCV_FDT_V_INVENT_NORES);
         }
 
-        if (ret == ERR_NONE) {
+        /* Check if response is a correct frame (no TxRx error)  Activity 2.1  9.3.7.11  (Symbol 10)*/
+        if ((ret == ERR_NONE) || (ret == ERR_PROTO)) {
           /* Check if the device found is already on the list and its response is a valid INVENTORY_RES */
-          if (rcvdLen == rfalConvBytesToBits(RFAL_NFCV_INV_RES_LEN + RFAL_NFCV_CRC_LEN)) {
-            /* Activity 2.0  9.3.7.15  (Symbol 11) */
+          if (rfalNfcvCheckInvRes(nfcvDevList[(*devCnt)].InvRes.RES_FLAG, rcvdLen)) {
+            /* Activity 2.1  9.3.7.12  (Symbol 11) */
             (*devCnt)++;
           }
         } else { /* Treat everything else as collision */
-          /* Activity 2.0  9.3.7.15  (Symbol 16) */
+          /* Activity 2.1  9.3.7.17  (Symbol 16) */
           colPending = true;
 
 
@@ -340,7 +352,7 @@ ReturnCode RfalNfcClass::rfalNfcvPollerCollisionResolution(rfalComplianceMode co
           /* Ensure that this collision still fits on the container */
           if (colCnt < RFAL_NFCV_MAX_COLL_SUPPORTED) {
             /* Store this collision on the container to be resolved later */
-            /* Activity 2.0  9.3.7.15  (Symbol 16): add the collision information
+            /* Activity 2.1  9.3.7.17  (Symbol 16): add the collision information
              * (MASK_VAL + SN) to the list containing the collision information */
             ST_MEMCPY(colFound[colCnt].maskVal, colFound[colIt].maskVal, RFAL_NFCV_UID_LEN);
             colPos = colFound[colIt].maskLen;
@@ -358,7 +370,7 @@ ReturnCode RfalNfcClass::rfalNfcvPollerCollisionResolution(rfalComplianceMode co
         delay(RFAL_NFCV_FDT_V_INVENT_NORES);
       }
 
-      /* Check if devices found have reached device limit   Activity 2.0  9.3.7.15  (Symbol 16) */
+      /* Check if devices found have reached device limit   Activity 2.1  9.3.7.13  (Symbol 12) */
       if (*devCnt >= devLimit) {
         return ERR_NONE;
       }
@@ -372,7 +384,7 @@ ReturnCode RfalNfcClass::rfalNfcvPollerCollisionResolution(rfalComplianceMode co
 /*******************************************************************************/
 ReturnCode RfalNfcClass::rfalNfcvPollerSleepCollisionResolution(uint8_t devLimit, rfalNfcvListenDevice *nfcvDevList, uint8_t *devCnt)
 {
-  uint8_t    locDevCnt;
+  uint8_t    tmpDevCnt;
   ReturnCode ret;
   uint8_t    i;
 
@@ -383,15 +395,15 @@ ReturnCode RfalNfcClass::rfalNfcvPollerSleepCollisionResolution(uint8_t devLimit
   *devCnt = 0;
 
   do {
-    locDevCnt = 0;
-    ret = rfalNfcvPollerCollisionResolution(RFAL_COMPLIANCE_MODE_ISO, (devLimit - *devCnt), &nfcvDevList[*devCnt], &locDevCnt);
+    tmpDevCnt = 0;
+    ret = rfalNfcvPollerCollisionResolution(RFAL_COMPLIANCE_MODE_ISO, (devLimit - *devCnt), &nfcvDevList[*devCnt], &tmpDevCnt);
 
-    for (i = *devCnt; i < (*devCnt + locDevCnt); i++) {
+    for (i = *devCnt; i < (*devCnt + tmpDevCnt); i++) {
       rfalNfcvPollerSleep(0x00, nfcvDevList[i].InvRes.UID);
       nfcvDevList[i].isSleep = true;
     }
-    *devCnt += locDevCnt;
-  } while ((locDevCnt > 0U) && (*devCnt < devLimit));
+    *devCnt += tmpDevCnt;
+  } while ((ret == ERR_NONE) && (tmpDevCnt > 0U) && (*devCnt < devLimit));
 
   return ret;
 }
@@ -413,7 +425,7 @@ ReturnCode RfalNfcClass::rfalNfcvPollerSleep(uint8_t flags, const uint8_t *uid)
   ST_MEMCPY(slpReq.UID, uid, RFAL_NFCV_UID_LEN);
 
   /* NFC Forum device SHALL wait at least FDTVpp to consider the SLPV acknowledged (FDTVpp = FDTVpoll)  Digital 2.0 (Candidate)  9.7  9.8.2  */
-  ret = rfalRfDev->rfalTransceiveBlockingTxRx((uint8_t *)&slpReq, sizeof(rfalNfcvSlpvReq), &rxBuf, sizeof(rxBuf), NULL, RFAL_TXRX_FLAGS_DEFAULT, RFAL_FDT_POLL_NFCV_POLLER);
+  ret = rfalRfDev->rfalTransceiveBlockingTxRx((uint8_t *)&slpReq, sizeof(rfalNfcvSlpvReq), &rxBuf, sizeof(rxBuf), NULL, RFAL_TXRX_FLAGS_DEFAULT, RFAL_NFCV_FDT_MAX1);
   if (ret != ERR_TIMEOUT) {
     return ret;
   }
@@ -513,10 +525,10 @@ ReturnCode RfalNfcClass::rfalNfcvPollerWriteMultipleBlocks(uint8_t flags, const 
   msgIt = 0;
 
   /* Compute Request Command */
-  txBuf[msgIt++] = (uint8_t)(flags & (~((uint32_t)RFAL_NFCV_REQ_FLAG_ADDRESS) & ~((uint32_t)RFAL_NFCV_REQ_FLAG_SELECT)));
+  txBuf[msgIt++] = (uint8_t)(flags & (~((uint32_t)RFAL_NFCV_REQ_FLAG_ADDRESS)));
   txBuf[msgIt++] = RFAL_NFCV_CMD_WRITE_MULTIPLE_BLOCKS;
 
-  /* Check if Request is to be sent in Addressed or Selected mode */
+  /* Check if Request is to be sent in Addressed mode. Select mode flag shall be set by user */
   if (uid != NULL) {
     txBuf[RFAL_NFCV_FLAG_POS] |= (uint8_t)RFAL_NFCV_REQ_FLAG_ADDRESS;
     ST_MEMCPY(&txBuf[msgIt], uid, RFAL_NFCV_UID_LEN);
@@ -534,7 +546,7 @@ ReturnCode RfalNfcClass::rfalNfcvPollerWriteMultipleBlocks(uint8_t flags, const 
   }
 
   /* Transceive Command */
-  ret = rfalRfDev->rfalTransceiveBlockingTxRx(txBuf, msgIt, (uint8_t *)&res, sizeof(rfalNfcvGenericRes), &rcvLen, RFAL_TXRX_FLAGS_DEFAULT, RFAL_FDT_POLL_MAX);
+  ret = rfalRfDev->rfalTransceiveBlockingTxRx(txBuf, msgIt, (uint8_t *)&res, sizeof(rfalNfcvGenericRes), &rcvLen, RFAL_TXRX_FLAGS_DEFAULT, RFAL_NFCV_FDT_MAX);
 
   if (ret != ERR_NONE) {
     return ret;
@@ -648,16 +660,14 @@ ReturnCode RfalNfcClass::rfalNfcvPollerExtendedWriteMultipleBlocks(uint8_t flags
   nBlocks = (numOfBlocks - 1U);
 
   /* Compute Request Command */
-  txBuf[msgIt++] = (uint8_t)(flags & (~((uint32_t)RFAL_NFCV_REQ_FLAG_ADDRESS) & ~((uint32_t)RFAL_NFCV_REQ_FLAG_SELECT)));
+  txBuf[msgIt++] = (uint8_t)(flags & (~((uint32_t)RFAL_NFCV_REQ_FLAG_ADDRESS)));
   txBuf[msgIt++] = RFAL_NFCV_CMD_EXTENDED_WRITE_MULTIPLE_BLOCK;
 
-  /* Check if Request is to be sent in Addressed or Selected mode */
+  /* Check if Request is to be sent in Addressed mode. Select mode flag shall be set by user */
   if (uid != NULL) {
     txBuf[RFAL_NFCV_FLAG_POS] |= (uint8_t)RFAL_NFCV_REQ_FLAG_ADDRESS;
     ST_MEMCPY(&txBuf[msgIt], uid, RFAL_NFCV_UID_LEN);
     msgIt += (uint8_t)RFAL_NFCV_UID_LEN;
-  } else {
-    txBuf[RFAL_NFCV_FLAG_POS] |= (uint8_t)RFAL_NFCV_REQ_FLAG_SELECT;
   }
 
   txBuf[msgIt++] = (uint8_t)((firstBlockNum >> 0) & 0xFFU);
@@ -671,7 +681,7 @@ ReturnCode RfalNfcClass::rfalNfcvPollerExtendedWriteMultipleBlocks(uint8_t flags
   }
 
   /* Transceive Command */
-  ret = rfalRfDev->rfalTransceiveBlockingTxRx(txBuf, msgIt, (uint8_t *)&res, sizeof(rfalNfcvGenericRes), &rcvLen, RFAL_TXRX_FLAGS_DEFAULT, RFAL_FDT_POLL_MAX);
+  ret = rfalRfDev->rfalTransceiveBlockingTxRx(txBuf, msgIt, (uint8_t *)&res, sizeof(rfalNfcvGenericRes), &rcvLen, RFAL_TXRX_FLAGS_DEFAULT, RFAL_NFCV_FDT_MAX);
 
   if (ret != ERR_NONE) {
     return ret;
@@ -710,9 +720,11 @@ ReturnCode RfalNfcClass::rfalNfcvPollerTransceiveReq(uint8_t cmd, uint8_t flags,
   uint8_t            msgIt;
   rfalBitRate        rxBR;
   bool               fastMode;
+  bool               specialFrame;
 
   msgIt    = 0;
   fastMode = false;
+  specialFrame = false;
 
   /* Check for valid parameters */
   if ((rxBuf == NULL) || (rcvLen == NULL) || ((dataLen > 0U) && (data == NULL))                                  ||
@@ -722,11 +734,12 @@ ReturnCode RfalNfcClass::rfalNfcvPollerTransceiveReq(uint8_t cmd, uint8_t flags,
 
 
   /* Check if the command is an ST's Fast command */
-  if ((cmd == (uint8_t)RFAL_NFCV_CMD_FAST_READ_SINGLE_BLOCK)    || (cmd == (uint8_t)RFAL_NFCV_CMD_FAST_EXTENDED_READ_SINGLE_BLOCK)    ||
-      (cmd == (uint8_t)RFAL_NFCV_CMD_FAST_READ_MULTIPLE_BLOCKS) || (cmd == (uint8_t)RFAL_NFCV_CMD_FAST_EXTENDED_READ_MULTIPLE_BLOCKS) ||
-      (cmd == (uint8_t)RFAL_NFCV_CMD_FAST_WRITE_MESSAGE)        || (cmd == (uint8_t)RFAL_NFCV_CMD_FAST_READ_MESSAGE_LENGTH)           ||
-      (cmd == (uint8_t)RFAL_NFCV_CMD_FAST_READ_MESSAGE)         || (cmd == (uint8_t)RFAL_NFCV_CMD_FAST_READ_DYN_CONFIGURATION)        ||
-      (cmd == (uint8_t)RFAL_NFCV_CMD_FAST_WRITE_DYN_CONFIGURATION)) {
+  if ((param == RFAL_NFCV_ST_IC_MFG_CODE) &&
+      ((cmd == (uint8_t)RFAL_NFCV_CMD_FAST_READ_SINGLE_BLOCK)    || (cmd == (uint8_t)RFAL_NFCV_CMD_FAST_EXTENDED_READ_SINGLE_BLOCK)    ||
+       (cmd == (uint8_t)RFAL_NFCV_CMD_FAST_READ_MULTIPLE_BLOCKS) || (cmd == (uint8_t)RFAL_NFCV_CMD_FAST_EXTENDED_READ_MULTIPLE_BLOCKS) ||
+       (cmd == (uint8_t)RFAL_NFCV_CMD_FAST_WRITE_MESSAGE)        || (cmd == (uint8_t)RFAL_NFCV_CMD_FAST_READ_MESSAGE_LENGTH)           ||
+       (cmd == (uint8_t)RFAL_NFCV_CMD_FAST_READ_MESSAGE)         || (cmd == (uint8_t)RFAL_NFCV_CMD_FAST_READ_DYN_CONFIGURATION)        ||
+       (cmd == (uint8_t)RFAL_NFCV_CMD_FAST_WRITE_DYN_CONFIGURATION))) {
     /* Store current Rx bit rate and move to fast mode */
     rfalRfDev->rfalGetBitRate(NULL, &rxBR);
     rfalRfDev->rfalSetBitRate(RFAL_BR_KEEP, RFAL_BR_52p97);
@@ -736,21 +749,19 @@ ReturnCode RfalNfcClass::rfalNfcvPollerTransceiveReq(uint8_t cmd, uint8_t flags,
 
 
   /* Compute Request Command */
-  req.REQ_FLAG  = (uint8_t)(flags & (~((uint32_t)RFAL_NFCV_REQ_FLAG_ADDRESS) & ~((uint32_t)RFAL_NFCV_REQ_FLAG_SELECT)));
+  req.REQ_FLAG  = (uint8_t)(flags & (~((uint32_t)RFAL_NFCV_REQ_FLAG_ADDRESS)));
   req.CMD       = cmd;
 
   /* Prepend parameter on certain proprietary requests: IC Manuf, Parameters */
   if (param != RFAL_NFCV_PARAM_SKIP) {
-    req.payload.data[msgIt++] = param;
+    req.payload.data[msgIt++] = param;         /* RFAL_NFCV_PARAM_LEN */
   }
 
-  /* Check if request is to be sent in Addressed or Selected mode */
+  /* Check if Request is to be sent in Addressed mode. Select mode flag shall be set by user */
   if (uid != NULL) {
     req.REQ_FLAG |= (uint8_t)RFAL_NFCV_REQ_FLAG_ADDRESS;
     ST_MEMCPY(&req.payload.data[msgIt], uid, RFAL_NFCV_UID_LEN);
     msgIt += RFAL_NFCV_UID_LEN;
-  } else {
-    req.REQ_FLAG |= (uint8_t)RFAL_NFCV_REQ_FLAG_SELECT;
   }
 
   if (dataLen > 0U) {
@@ -758,14 +769,19 @@ ReturnCode RfalNfcClass::rfalNfcvPollerTransceiveReq(uint8_t cmd, uint8_t flags,
     msgIt += (uint8_t)dataLen;
   }
 
-  /* Transceive Command */
-  ret = rfalRfDev->rfalTransceiveBlockingTxRx((uint8_t *)&req, (RFAL_CMD_LEN + RFAL_NFCV_FLAG_LEN + (uint16_t)msgIt), rxBuf, rxBufLen, rcvLen, RFAL_TXRX_FLAGS_DEFAULT, RFAL_FDT_POLL_MAX);
-
-  /* If the Option Flag is set in certain commands an EOF needs to be sent after 20ms to retrieve the VICC response      ISO15693-3 2009  10.4.2 & 10.4.3 & 10.4.5 */
+  /* If the Option Flag | Special Frame is set in certain commands an EOF needs to be sent whithin  FDTV,EOF to retrieve the VICC response     Digital 2.3  9.7.4    ISO15693-3 2009  10.4.2 & 10.4.3 & 10.4.5 */
   if (((flags & (uint8_t)RFAL_NFCV_REQ_FLAG_OPTION) != 0U) && ((cmd == (uint8_t)RFAL_NFCV_CMD_WRITE_SINGLE_BLOCK) || (cmd == (uint8_t)RFAL_NFCV_CMD_WRITE_MULTIPLE_BLOCKS)        ||
                                                                (cmd == (uint8_t)RFAL_NFCV_CMD_LOCK_BLOCK) || (cmd == (uint8_t)RFAL_NFCV_CMD_EXTENDED_WRITE_SINGLE_BLOCK)                   ||
                                                                (cmd == (uint8_t)RFAL_NFCV_CMD_EXTENDED_LOCK_SINGLE_BLOCK) || (cmd == (uint8_t)RFAL_NFCV_CMD_EXTENDED_WRITE_MULTIPLE_BLOCK))) {
-    ret = rfalRfDev->rfalISO15693TransceiveEOF(rxBuf, (uint8_t)rxBufLen, rcvLen);
+    specialFrame = true;
+  }
+
+  /* Transceive Command */
+  ret = rfalRfDev->rfalTransceiveBlockingTxRx((uint8_t *)&req, (RFAL_NFCV_CMD_LEN + RFAL_NFCV_FLAG_LEN + (uint16_t)msgIt), rxBuf, rxBufLen, rcvLen, RFAL_TXRX_FLAGS_DEFAULT, (specialFrame ? RFAL_NFCV_FDT_EOF : RFAL_NFCV_FDT_MAX));
+
+  /* If the Option Flag | Special Frame is set in certain commands an EOF needs to be sent whithin  FDTV,EOF to retrieve the VICC response     Digital 2.3  9.7.4    ISO15693-3 2009  10.4.2 & 10.4.3 & 10.4.5 */
+  if (specialFrame) {
+    ret = rfalRfDev->rfalISO15693TransceiveEOF(rxBuf, rxBufLen, rcvLen);
   }
 
   /* Restore Rx BitRate */
@@ -789,3 +805,5 @@ ReturnCode RfalNfcClass::rfalNfcvPollerTransceiveReq(uint8_t cmd, uint8_t flags,
 
   return ERR_NONE;
 }
+
+#endif /* RFAL_FEATURE_NFCV */

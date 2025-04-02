@@ -45,11 +45,19 @@
 ******************************************************************************
 */
 
+/* Feature switch may be enabled or disabled by user at rfal_platform.h
+ * Default configuration (ST25R dependant) also provided at rfal_default_config.h
+ *
+ *    RFAL_FEATURE_T2T
+ */
+
+#if RFAL_FEATURE_T2T
+
 /*
-******************************************************************************
-* GLOBAL DEFINES
-******************************************************************************
-*/
+ ******************************************************************************
+ * GLOBAL DEFINES
+ ******************************************************************************
+ */
 #define RFAL_FDT_POLL_READ_MAX                 rfalConvMsTo1fc(5U)  /*!< Maximum Wait time for Read command as defined in TS T2T 1.0 table 18   */
 #define RFAL_FDT_POLL_WRITE_MAX                rfalConvMsTo1fc(10U) /*!< Maximum Wait time for Write command as defined in TS T2T 1.0 table 18  */
 #define RFAL_FDT_POLL_SL_MAX                   rfalConvMsTo1fc(1U)  /*!< Maximum Wait time for Sector Select as defined in TS T2T 1.0 table 18  */
@@ -150,7 +158,7 @@ ReturnCode RfalNfcClass::rfalT2TPollerWrite(uint8_t blockNum, const uint8_t *wrD
 
 
   /* Transceive WRITE Command */
-  ret = rfalRfDev->rfalTransceiveBlockingTxRx((uint8_t *)&req, sizeof(rfalT2TWriteReq), &res, sizeof(uint8_t), &rxLen, RFAL_TXRX_FLAGS_DEFAULT, RFAL_FDT_POLL_READ_MAX);
+  ret = rfalRfDev->rfalTransceiveBlockingTxRx((uint8_t *)&req, sizeof(rfalT2TWriteReq), &res, sizeof(uint8_t), &rxLen, RFAL_TXRX_FLAGS_DEFAULT, RFAL_FDT_POLL_WRITE_MAX);
 
   /* Check for a valid ACK */
   if ((ret == ERR_INCOMPLETE_BYTE) || (ret == ERR_NONE)) {
@@ -213,3 +221,5 @@ ReturnCode RfalNfcClass::rfalT2TPollerSectorSelect(uint8_t sectorNum)
 
   return ret;
 }
+
+#endif /* RFAL_FEATURE_T2T */

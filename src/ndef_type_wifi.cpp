@@ -1,31 +1,20 @@
-/******************************************************************************
-  * \attention
-  *
-  * <h2><center>&copy; COPYRIGHT 2021 STMicroelectronics</center></h2>
-  *
-  * Licensed under ST MIX MYLIBERTY SOFTWARE LICENSE AGREEMENT (the "License");
-  * You may not use this file except in compliance with the License.
-  * You may obtain a copy of the License at:
-  *
-  *        www.st.com/mix_myliberty
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied,
-  * AND SPECIFICALLY DISCLAIMING THE IMPLIED WARRANTIES OF MERCHANTABILITY,
-  * FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  *
-******************************************************************************/
 
-/*! \file
- *
- *  \author SRA
- *
- *  \brief NDEF Wifi type
- *
- */
+/**
+  ******************************************************************************
+  * @file           : ndef_type_wifi.cpp
+  * @brief          : NDEF Wifi type
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2021 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
 
 /*
  ******************************************************************************
@@ -33,11 +22,13 @@
  ******************************************************************************
  */
 
-
-#include "ndef_class.h"
 #include "ndef_record.h"
 #include "ndef_types.h"
 #include "ndef_type_wifi.h"
+#include "nfc_utils.h"
+
+
+#if NDEF_TYPE_WIFI_SUPPORT
 
 
 /*
@@ -55,7 +46,7 @@
 
 
 /*! Wifi Type strings */
-static const uint8_t ndefMediaTypeWifi[]      = "application/vnd.wfa.wsc";   /*!< Wi-Fi Simple Configuration Type */
+static const uint8_t ndefMediaTypeWifi[]     = "application/vnd.wfa.wsc";   /*!< Wi-Fi Simple Configuration Type */
 
 const ndefConstBuffer8 bufMediaTypeWifi      = { ndefMediaTypeWifi,      sizeof(ndefMediaTypeWifi) - 1U      };  /*!< Wifi Type buffer     */
 
@@ -63,7 +54,7 @@ const ndefConstBuffer8 bufMediaTypeWifi      = { ndefMediaTypeWifi,      sizeof(
 /*! Wifi OBB (WPS) */
 
 #define NDEF_WIFI_DEFAULT_NETWORK_KEY      "00000000"      /*! Network key to be used when the Authentication is set to None.
-                                                               Although WPS defines a 0-length network key in such case,
+                                                               Althought WPS defines a 0-length network key in such case,
                                                                a 8 digit value is required with tested phones. */
 
 #define NDEF_WIFI_NETWORK_SSID_LENGTH           32U    /*!< Network SSID length        */
@@ -142,14 +133,7 @@ static uint8_t wifiConfigToken5[] = {
  * LOCAL FUNCTION PROTOTYPES
  ******************************************************************************
  */
-#ifdef __cplusplus
-extern "C" {
-#endif
-static uint32_t ndefWifiPayloadGetLength(const ndefType *wifi);
-static const uint8_t *ndefWifiToPayloadItem(const ndefType *wifi, ndefConstBuffer *bufItem, bool begin);
-#ifdef __cplusplus
-}
-#endif
+
 
 /*
  ******************************************************************************
@@ -161,7 +145,7 @@ static const uint8_t *ndefWifiToPayloadItem(const ndefType *wifi, ndefConstBuffe
 /*****************************************************************************/
 /*! Manage a Wifi Out-Of-Band NDEF message, to start a communication based on Wifi.
  *  The Wifi OOB format is described by the Wifi Protected Setup specification.
- *  It consists in a list of data elements formatted as type-length-value.
+ *  It consists in a list of data elements formated as type-length-value.
 
     The Wifi OOB in a NDEF record has the following structure:
         - Version
@@ -181,16 +165,14 @@ static const uint8_t *ndefWifiToPayloadItem(const ndefType *wifi, ndefConstBuffe
           Even if 0-length Network Key is supposed to be supported, smartphones dont necessarily accept it.
   */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+
 /*****************************************************************************/
 static uint32_t ndefWifiPayloadGetLength(const ndefType *wifi)
 {
   const ndefTypeWifi *wifiData;
   uint32_t payloadLength;
 
-  if ((wifi == NULL) || (wifi->id != NDEF_TYPE_MEDIA_WIFI)) {
+  if ((wifi == NULL) || (wifi->id != NDEF_TYPE_ID_MEDIA_WIFI)) {
     return 0;
   }
 
@@ -223,7 +205,7 @@ static const uint8_t *ndefWifiToPayloadItem(const ndefType *wifi, ndefConstBuffe
   static uint8_t zero[] = { 0 };
   static ndefConstBuffer8 bufZero = { zero, sizeof(zero) };
 
-  if ((wifi    == NULL) || (wifi->id != NDEF_TYPE_MEDIA_WIFI) ||
+  if ((wifi    == NULL) || (wifi->id != NDEF_TYPE_ID_MEDIA_WIFI) ||
       (bufItem == NULL)) {
     return NULL;
   }
@@ -279,7 +261,7 @@ static const uint8_t *ndefWifiToPayloadItem(const ndefType *wifi, ndefConstBuffe
     case 4:
       /* Config Token3 */
 
-      /* Update Token3 with Authentication and Encryption Types */
+      /* Update Token3 with Autentication and Encryption Types */
       wifiConfigToken3[CONFIG_TOKEN_3_AUTHENTICATION_TYPE_INDEX] = wifiData->authentication;
       wifiConfigToken3[CONFIG_TOKEN_3_ENCRYPTION_TYPE_INDEX]     = wifiData->encryption;
 
@@ -328,12 +310,10 @@ static const uint8_t *ndefWifiToPayloadItem(const ndefType *wifi, ndefConstBuffe
 
   return bufItem->buffer;
 }
-#ifdef __cplusplus
-}
-#endif
+
 
 /*****************************************************************************/
-ReturnCode NdefClass::ndefWifi(ndefType *wifi, const ndefTypeWifi *wifiConfig)
+ReturnCode ndefWifiInit(ndefType *wifi, const ndefTypeWifi *wifiConfig)
 {
   ndefTypeWifi *wifiData;
 
@@ -341,9 +321,10 @@ ReturnCode NdefClass::ndefWifi(ndefType *wifi, const ndefTypeWifi *wifiConfig)
     return ERR_PARAM;
   }
 
-  wifi->id               = NDEF_TYPE_MEDIA_WIFI;
+  wifi->id               = NDEF_TYPE_ID_MEDIA_WIFI;
   wifi->getPayloadLength = ndefWifiPayloadGetLength;
   wifi->getPayloadItem   = ndefWifiToPayloadItem;
+  wifi->typeToRecord     = ndefWifiToRecord;
   wifiData               = &wifi->data.wifi;
 
   wifiData->bufNetworkSSID = wifiConfig->bufNetworkSSID;
@@ -356,11 +337,11 @@ ReturnCode NdefClass::ndefWifi(ndefType *wifi, const ndefTypeWifi *wifiConfig)
 
 
 /*****************************************************************************/
-ReturnCode NdefClass::ndefGetWifi(const ndefType *wifi, ndefTypeWifi *wifiConfig)
+ReturnCode ndefGetWifi(const ndefType *wifi, ndefTypeWifi *wifiConfig)
 {
   const ndefTypeWifi *wifiData;
 
-  if ((wifi       == NULL) || (wifi->id != NDEF_TYPE_MEDIA_WIFI) ||
+  if ((wifi       == NULL) || (wifi->id != NDEF_TYPE_ID_MEDIA_WIFI) ||
       (wifiConfig == NULL)) {
     return ERR_PARAM;
   }
@@ -379,12 +360,13 @@ ReturnCode NdefClass::ndefGetWifi(const ndefType *wifi, ndefTypeWifi *wifiConfig
 
 
 /*****************************************************************************/
-ReturnCode NdefClass::ndefPayloadToWifi(const ndefConstBuffer *bufPayload, ndefType *wifi)
+static ReturnCode ndefPayloadToWifi(const ndefConstBuffer *bufPayload, ndefType *wifi)
 {
   ndefTypeWifi wifiConfig;
   uint32_t offset;
 
-  if ((bufPayload == NULL) || (wifi == NULL)) {
+  if ((bufPayload == NULL) || (bufPayload->buffer == NULL) ||
+      (wifi       == NULL)) {
     return ERR_PARAM;
   }
 
@@ -447,14 +429,14 @@ ReturnCode NdefClass::ndefPayloadToWifi(const ndefConstBuffer *bufPayload, ndefT
     }
   }
 
-  return ndefWifi(wifi, &wifiConfig);
+  return ndefWifiInit(wifi, &wifiConfig);
 }
 
 
 /*****************************************************************************/
-ReturnCode NdefClass::ndefRecordToWifi(const ndefRecord *record, ndefType *wifi)
+ReturnCode ndefRecordToWifi(const ndefRecord *record, ndefType *wifi)
 {
-  const ndefType *ndeftype;
+  const ndefType *type;
 
   if ((record == NULL) || (wifi == NULL)) {
     return ERR_PARAM;
@@ -464,9 +446,9 @@ ReturnCode NdefClass::ndefRecordToWifi(const ndefRecord *record, ndefType *wifi)
     return ERR_PROTO;
   }
 
-  ndeftype = ndefRecordGetNdefType(record);
-  if (ndeftype != NULL) {
-    (void)ST_MEMCPY(wifi, ndeftype, sizeof(ndefType));
+  type = ndefRecordGetNdefType(record);
+  if ((type != NULL) && (type->id == NDEF_TYPE_ID_MEDIA_WIFI)) {
+    (void)ST_MEMCPY(wifi, type, sizeof(ndefType));
     return ERR_NONE;
   }
 
@@ -475,9 +457,9 @@ ReturnCode NdefClass::ndefRecordToWifi(const ndefRecord *record, ndefType *wifi)
 
 
 /*****************************************************************************/
-ReturnCode NdefClass::ndefWifiToRecord(const ndefType *wifi, ndefRecord *record)
+ReturnCode ndefWifiToRecord(const ndefType *wifi, ndefRecord *record)
 {
-  if ((wifi   == NULL) || (wifi->id != NDEF_TYPE_MEDIA_WIFI) ||
+  if ((wifi   == NULL) || (wifi->id != NDEF_TYPE_ID_MEDIA_WIFI) ||
       (record == NULL)) {
     return ERR_PARAM;
   }
@@ -486,7 +468,11 @@ ReturnCode NdefClass::ndefWifiToRecord(const ndefType *wifi, ndefRecord *record)
 
   (void)ndefRecordSetType(record, NDEF_TNF_MEDIA_TYPE, &bufMediaTypeWifi);
 
-  (void)ndefRecordSetNdefType(record, wifi);
+  if (ndefRecordSetNdefType(record, wifi) != ERR_NONE) {
+    return ERR_PARAM;
+  }
 
   return ERR_NONE;
 }
+
+#endif

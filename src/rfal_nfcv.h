@@ -54,6 +54,16 @@
 #include "rfal_rf.h"
 
 /*
+******************************************************************************
+* ENABLE SWITCH
+******************************************************************************
+*/
+
+#ifndef RFAL_FEATURE_NFCV
+  #define RFAL_FEATURE_NFCV   false    /* NFC-V module configuration missing. Disabled by default */
+#endif
+
+/*
  ******************************************************************************
  * GLOBAL DEFINES
  ******************************************************************************
@@ -67,6 +77,7 @@
 #define RFAL_NFCV_BLOCKNUM_LEN            1U              /*!< Block Number length on normal commands: 8 bits               */
 #define RFAL_NFCV_BLOCKNUM_EXTENDED_LEN   2U              /*!< Block Number length on extended commands: 16 bits            */
 #define RFAL_NFCV_PARAM_SKIP              0U              /*!< Skip proprietary Param Request                               */
+#define RFAL_NFCV_ST_IC_MFG_CODE          0x02U           /*!< ST IC Mfg code (used for custom commands)                    */
 
 
 

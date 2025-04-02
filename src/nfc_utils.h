@@ -71,10 +71,26 @@
   {unsigned char swap, *lo = ((unsigned char *)(pData)), *hi = ((unsigned char *)(pData)) + (nDataSize) - 1; \
   while (lo < hi) { swap = *lo; *lo++ = *hi; *hi-- = swap; }}
 
+#ifdef __CSMC__
+/* STM8 COSMIC */
+#define ST_MEMMOVE(s1,s2,n)                                                 memmove(s1,s2,n)                                /*  PRQA S 5003 # CERT C 9 - string.h from Cosmic only provides functions with low qualified parameters */ /*!< map memmove to string library code */
+static inline void *ST_MEMCPY(void *s1, const void *s2, uint32_t n)
+{
+  return memcpy(s1, s2, (uint16_t)n);  /*  PRQA S 0431 # MISRA 1.1 - string.h from Cosmic only provides functions with low qualified parameters */
+}
+#define ST_MEMSET(s1,c,n)                                                   memset(s1,(char)(c),n)                          /*!< map memset to string library code  */
+static inline int32_t ST_BYTECMP(void *s1, const void *s2, uint32_t n)
+{
+  return (int32_t)memcmp(s1, s2, (uint16_t)n);  /*  PRQA S 0431 # MISRA 1.1 - string.h from Cosmic only provides functions with low qualified parameters */
+}
+
+#else   /* __CSMC__ */
+
 #define ST_MEMMOVE          memmove     /*!< map memmove to string library code */
 #define ST_MEMCPY           memcpy      /*!< map memcpy to string library code  */
 #define ST_MEMSET           memset      /*!< map memset to string library code  */
 #define ST_BYTECMP          memcmp      /*!< map bytecmp to string library code */
+#endif /* __CSMC__ */
 
 #define NO_WARNING(v)      ((void) (v)) /*!< Macro to suppress compiler warning */
 

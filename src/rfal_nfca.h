@@ -32,8 +32,8 @@
  *  up to ISO14443-3 layer
  *
  *
- *  An usage example is provided here: \ref exampleRfalNfca.c
- *  \example exampleRfalNfca.c
+ *  An usage example is provided here: \ref exampleRfalNfca.cpp
+ *  \example exampleRfalNfca.cpp
  *
  *
  * \addtogroup RFAL
@@ -61,6 +61,17 @@
 #include "st_errno.h"
 #include "rfal_rf.h"
 #include "rfal_t1t.h"
+
+/*
+******************************************************************************
+* ENABLE SWITCH
+******************************************************************************
+*/
+
+#ifndef RFAL_FEATURE_NFCA
+  #define RFAL_FEATURE_NFCA   false    /* NFC-A module configuration missing. Disabled by default */
+#endif
+
 
 /*
  ******************************************************************************
@@ -170,7 +181,9 @@ typedef struct {
   rfalNfcaSelRes           selRes;                              /*!< SEL_RES  (SAK)                                                             */
   uint8_t                  nfcId1Len;                           /*!< NFCID1 Length                                                              */
   uint8_t                  nfcId1[RFAL_NFCA_CASCADE_3_UID_LEN]; /*!< NFCID1   (UID)                                                             */
+#ifdef RFAL_FEATURE_T1T
   rfalT1TRidRes            ridRes;                              /*!< RID_RES                                                                    */
+#endif /* RFAL_FEATURE_T1T */
   bool                     isSleep;                             /*!< Device sleeping flag                                                       */
 } rfalNfcaListenDevice;
 
