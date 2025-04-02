@@ -236,7 +236,7 @@ const uint8_t *ndefBluetoothGetEir(const ndefTypeBluetooth *bluetooth, uint8_t e
 
 
 /*****************************************************************************/
-/* This function copies an array, changing its endianness, useful to convert data to BLE endianess */
+/* This function copies an array, changing its endianness, useful to convert data to BLE endianness */
 static uint8_t *NDEF_BluetoothReverse(uint8_t *dst, const uint8_t *src, uint32_t length)
 {
   if ((dst == NULL) || (src == NULL)) {

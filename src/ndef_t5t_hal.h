@@ -91,7 +91,7 @@ bool ndefT5TisT5TDevice(const ndefDevice *dev);
  *
  * \param[in] ctx: ndef Context
  * \param[in] dev: ndef Device
- * \param[in] mode: Acces mode
+ * \param[in] mode: Access mode
  *
  * \return ERR_PARAM        : Invalid parameter
  * \return ERR_NONE         : No error

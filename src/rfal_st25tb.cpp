@@ -43,7 +43,7 @@
  */
 
 /* Feature switch may be enabled or disabled by user at rfal_platform.h
- * Default configuration (ST25R dependant) also provided at rfal_default_config.h
+ * Default configuration (ST25R dependent) also provided at rfal_default_config.h
  *
  *    RFAL_FEATURE_ST25TB
  */
@@ -459,7 +459,7 @@ ReturnCode RfalNfcClass::rfalSt25tbPollerWriteBlock(uint8_t blockAddress, const 
       return ret;
     }
 
-    /* If a transmission error occurred (maybe noise while commiting data) wait maximum programming time and verify data afterwards */
+    /* If a transmission error occurred (maybe noise while committing data) wait maximum programming time and verify data afterwards */
     rfalRfDev->rfalSetGT((RFAL_ST25TB_FWT + RFAL_ST25TB_TW));
     rfalRfDev->rfalFieldOnAndStartGT();
 

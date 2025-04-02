@@ -47,7 +47,7 @@
  ******************************************************************************
  */
 /* Feature switch may be enabled or disabled by user at rfal_platform.h
- * Default configuration (ST25R dependant) also provided at rfal_default_config.h
+ * Default configuration (ST25R dependent) also provided at rfal_default_config.h
  *
  *    RFAL_FEATURE_ISO_DEP
  */
@@ -1112,7 +1112,7 @@ ReturnCode RfalNfcClass::rfalIsoDepListenGetActivationStatus(void)
 
     /*******************************************************************************/
     default: /*  PRQA S 2003 # MISRA 16.3 - Intentional fall through */
-      /* ReEnable the receiver and wait for another frame */
+      /* Re-enable the receiver and wait for another frame */
       isoDepReEnableRx((uint8_t *)gIsoDep.actvParam.rxBuf, sizeof(rfalIsoDepBufFormat), gIsoDep.actvParam.rxLen);
 
       return ERR_BUSY;
@@ -1134,7 +1134,7 @@ ReturnCode RfalNfcClass::rfalIsoDepListenGetActivationStatus(void)
       /* ISO 14443-4  5.3.2  Check for a valid PPS0 */
       if (((((uint8_t *)gIsoDep.actvParam.rxBuf)[RFAL_ISODEP_PPS_STARTBYTE_POS] & RFAL_ISODEP_DID_MASK) != gIsoDep.did) ||
           ((((uint8_t *)gIsoDep.actvParam.rxBuf)[RFAL_ISODEP_PPS_PPS0_POS] & RFAL_ISODEP_PPS0_VALID_MASK) != RFAL_ISODEP_PPS0_PPS1_NOT_PRESENT)) {
-        /* Invalid DID on PPS request or Invalid PPS0, reEnable the receiver and wait another frame */
+        /* Invalid DID on PPS request or Invalid PPS0, re-enable the receiver and wait another frame */
         isoDepReEnableRx((uint8_t *)gIsoDep.actvParam.rxBuf, sizeof(rfalIsoDepBufFormat), gIsoDep.actvParam.rxLen);
 
         return ERR_BUSY;
@@ -1831,7 +1831,7 @@ ReturnCode RfalNfcClass::rfalIsoDepPollAGetActivationStatus(void)
             rfalRfDev->rfalSetGT(rfalRfDev->rfalGetFDTPoll());
             rfalRfDev->rfalFieldOnAndStartGT();
 
-            /* Send RATS retransmission */ /* PRQA S 4342 1 # MISRA 10.5 - Layout of enum rfalIsoDepFSxI is guaranteed whithin 4bit range */
+            /* Send RATS retransmission */ /* PRQA S 4342 1 # MISRA 10.5 - Layout of enum rfalIsoDepFSxI is guaranteed within 4bit range */
             EXIT_ON_ERR(ret, rfalIsoDepStartRATS((rfalIsoDepFSxI)(uint8_t)(gIsoDep.actv.ratsReq.PARAM >> RFAL_ISODEP_RATS_PARAM_FSDI_SHIFT),
                                                  gIsoDep.did,
                                                  &gIsoDep.actvDev->activation.A.Listener.ATS,
@@ -1951,7 +1951,7 @@ ReturnCode RfalNfcClass::rfalIsoDepPollAGetActivationStatus(void)
 
       ret = rfalIsoDepGetDeselectStatus();
       if (ret != ERR_BUSY) {
-        /* Report activation failed with generic tranmission error */
+        /* Report activation failed with generic transmission error */
         ret = ERR_FRAMING;
       }
       break;

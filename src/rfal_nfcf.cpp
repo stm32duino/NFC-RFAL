@@ -46,7 +46,7 @@
  */
 
 /* Feature switch may be enabled or disabled by user at rfal_platform.h
- * Default configuration (ST25R dependant) also provided at rfal_default_config.h
+ * Default configuration (ST25R dependent) also provided at rfal_default_config.h
  *
  *    RFAL_FEATURE_NFCF
  */
@@ -91,7 +91,7 @@
 ******************************************************************************
 */
 
-/*! Colission Resolution states */
+/*! Collision Resolution states */
 typedef enum {
   RFAL_NFCF_CR_POLL,                     /*!< Poll Request                    */
   RFAL_NFCF_CR_PARSE,                    /*!< Parse Poll Response             */
@@ -100,11 +100,11 @@ typedef enum {
 
 
 
-/*! Colission Resolution context */
+/*! Collision Resolution context */
 typedef struct {
   rfalNfcfGreedyF       greedyF;
   uint8_t               devLimit;        /*!< Device limit to be used                                 */
-  rfalComplianceMode    compMode;        /*!< Compliancy mode to be used                              */
+  rfalComplianceMode    compMode;        /*!< Compliance mode to be used                              */
   rfalNfcfListenDevice *nfcfDevList;     /*!< Location of the device list                             */
   uint8_t              *devCnt;          /*!< Location of the device counter                          */
   bool                  collPending;     /*!< Collision pending flag                                  */

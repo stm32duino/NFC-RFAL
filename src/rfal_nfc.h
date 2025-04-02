@@ -255,7 +255,7 @@ typedef struct {
   uint8_t                GBLen;                            /*!< Length of the General Bytes                    NCI 2.1  Table 29   */
   rfalBitRate            ap2pBR;                           /*!< Bit rate to poll for AP2P                      NCI 2.1  Table 31   */
   bool                   p2pNfcaPrio;                      /*!< NFC-A P2P (true) or ISO14443-4/T4T (false) priority                */
-  rfalNfcPropCallbacks   propNfc;                          /*!< Proprietary Technlogy callbacks                                    */
+  rfalNfcPropCallbacks   propNfc;                          /*!< Proprietary Technology callbacks                                    */
 
 
   rfalIsoDepFSxI         isoDepFS;                         /*!< ISO-DEP Poller announced maximum frame size   Digital 2.2 Table 60 */
@@ -299,7 +299,7 @@ typedef struct {
   rfalNfcDevice           *activeDev;         /*!< Active device pointer                           */
   rfalNfcDiscoverParam    disc;               /*!< Discovery parameters                            */
   rfalNfcDevice           devList[RFAL_NFC_MAX_DEVICES];   /*!< Location of device list            */
-  uint8_t                 devCnt;             /*!< Decices found counter                           */
+  uint8_t                 devCnt;             /*!< Devices found counter                           */
   uint32_t                discTmr;            /*!< Discovery Total duration timer                  */
   ReturnCode              dataExErr;          /*!< Last Data Exchange error                        */
   bool                    discRestart;        /* Restart discover after deactivation flag        */
@@ -3731,7 +3731,7 @@ class RfalNfcClass {
     *
     *
     * When devLimit = 0 it is configured to perform collision detection only. Once a collision
-    * is detected the collision resolution is aborted immidiatly. If only one device is found
+    * is detected the collision resolution is aborted immediately. If only one device is found
     * with no collisions, it will properly resolved.
     *
     *
