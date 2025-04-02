@@ -191,14 +191,14 @@ typedef enum {
 
 /*! NFC-B Collision Resolution context                                                              */
 typedef struct {
-  rfalComplianceMode    compMode;        /*!< Compliancy mode to be used                          */
+  rfalComplianceMode    compMode;        /*!< Compliance mode to be used                          */
   uint8_t               devLimit;        /*!< Device limit to be used                             */
   rfalNfcbListenDevice *nfcbDevList;     /*!< Location of the device list                         */
   uint8_t               *devCnt;         /*!< Location of the device counter                      */
   bool                  *colPending;     /*!< Location of the Collision pending flag              */
 
   uint8_t               curSlots;        /*!< Current number of slots                             */
-  uint8_t               curSlotNum;      /*!< Current Slot number (whithin slotted loop)          */
+  uint8_t               curSlotNum;      /*!< Current Slot number (within slotted loop)          */
   uint8_t               endSlots;        /*!< Maximum number of slots allowed                     */
   uint8_t               curDevCnt;       /*!< Current device counter (per slotted loop)           */
   bool                  colPend;         /*!< Internal Collision pending flag                     */

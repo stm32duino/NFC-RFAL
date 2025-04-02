@@ -365,7 +365,7 @@ enum {
   RFAL_TXRX_FLAGS_CRC_RX_REMV      = (0U << 1), /*!< Remove the CRC from rxBuffer                                                          */
   RFAL_TXRX_FLAGS_NFCIP1_ON        = (1U << 2), /*!< Enable NFCIP1 mode: Add SB(F0) and LEN bytes during Tx and skip SB(F0) byte during Rx */
   RFAL_TXRX_FLAGS_NFCIP1_OFF       = (0U << 2), /*!< Disable NFCIP1 mode: do not append protocol bytes while Tx nor skip while Rx          */
-  RFAL_TXRX_FLAGS_AGC_OFF          = (1U << 3),   /*!< Disable Automatic Gain Control, improving multiple devices collision detection. \b DEPRECATED: flag is depreacted, usage of Anticollision APIs based on Analog Config table with RFAL_ANALOG_CONFIG_ANTICOL settings */
+  RFAL_TXRX_FLAGS_AGC_OFF          = (1U << 3),   /*!< Disable Automatic Gain Control, improving multiple devices collision detection. \b DEPRECATED: flag is deprecated, usage of Anticollision APIs based on Analog Config table with RFAL_ANALOG_CONFIG_ANTICOL settings */
   RFAL_TXRX_FLAGS_AGC_ON           = (0U << 3),   /*!< Enable Automatic Gain Control, improving single device reception                \b DEPRECATED: flag is deprecated, usage of Anticollision APIs based on Analog Config table with RFAL_ANALOG_CONFIG_ANTICOL settings */
   RFAL_TXRX_FLAGS_PAR_RX_KEEP      = (1U << 4), /*!< Disable Parity check and keep the Parity and CRC bits in the received buffer          */
   RFAL_TXRX_FLAGS_PAR_RX_REMV      = (0U << 4), /*!< Enable Parity check and remove the parity bits from the received buffer               */
@@ -582,7 +582,7 @@ typedef enum {
 } rfalWumAAWeight;
 
 
-/*! RFAL Wake-Up mesurement duration */
+/*! RFAL Wake-Up measurement duration */
 typedef enum {
   RFAL_WUM_MEAS_DUR_26_10    = 0,       /*!< WU measurement duration: 26.0us (slow) / 10.6us (fast)     */
   RFAL_WUM_MEAS_DUR_30_14    = 1,       /*!< WU measurement duration: 29.5us (slow) / 14.2us (fast)     */
@@ -591,13 +591,13 @@ typedef enum {
 } rfalWumMeasDuration;
 
 
-/*! RFAL Wake-Up mesurement filter */
+/*! RFAL Wake-Up measurement filter */
 typedef enum {
   RFAL_WUM_MEAS_FIL_SLOW    = false,    /*!< Wake-Up measurement slow filter                            */
   RFAL_WUM_MEAS_FIL_FAST    = true,     /*!< Wake-up measurement fast filter                            */
 } rfalWumMeasFilter;
 
-/*! RFAL Wake-Up trigger tresholds for threshold bitmask config */
+/*! RFAL Wake-Up trigger thresholds for threshold bitmask config */
 enum {
   RFAL_WUM_TRE_ABOVE    = (1U << 2),    /*!< Wake-up trigger threshold: above upper limit               */
   RFAL_WUM_TRE_BETWEEN  = (1U << 1),    /*!< Wake-up trigger threshold: between upper and lower limit   */
@@ -610,7 +610,7 @@ typedef struct {
   uint8_t              delta;           /*!< Delta between the reference and measurement to wake-up     */
   uint8_t              fracDelta;       /*!< Fractional part of the delta [0;3] 0.25 steps (SW TD only) */
   uint8_t              reference;       /*!< Reference to be used;RFAL_WUM_REFERENCE_AUTO sets it auto  */
-  uint8_t              threshold;       /*!< Wake-Up trigger treshold bitmask                           */
+  uint8_t              threshold;       /*!< Wake-Up trigger threshold bitmask                           */
   bool                 autoAvg;         /*!< Use the HW Auto Averaging feature                         */
   bool                 aaInclMeas;      /*!< When AutoAvg is enabled, include IRQ measurement           */
   rfalWumAAWeight      aaWeight;        /*!< When AutoAvg is enabled, last measure weight               */
@@ -622,8 +622,8 @@ typedef struct rfalWakeUpConfig {
   bool                 irqTout;         /*!< IRQ at every timeout will refresh the measurement(s)       */
   bool                 swTagDetect;/*!< Use SW Tag Detection instead of HW Wake-Up mode            */
   bool                 autoAvg;         /*!< Use the HW Auto Averaging feature on the enabled channel(s)*/
-  bool                 skipCal;         /*!< Do not preform calibration starting WU mode                */
-  bool                 skipReCal;       /*!< Do not preform recalibration during WU mode                */
+  bool                 skipCal;         /*!< Do not perform calibration starting WU mode                */
+  bool                 skipReCal;       /*!< Do not perform recalibration during WU mode                */
   bool                 delCal;          /*!< Delay calibration step starting WU mode                    */
   bool                 delRef;          /*!< Delay reference step starting WU mode                      */
   rfalWumMeasDuration  measDur;         /*!< Wake-up measurement duration config                        */
@@ -751,7 +751,7 @@ class RfalRfClass {
     *****************************************************************************
     * \brief RFAL Sync Pre Tx Callback
     *
-    * Sets a callback for the driver to execute in order to Syncronize actual
+    * Sets a callback for the driver to execute in order to Synchronize actual
     * transmission start.
     * If the callback is set TxRx will hold until Sync callback returns true.
     *
@@ -779,7 +779,7 @@ class RfalRfClass {
     *
     * Sets a callback upon External Field On detected while in Passive Listen Mode
     *
-    * \warning callabck available only on applicable devices,
+    * \warning callback available only on applicable devices,
     *            supporting Passive Listen Mode
     *
     * \param[in]  pFunc : method pointer for the LM EON callback
@@ -1358,7 +1358,7 @@ class RfalRfClass {
     * \brief Start FeliCa Poll
     *
     * Triggers a Poll Request and all Poll Responses will be collected according
-    * to the given nuber of slots
+    * to the given number of slots
     *
     *
     * \param[in]   slots             : number of slots for the Poll Request
@@ -1573,7 +1573,7 @@ class RfalRfClass {
      *
      *
      * \return ERR_WRONG_STATE : Not initialized properly
-     * \return ERR_PARAM       : Invalid parametere mask
+     * \return ERR_PARAM       : Invalid parameter mask
      * \return ERR_NONE        : Done with no error
      *
      *****************************************************************************
@@ -1752,7 +1752,7 @@ class RfalRfClass {
     * \brief WLC-P WPT Monitor Start
     *
     * After WLC-P reaches its WPT state it starts the monitoring for Impedance
-    *  change and WPT Stop sequeence.
+    *  change and WPT Stop sequence.
     *
     * \param[in] config       : Generic Wake-Up configuration provided by lower
     *                            layers. If NULL will automatically configure the

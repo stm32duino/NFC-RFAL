@@ -54,7 +54,7 @@ const ndefConstBuffer8 bufMediaTypeWifi      = { ndefMediaTypeWifi,      sizeof(
 /*! Wifi OBB (WPS) */
 
 #define NDEF_WIFI_DEFAULT_NETWORK_KEY      "00000000"      /*! Network key to be used when the Authentication is set to None.
-                                                               Althought WPS defines a 0-length network key in such case,
+                                                               Although WPS defines a 0-length network key in such case,
                                                                a 8 digit value is required with tested phones. */
 
 #define NDEF_WIFI_NETWORK_SSID_LENGTH           32U    /*!< Network SSID length        */
@@ -145,7 +145,7 @@ static uint8_t wifiConfigToken5[] = {
 /*****************************************************************************/
 /*! Manage a Wifi Out-Of-Band NDEF message, to start a communication based on Wifi.
  *  The Wifi OOB format is described by the Wifi Protected Setup specification.
- *  It consists in a list of data elements formated as type-length-value.
+ *  It consists in a list of data elements formatted as type-length-value.
 
     The Wifi OOB in a NDEF record has the following structure:
         - Version
@@ -261,7 +261,7 @@ static const uint8_t *ndefWifiToPayloadItem(const ndefType *wifi, ndefConstBuffe
     case 4:
       /* Config Token3 */
 
-      /* Update Token3 with Autentication and Encryption Types */
+      /* Update Token3 with Authentication and Encryption Types */
       wifiConfigToken3[CONFIG_TOKEN_3_AUTHENTICATION_TYPE_INDEX] = wifiData->authentication;
       wifiConfigToken3[CONFIG_TOKEN_3_ENCRYPTION_TYPE_INDEX]     = wifiData->encryption;
 

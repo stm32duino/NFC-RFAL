@@ -70,8 +70,8 @@
 #define NDEF_CMDLIST_EXTGETMULTIPLEBLOCKSECSTATUS_POS         (5U)    /*!< Cmd List: ExtGetMultipleBlockSecStatus position    */
 #define NDEF_CMDLIST_FASTEXTENDEDREADMULTIPLEBLOCKS_POS       (6U)    /*!< Cmd List: FastExtendedReadMultipleBlocks position  */
 
-#define NDEF_T5T_CC_MAGIC_1_BYTE_ADDR_MODE                   0xE1U    /*!< T5T CC Magic Number (1-byte Addres Mode)           */
-#define NDEF_T5T_CC_MAGIC_2_BYTE_ADDR_MODE                   0xE2U    /*!< T5T CC Magic Number (2-byte Addres Mode)           */
+#define NDEF_T5T_CC_MAGIC_1_BYTE_ADDR_MODE                   0xE1U    /*!< T5T CC Magic Number (1-byte Address Mode)           */
+#define NDEF_T5T_CC_MAGIC_2_BYTE_ADDR_MODE                   0xE2U    /*!< T5T CC Magic Number (2-byte Address Mode)           */
 #define NDEF_T5T_CC_LEN_4_BYTES                                 4U    /*!< T5T CC Length (4 bytes)                            */
 #define NDEF_T5T_CC_LEN_8_BYTES                                 8U    /*!< T5T CC Length (8 bytes)                            */
 #define NDEF_T5T_FORMAT_OPTION_NFC_FORUM                        1U    /*!< Format tag according to NFC Forum MLEN computation */
@@ -185,7 +185,7 @@ ReturnCode ndefT5TPollerSetAccessMode(ndefT5TAccessMode mode);
  * \brief Handle T5T NDEF context activation
  *
  * This method performs the initialisation of the NDEF context.
- * It must be called after a successfull
+ * It must be called after a successful
  * anticollision procedure and prior to any NDEF procedures such as NDEF
  * detection procedure.
  *
@@ -270,7 +270,7 @@ ReturnCode ndefT5TPollerWriteBytes(ndefContext *ctx, uint32_t offset, const uint
  * \brief T5T Read raw NDEF message
  *
  * This method reads a raw NDEF message from the current selected file.
- * Prior to NDEF Read procedure, a successfull ndefT5TPollerNdefDetect()
+ * Prior to NDEF Read procedure, a successful ndefT5TPollerNdefDetect()
  * has to be performed.
  *
  * \param[in]   ctx    : ndef Context
@@ -294,7 +294,7 @@ ReturnCode ndefT5TPollerReadRawMessage(ndefContext *ctx, uint8_t *buf, uint32_t 
  * \brief T5T Write raw NDEF message
  *
  * This method writes a raw NDEF message in the current selected file.
- * Prior to NDEF Write procedure, a successfull ndefT5TPollerNdefDetect()
+ * Prior to NDEF Write procedure, a successful ndefT5TPollerNdefDetect()
  * has to be performed.
  *
  * \param[in]   ctx    : ndef Context

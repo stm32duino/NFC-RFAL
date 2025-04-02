@@ -91,7 +91,7 @@ extern const ndefConstBuffer8 bufRtdTypeUri;        /*! URI Record Type buffer  
 
 /*! RTD Type URI */
 typedef struct {
-  uint8_t         protocol;     /*!< Protocol Idendifier */
+  uint8_t         protocol;     /*!< Protocol Identifier */
   ndefConstBuffer bufUriString; /*!< URI string buffer   */
 } ndefTypeRtdUri;
 

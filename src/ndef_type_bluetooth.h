@@ -77,7 +77,7 @@ typedef enum {
                                                                     b0: LE limited Discoverable Mode,
                                                                     b1: LE general Discoverable Mode,
                                                                     b2: BR/EDR not supported,
-                                                                    b3: Simultaneous LE & BR/EDR Conroller,
+                                                                    b3: Simultaneous LE & BR/EDR Controller,
                                                                     b4: Simultaneous LE & BR/EDR Host */
 #define NDEF_BT_EIR_SERVICE_CLASS_UUID_PARTIAL_16      0x02U   /*!< Bluetooth service UUID on 16-bits (partial list) */
 #define NDEF_BT_EIR_SERVICE_CLASS_UUID_COMPLETE_16     0x03U   /*!< Bluetooth service UUID on 16-bits (complete list) */
@@ -103,7 +103,7 @@ typedef enum {
 #define NDEF_BT_EIR_SERVICE_DATA                       0x16U   /*!< Service Data (2 or more octets): The first 2 octets contain the 16 bit Service UUID followed by additional service data */
 #define NDEF_BT_EIR_APPEARANCE                         0x19U   /*!< UUID for `Appearance`: The Appearance characteristic value shall be the enumerated value as defined by Bluetooth Assigned Numbers document */
 #define NDEF_BT_EIR_LE_DEVICE_ADDRESS                  0x1BU   /*!< 6 LSB bytes: Device address, 7th byte: Address type (Public/Random) */
-#define NDEF_BT_EIR_LE_ROLE                            0x1CU   /*!< Device Role: Periph only, Central only, Periph prefered, Central prefered */
+#define NDEF_BT_EIR_LE_ROLE                            0x1CU   /*!< Device Role: Periph only, Central only, Periph preferred, Central preferred */
 #define NDEF_BT_EIR_LE_SECURE_CONN_CONFIRMATION_VALUE  0x22U   /*!< Secure Connection Confirmation value */
 #define NDEF_BT_EIR_LE_SECURE_CONN_RANDOM_VALUE        0x23U   /*!< Secure Connection Random value */
 #define NDEF_BT_EIR_MANUFACTURER_DATA                  0xFFU   /*!< Manufacturer Specific Data (2 or more octets): The first 2 octets contain the Company Identifier Code followed by additional manufacturer specific data */
@@ -146,7 +146,7 @@ typedef struct {
 
   ndefConstBuffer bufDeviceAddress;         /*!< Device address, for BR/EDR only */
 
-  const uint8_t *eir[NDEF_BT_EIR_COUNT];    /*!< Array containg pointer to each EIR */
+  const uint8_t *eir[NDEF_BT_EIR_COUNT];    /*!< Array containing pointer to each EIR */
 
 } ndefTypeBluetooth;
 

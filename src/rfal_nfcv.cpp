@@ -49,7 +49,7 @@
  */
 
 /* Feature switch may be enabled or disabled by user at rfal_platform.h
- * Default configuration (ST25R dependant) also provided at rfal_default_config.h
+ * Default configuration (ST25R dependent) also provided at rfal_default_config.h
  *
  *    RFAL_FEATURE_NFCV
  */
@@ -769,7 +769,7 @@ ReturnCode RfalNfcClass::rfalNfcvPollerTransceiveReq(uint8_t cmd, uint8_t flags,
     msgIt += (uint8_t)dataLen;
   }
 
-  /* If the Option Flag | Special Frame is set in certain commands an EOF needs to be sent whithin  FDTV,EOF to retrieve the VICC response     Digital 2.3  9.7.4    ISO15693-3 2009  10.4.2 & 10.4.3 & 10.4.5 */
+  /* If the Option Flag | Special Frame is set in certain commands an EOF needs to be sent within  FDTV,EOF to retrieve the VICC response     Digital 2.3  9.7.4    ISO15693-3 2009  10.4.2 & 10.4.3 & 10.4.5 */
   if (((flags & (uint8_t)RFAL_NFCV_REQ_FLAG_OPTION) != 0U) && ((cmd == (uint8_t)RFAL_NFCV_CMD_WRITE_SINGLE_BLOCK) || (cmd == (uint8_t)RFAL_NFCV_CMD_WRITE_MULTIPLE_BLOCKS)        ||
                                                                (cmd == (uint8_t)RFAL_NFCV_CMD_LOCK_BLOCK) || (cmd == (uint8_t)RFAL_NFCV_CMD_EXTENDED_WRITE_SINGLE_BLOCK)                   ||
                                                                (cmd == (uint8_t)RFAL_NFCV_CMD_EXTENDED_LOCK_SINGLE_BLOCK) || (cmd == (uint8_t)RFAL_NFCV_CMD_EXTENDED_WRITE_MULTIPLE_BLOCK))) {
@@ -779,7 +779,7 @@ ReturnCode RfalNfcClass::rfalNfcvPollerTransceiveReq(uint8_t cmd, uint8_t flags,
   /* Transceive Command */
   ret = rfalRfDev->rfalTransceiveBlockingTxRx((uint8_t *)&req, (RFAL_NFCV_CMD_LEN + RFAL_NFCV_FLAG_LEN + (uint16_t)msgIt), rxBuf, rxBufLen, rcvLen, RFAL_TXRX_FLAGS_DEFAULT, (specialFrame ? RFAL_NFCV_FDT_EOF : RFAL_NFCV_FDT_MAX));
 
-  /* If the Option Flag | Special Frame is set in certain commands an EOF needs to be sent whithin  FDTV,EOF to retrieve the VICC response     Digital 2.3  9.7.4    ISO15693-3 2009  10.4.2 & 10.4.3 & 10.4.5 */
+  /* If the Option Flag | Special Frame is set in certain commands an EOF needs to be sent within  FDTV,EOF to retrieve the VICC response     Digital 2.3  9.7.4    ISO15693-3 2009  10.4.2 & 10.4.3 & 10.4.5 */
   if (specialFrame) {
     ret = rfalRfDev->rfalISO15693TransceiveEOF(rxBuf, rxBufLen, rcvLen);
   }

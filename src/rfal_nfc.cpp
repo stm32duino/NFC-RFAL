@@ -182,7 +182,7 @@ ReturnCode RfalNfcClass::rfalNfcDeactivate(rfalNfcDeactivateType deactType)
   if ((gNfcDev.state <= RFAL_NFC_STATE_IDLE) || ((deactType == RFAL_NFC_DEACTIVATE_SLEEP) && ((gNfcDev.state < RFAL_NFC_STATE_ACTIVATED) || (gNfcDev.activeDev == NULL)))) {
     return ERR_WRONG_STATE;
   }
-  /* Check valid paramters for the deactivation types */
+  /* Check valid parameters for the deactivation types */
   if (((deactType == RFAL_NFC_DEACTIVATE_SLEEP) && rfalNfcIsRemDevPoller(gNfcDev.activeDev->type))       ||
       ((deactType == RFAL_NFC_DEACTIVATE_DISCOVERY)  && (gNfcDev.disc.techs2Find == RFAL_NFC_TECH_NONE))) {
     return ERR_PARAM;
@@ -701,7 +701,7 @@ ReturnCode RfalNfcClass::rfalNfcDataExchangeGetStatus(void)
     if (gNfcDev.dataExErr == ERR_SLEEP_REQ) {
       EXIT_ON_ERR(gNfcDev.dataExErr, rfalRfDev->rfalListenSleepStart(RFAL_LM_STATE_SLEEP_A, gNfcDev.rxBuf.rfBuf, sizeof(gNfcDev.rxBuf.rfBuf), &gNfcDev.rxLen));
 
-      /* If set Sleep was succesfull keep restore the Sleep request signal */
+      /* If set Sleep was successful keep restore the Sleep request signal */
       gNfcDev.dataExErr = ERR_SLEEP_REQ;
     }
 #endif /* RFAL_FEATURE_LISTEN_MODE */
@@ -1633,7 +1633,7 @@ ReturnCode RfalNfcClass::rfalNfcListenActivation(void)
     case RFAL_LM_STATE_ACTIVE_A: /* NFC-A CE activation */
     case RFAL_LM_STATE_ACTIVE_Ax:
 
-      if (isDataRcvd) { /* Check if Reader/Initator has sent some data */
+      if (isDataRcvd) { /* Check if Reader/Initiator has sent some data */
         /* Check if received data is a Sleep request */
         if (rfalNfcaListenerIsSleepReq(gNfcDev.rxBuf.rfBuf, rfalConvBitsToBytes(gNfcDev.rxLen))) { /* Check if received data is a SLP_REQ */
           /* Set the Listen Mode in Sleep state */
@@ -1746,7 +1746,7 @@ ReturnCode RfalNfcClass::rfalNfcListenActivation(void)
 
     /*******************************************************************************/
     case RFAL_LM_STATE_IDLE: /* AP2P activation */
-      if (isDataRcvd) {      /* Check if Reader/Initator has sent some data */
+      if (isDataRcvd) {      /* Check if Reader/Initiator has sent some data */
         if ((gNfcDev.lmMask & RFAL_LM_MASK_ACTIVE_P2P) != 0U) { /* Check if AP2P is enabled */
 
 #if RFAL_FEATURE_NFC_DEP
