@@ -86,8 +86,8 @@
 
 #define NDEF_T2T_DEF_BYTES_LCK_PER_BIT 8U         /*!< Default nbr of bytes locked per bit for DynLock   */
 
-#define NDEF_T2T_WR_ACCESS_GRANTED   0x0U         /*!< Write Accces 0h: Access granted w/o any security  */
-#define NDEF_T2T_WR_ACCESS_NONE      0xFU         /*!< Write Accces Fh: No access granted                */
+#define NDEF_T2T_WR_ACCESS_GRANTED   0x0U         /*!< Write Access 0h: Access granted w/o any security  */
+#define NDEF_T2T_WR_ACCESS_NONE      0xFU         /*!< Write Access Fh: No access granted                */
 
 #define NDEF_T2T_STATLOCK_OFFSET      10U         /*!< Static Lock offset                                */
 

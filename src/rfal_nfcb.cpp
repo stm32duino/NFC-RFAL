@@ -43,7 +43,7 @@
  */
 
 /* Feature switch may be enabled or disabled by user at rfal_platform.h
- * Default configuration (ST25R dependant) also provided at rfal_default_config.h
+ * Default configuration (ST25R dependent) also provided at rfal_default_config.h
  *
  *    RFAL_FEATURE_NFCB
  */
@@ -239,7 +239,7 @@ ReturnCode RfalNfcClass::rfalNfcbPollerGetCheckPresenceStatus(void)
   EXIT_ON_BUSY(ret, rfalRfDev->rfalGetTransceiveStatus());
 
 
-  /* Covert bits to bytes (u8) */
+  /* Convert bits to bytes (u8) */
   (*gRfalNfcb.DT.sensbResLen) = (uint8_t)rfalConvBitsToBytes(gRfalNfcb.DT.rxLen);
 
   /*  Check if a transmission error was detected */
@@ -320,7 +320,7 @@ ReturnCode RfalNfcClass::rfalNfcbPollerGetSlotMarkerStatus(void)
 
   EXIT_ON_BUSY(ret, rfalRfDev->rfalGetTransceiveStatus());
 
-  /* Covert bits to bytes (u8) */
+  /* Convert bits to bytes (u8) */
   (*gRfalNfcb.DT.sensbResLen) = (uint8_t)rfalConvBitsToBytes(gRfalNfcb.DT.rxLen);
 
   /*  Check if a transmission error was detected */

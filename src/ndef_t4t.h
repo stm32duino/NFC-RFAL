@@ -38,17 +38,17 @@
 #define NDEF_T4T_MAPPING_VERSION_2_0  0x20U                    /*!< Mapping version 2.0                   */
 #define NDEF_T4T_MAPPING_VERSION_3_0  0x30U                    /*!< Mapping version 3.0                   */
 
-/*! Minimun size for an APDU (corresponding to Select NDEF App)     */
+/*! Minimum size for an APDU (corresponding to Select NDEF App)     */
 #define NDEF_T4T_MIN_APDU_LEN                                   13U
 
-/*! Maximun Response-APDU response body length (short field coding) */
+/*! Maximum Response-APDU response body length (short field coding) */
 #if RFAL_FEATURE_ISO_DEP_APDU_MAX_LEN > (256 + RFAL_T4T_MAX_RAPDU_SW1SW2_LEN)
   #define NDEF_T4T_MAX_RAPDU_BODY_LEN                            256U
 #else
   #define NDEF_T4T_MAX_RAPDU_BODY_LEN (RFAL_FEATURE_ISO_DEP_APDU_MAX_LEN - RFAL_T4T_MAX_RAPDU_SW1SW2_LEN)
 #endif
 
-/*! Maximun Command-APDU data length (short field coding)           */
+/*! Maximum Command-APDU data length (short field coding)           */
 #if RFAL_FEATURE_ISO_DEP_APDU_MAX_LEN > (255 + RFAL_T4T_MAX_CAPDU_PROLOGUE_LEN + RFAL_T4T_LC_LEN + RFAL_T4T_LE_LEN)
   #define NDEF_T4T_MAX_CAPDU_BODY_LEN                            255U
 #else
@@ -293,7 +293,7 @@ ReturnCode ndefT4TPollerWriteBytes(ndefContext *ctx, uint32_t offset, const uint
  * \brief T4T Read raw NDEF message
  *
  * This method reads a raw NDEF message from the current selected file.
- * Prior to NDEF Read procedure, a successfull ndefT4TPollerNdefDetect()
+ * Prior to NDEF Read procedure, a successful ndefT4TPollerNdefDetect()
  * has to be performed.
  *
  * \warning Current selected file must not be changed between NDEF Detect
@@ -322,7 +322,7 @@ ReturnCode ndefT4TPollerReadRawMessage(ndefContext *ctx, uint8_t *buf, uint32_t 
  * \brief T4T Write raw NDEF message
  *
  * This method writes a raw NDEF message in the current selected file.
- * Prior to NDEF Write procedure, a successfull ndefT4TPollerNdefDetect()
+ * Prior to NDEF Write procedure, a successful ndefT4TPollerNdefDetect()
  * has to be performed.
  *
  * \warning Current selected file must not be changed between NDEF Detect

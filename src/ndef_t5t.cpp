@@ -72,10 +72,10 @@
 #define NDEF_T5T_TLV_TERMINATOR             0xFEU    /*!< TLV flag TERMINATOR value                         */
 #define NDEF_T5T_TLV_RFU                    0x00U    /*!< TLV flag RFU value                                */
 
-#define NDEF_T5T_ACCESS_ALWAYS               0x0U    /*!< Read/Write Accces. 00b: Always                    */
-#define NDEF_T5T_ACCESS_RFU                  0x1U    /*!< Read/Write Accces. 01b: RFU                       */
-#define NDEF_T5T_ACCESS_PROPRIETARY          0x2U    /*!< Read/Write Accces. 00b: Proprietary               */
-#define NDEF_T5T_ACCESS_NEVER                0x3U    /*!< Read/Write Accces. 00b: Never                     */
+#define NDEF_T5T_ACCESS_ALWAYS               0x0U    /*!< Read/Write Access. 00b: Always                    */
+#define NDEF_T5T_ACCESS_RFU                  0x1U    /*!< Read/Write Access. 01b: RFU                       */
+#define NDEF_T5T_ACCESS_PROPRIETARY          0x2U    /*!< Read/Write Access. 00b: Proprietary               */
+#define NDEF_T5T_ACCESS_NEVER                0x3U    /*!< Read/Write Access. 00b: Never                     */
 
 
 /*

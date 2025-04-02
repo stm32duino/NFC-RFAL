@@ -40,7 +40,7 @@
 #define NDEF_NFCV_SUPPORTED_CMD_LEN  4U                                                /*!< Ext sys info supported commands list length                  */
 #define NDEF_NFCV_UID_LEN            8U                                                /*!< NFC-V UID length                                             */
 
-#define NDEF_SHORT_VFIELD_MAX_LEN  254U                                                /*!< Max V-field length for 1-byte Lengh encoding                 */
+#define NDEF_SHORT_VFIELD_MAX_LEN  254U                                                /*!< Max V-field length for 1-byte Length encoding                 */
 #define NDEF_TERMINATOR_TLV_LEN      1U                                                /*!< Terminator TLV size                                          */
 #define NDEF_TERMINATOR_TLV_T     0xFEU                                                /*!< Terminator TLV T=FEh                                         */
 
@@ -49,7 +49,7 @@
 
 #define NDEF_T3T_BLOCK_SIZE         16U                                                /*!< size for a block in t3t                                      */
 #define NDEF_T3T_MAX_NB_BLOCKS       4U                                                /*!< size for a block in t3t                                      */
-#define NDEF_T3T_BLOCK_NUM_MAX_SIZE  3U                                                /*!< Maximun size for a block number                              */
+#define NDEF_T3T_BLOCK_NUM_MAX_SIZE  3U                                                /*!< Maximum size for a block number                              */
 #define NDEF_T3T_MAX_RX_SIZE      ((NDEF_T3T_BLOCK_SIZE*NDEF_T3T_MAX_NB_BLOCKS) + 13U) /*!< size for a CHECK Response 13 bytes (LEN+07h+NFCID2+Status+Nos) + (block size x Max Nob)                                                */
 #define NDEF_T3T_MAX_TX_SIZE      (((NDEF_T3T_BLOCK_SIZE + NDEF_T3T_BLOCK_NUM_MAX_SIZE) * NDEF_T3T_MAX_NB_BLOCKS) + 14U) \
                                                                                        /*!< size for an UPDATE command, 11 bytes (LEN+08h+NFCID2+Nos) + 2 bytes for 1 SC + 1 byte for NoB + (block size + block num Len) x Max NoB */
@@ -207,7 +207,7 @@ typedef struct {
 typedef struct {
   uint8_t                      currentSecNo;                                   /*!< Current sector number                          */
   uint8_t                      cacheBuf[NDEF_T2T_READ_RESP_SIZE];              /*!< Cache buffer                                   */
-  uint8_t                      nbrRsvdAreas;                                   /*!< Number of reseved Areas                        */
+  uint8_t                      nbrRsvdAreas;                                   /*!< Number of reserved Areas                        */
   uint16_t                     dynLockNbrLockBits;                             /*!< Number of bits inside the DynLock_Area         */
   uint16_t                     dynLockBytesLockedPerBit;                       /*!< Number of bytes locked by one Dynamic Lock bit */
   uint16_t                     dynLockNbrBytes;                                /*!< Number of bytes inside the DynLock_Area        */
@@ -341,7 +341,7 @@ typedef struct ndefPollerWrapperStruct {
  *****************************************************************************
  * \brief Return the device type
  *
- * This funtion returns the device type from the context
+ * This function returns the device type from the context
  *
  * \param[in] dev: ndef Device
  *

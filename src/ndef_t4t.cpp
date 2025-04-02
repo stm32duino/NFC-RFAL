@@ -76,7 +76,7 @@
 #define NDEF_T4T_NLEN_LEN              2U        /*!< NLEN LEN (mapping version v2.0): 2 bytes          */
 #define NDEF_T4T_ENLEN_LEN             4U        /*!< ENLEN LEN (mapping version v3.0): 4 bytes         */
 
-#define NDEF_T4T_MIN_NLEN              3U        /*!< Minimun non null NLEN value. TS T4T v1.0 B        */
+#define NDEF_T4T_MIN_NLEN              3U        /*!< Minimum non null NLEN value. TS T4T v1.0 B        */
 
 #define NDEF_T4T_MV2_MAX_OFSSET   0x7FFFU        /*!< ReadBinary maximum Offset (offset range 0000-7FFFh)*/
 
@@ -719,7 +719,7 @@ ReturnCode ndefT4TPollerWriteRawMessage(ndefContext *ctx, const uint8_t *buf, ui
   }
 
   /* TS T4T v1.0 7.2.3.3: check Mapping Version    */
-  /* Done automatically inside underlying fucntions */
+  /* Done automatically inside underlying functions */
 
   /* TS T4T v1.0 7.2.3.4/8 verify length of the NDEF message */
   ret = ndefT4TPollerCheckAvailableSpace(ctx, bufLen);

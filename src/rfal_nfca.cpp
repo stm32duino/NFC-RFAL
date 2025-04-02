@@ -48,7 +48,7 @@
  ******************************************************************************
  */
 /* Feature switch may be enabled or disabled by user at rfal_platform.h
- * Default configuration (ST25R dependant) also provided at rfal_default_config.h
+ * Default configuration (ST25R dependent) also provided at rfal_default_config.h
  *
  *    RFAL_FEATURE_NFCA
  */
@@ -127,12 +127,12 @@ enum {
 
 /*! Technology Detection context */
 typedef struct {
-  rfalComplianceMode    compMode;        /*!< Compliancy mode to be used      */
+  rfalComplianceMode    compMode;        /*!< Compliance mode to be used      */
   ReturnCode            ret;             /*!< Outcome of presence check       */
 } rfalNfcaTechDetParams;
 
 
-/*! Colission Resolution states */
+/*! Collision Resolution states */
 typedef enum {
   RFAL_NFCA_CR_IDLE,                      /*!< IDLE state                      */
   RFAL_NFCA_CR_CL,                        /*!< New Cascading Level state       */
@@ -144,7 +144,7 @@ typedef enum {
 } rfalNfcaColResState;
 
 
-/*! Full Colission Resolution states */
+/*! Full Collision Resolution states */
 typedef enum {
   RFAL_NFCA_CR_FULL_START,                /*!< Start Full Collision Resolution state                   */
   RFAL_NFCA_CR_FULL_SLPCHECK,             /*!< Sleep and Check for restart state                       */
@@ -152,10 +152,10 @@ typedef enum {
 } rfalNfcaFColResState;
 
 
-/*! Colission Resolution context */
+/*! Collision Resolution context */
 typedef struct {
   uint8_t               devLimit;         /*!< Device limit to be used                                 */
-  rfalComplianceMode    compMode;         /*!< Compliancy mode to be used                              */
+  rfalComplianceMode    compMode;         /*!< Compliance mode to be used                              */
   rfalNfcaListenDevice *nfcaDevList;      /*!< Location of the device list                             */
   uint8_t              *devCnt;           /*!< Location of the device counter                          */
   bool                  collPending;      /*!< Collision pending flag                                  */
@@ -178,7 +178,7 @@ typedef struct {
 } rfalNfcaColResParams;
 
 
-/*! Colission Resolution context */
+/*! Collision Resolution context */
 typedef struct {
   uint8_t               cascadeLv;        /*!< Current Cascading Level                                 */
   uint8_t               fCascadeLv;       /*!< Final Cascading Level                                   */
@@ -328,7 +328,7 @@ ReturnCode RfalNfcClass::rfalNfcaPollerGetSingleCollisionResolutionStatus(void)
         break;
       }
 
-      /* Covert rxLen into bytes */
+      /* Convert rxLen into bytes */
       gNfca.CR.rxLen = rfalConvBitsToBytes(gNfca.CR.rxLen);
 
 
@@ -786,7 +786,7 @@ ReturnCode RfalNfcClass::rfalNfcaPollerSleepFullCollisionResolution(uint8_t devL
     if ((ret == ERR_NONE) && (tmpDevCnt > 0U)) {
       *devCnt += tmpDevCnt;
 
-      /* Check whether to seacrh for more devices */
+      /* Check whether to search for more devices */
       if (*devCnt < devLimit) {
         /* Set last found device to sleep (all others are slept already) */
         rfalNfcaPollerSleep();
@@ -883,7 +883,7 @@ ReturnCode RfalNfcClass::rfalNfcaPollerGetSelectStatus(void)
 
     /* Check if there are more level(s) to be selected */
     if (gNfca.SEL.cascadeLv < gNfca.SEL.fCascadeLv) {
-      /* Advance to the next cascade lavel */
+      /* Advance to the next cascade level */
       gNfca.SEL.cascadeLv++;
       gNfca.SEL.isRx = false;
 
@@ -926,7 +926,7 @@ ReturnCode RfalNfcClass::rfalNfcaPollerGetSleepStatus(void)
 
   /* ISO14443-3 6.4.3  HLTA - If PICC responds with any modulation during 1 ms this response shall be interpreted as not acknowledge
      Digital 2.0  6.9.2.1 & EMVCo 3.0  5.6.2.1 - consider the HLTA command always acknowledged
-     No check to be compliant with NFC and EMVCo, and to improve interoprability (Kovio RFID Tag)
+     No check to be compliant with NFC and EMVCo, and to improve interoperability (Kovio RFID Tag)
   */
   EXIT_ON_BUSY(ret, rfalRfDev->rfalGetTransceiveStatus());
 

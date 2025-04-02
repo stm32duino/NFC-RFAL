@@ -180,7 +180,7 @@ ReturnCode ndefRtdDeviceInfoInit(ndefType *devInfo, const ndefDeviceInfoEntry *d
   }
 
   /* Read Type, Length and Value fields */
-  /* Not checking multiple occurences of a given field, use the last one */
+  /* Not checking multiple occurrences of a given field, use the last one */
   count = 0;
   manufacturerNameIndex = 0;
   modelNameIndex = 0;
@@ -276,7 +276,7 @@ static ReturnCode ndefPayloadToRtdDeviceInfo(const ndefConstBuffer *bufDevInfo, 
   }
 
   /* Read Type, Length and Value fields */
-  /* Not checking multiple occurences of a given field, use the last one */
+  /* Not checking multiple occurrences of a given field, use the last one */
   offset = 0;
   count = 0;
   manufacturerNameIndex = 0;
